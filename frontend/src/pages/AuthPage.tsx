@@ -69,8 +69,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
         const storedRole = localStorage.getItem('portpulse_user_role') as UserRole || 'admin';
         navigate(getRedirectPath(storedRole), { replace: true });
       }
-    } catch (e) {
-      if (import.meta.env.DEV) console.error('Google sign in error:', e);
+    } catch (e: any) {
+      console.error('Google sign in error:', e);
+      setError(e.message || 'Google sign-in failed. Please try again.');
     } finally {
       setIsGoogleLoading(false);
     }
