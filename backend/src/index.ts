@@ -14,14 +14,21 @@ import uploadsRouter from './routes/uploads.js';
 
 const app = new Hono<Env>();
 
-// Global Prisma injection
-// In Node.js (npm start), reads process.env.DATABASE_URL via dotenv.
-// In Cloudflare Workers, c.env.DATABASE_URL is set via wrangler secrets.
+import { Pool } from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
+
+// We need a global cache for the Prisma client so we don't exhaust connections
+let globalPrisma: PrismaClient | undefined;
+
 app.use('*', async (c, next) => {
   if (!c.var.prisma) {
-    const datasourceUrl = (c.env?.DATABASE_URL as string | undefined) ?? process.env.DATABASE_URL ?? '';
-    const prisma = new PrismaClient({ datasources: { db: { url: datasourceUrl } } });
-    c.set('prisma', prisma);
+    if (!globalPrisma) {
+      const datasourceUrl = (c.env?.DATABASE_URL as string | undefined) ?? process.env.DATABASE_URL ?? '';
+      const pool = new Pool({ connectionString: datasourceUrl });
+      const adapter = new PrismaPg(pool);
+      globalPrisma = new PrismaClient({ adapter });
+    }
+    c.set('prisma', globalPrisma);
   }
   await next();
 });
