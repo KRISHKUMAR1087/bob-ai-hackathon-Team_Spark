@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+// Dynamic import used for ESM
 import {
   CopilotMessage,
   CopilotStructuredResponse,
@@ -15,7 +15,7 @@ import {
   OperationalAlert,
   BerthRequest,
   ShippingDocument,
-} from '../types/operations';
+} from '../types/operations.js';
 
 export interface PortAdminContext {
   vessels?: Vessel[];
@@ -63,7 +63,7 @@ const CANDIDATE_MODELS = [
 export class GeminiCopilotService {
   private getApiKey(): string {
     try {
-      const meta = import.meta as any;
+      const meta = {} as any;
       if (meta && meta.env && meta.env.GEMINI_API_KEY) {
         return String(meta.env.GEMINI_API_KEY).trim();
       }
@@ -108,6 +108,7 @@ export class GeminiCopilotService {
     }
 
     try {
+      const { GoogleGenAI } = await import('@google/genai');
       const ai = new GoogleGenAI({ apiKey });
       const systemInstruction = `You are the PortPulse AI Operational Copilot, an enterprise decision-support assistant for port operations supervisors.
 
@@ -279,6 +280,7 @@ You can submit an official Berth Request at /shipping/berth-requests or update y
     }
 
     try {
+      const { GoogleGenAI } = await import('@google/genai');
       const ai = new GoogleGenAI({ apiKey });
       const systemInstruction = `You are the PortPulse AI Shipping Copilot for Apex Maritime Agency.
 
