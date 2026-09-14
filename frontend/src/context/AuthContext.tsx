@@ -6,9 +6,9 @@ interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  loginAsDemo: (role: UserRole) => User;
-  loginWithGoogle: () => Promise<{ needsRoleSelection: boolean; tempUser: User | null }>;
-  confirmRoleSelection: (role: UserRole, tempUser?: User | null) => User;
+  loginAsDemo: (role: UserRole) => Promise<User>;
+  loginWithGoogleToken: (idToken: string) => Promise<{ needsRoleSelection: boolean; tempUser: User | null }>;
+  confirmRoleSelection: (role: UserRole, tempUser?: User | null) => Promise<User>;
   logout: () => void;
 }
 
@@ -20,23 +20,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Hydrate authenticated user session on mount
   useEffect(() => {
-    const stored = AuthService.getStoredUser();
-    if (stored) {
-      setUser(stored);
-    }
-    setIsLoading(false);
+    const hydrate = async () => {
+      // First optimistic check from local storage
+      const stored = AuthService.getStoredUser();
+      if (stored) {
+        setUser(stored);
+      }
+      
+      // Then verify with backend
+      const fetched = await AuthService.fetchMe();
+      if (fetched) {
+        setUser(fetched);
+      } else if (stored) {
+        // Token was invalid
+        setUser(null);
+      }
+      setIsLoading(false);
+    };
+    hydrate();
   }, []);
 
-  const loginAsDemo = (role: UserRole): User => {
-    const loggedInUser = AuthService.loginDemo(role);
-    setUser(loggedInUser);
-    return loggedInUser;
-  };
-
-  const loginWithGoogle = async (): Promise<{ needsRoleSelection: boolean; tempUser: User | null }> => {
+  const loginAsDemo = async (role: UserRole): Promise<User> => {
     setIsLoading(true);
     try {
-      const result = await AuthService.signInWithGoogle();
+      const loggedInUser = await AuthService.loginDemo(role);
+      setUser(loggedInUser);
+      return loggedInUser;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loginWithGoogleToken = async (idToken: string): Promise<{ needsRoleSelection: boolean; tempUser: User | null }> => {
+    setIsLoading(true);
+    try {
+      const result = await AuthService.signInWithGoogleToken(idToken);
       if (!result.needsRoleSelection && result.user) {
         setUser(result.user);
         return { needsRoleSelection: false, tempUser: null };
@@ -47,10 +65,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const confirmRoleSelection = (role: UserRole, tempUser?: User | null): User => {
-    const confirmedUser = AuthService.setUserRole(role, tempUser || undefined);
-    setUser(confirmedUser);
-    return confirmedUser;
+  const confirmRoleSelection = async (role: UserRole, tempUser?: User | null): Promise<User> => {
+    setIsLoading(true);
+    try {
+      const confirmedUser = await AuthService.setUserRole(role);
+      setUser(confirmedUser);
+      return confirmedUser;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const logout = () => {
@@ -65,7 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: !!user,
         isLoading,
         loginAsDemo,
-        loginWithGoogle,
+        loginWithGoogleToken,
         confirmRoleSelection,
         logout,
       }}

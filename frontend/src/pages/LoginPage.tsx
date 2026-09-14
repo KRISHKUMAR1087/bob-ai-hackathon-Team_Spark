@@ -28,7 +28,7 @@ const stagger = {
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { loginAsDemo, loginWithGoogle, confirmRoleSelection } = useAuth();
+  const { loginAsDemo, loginWithGoogleToken, confirmRoleSelection } = useAuth();
 
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -44,15 +44,15 @@ export const LoginPage: React.FC = () => {
     return role === 'admin' ? '/dashboard' : '/shipping/dashboard';
   };
 
-  const handleDemoLogin = (role: UserRole) => {
-    const user = loginAsDemo(role);
+  const handleDemoLogin = async (role: UserRole) => {
+    const user = await loginAsDemo(role);
     navigate(getRedirectPath(user.role), { replace: true });
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = async (idToken: string) => {
     setIsGoogleLoading(true);
     try {
-      const result = await loginWithGoogle();
+      const result = await loginWithGoogleToken(idToken);
       if (result.needsRoleSelection && result.tempUser) {
         setPendingGoogleUser(result.tempUser);
         setShowRoleSelector(true);
@@ -67,8 +67,8 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleRoleSelected = (role: UserRole) => {
-    const confirmed = confirmRoleSelection(role, pendingGoogleUser);
+  const handleRoleSelected = async (role: UserRole) => {
+    const confirmed = await confirmRoleSelection(role, pendingGoogleUser);
     setShowRoleSelector(false);
     navigate(getRedirectPath(confirmed.role), { replace: true });
   };
@@ -228,7 +228,7 @@ export const LoginPage: React.FC = () => {
                     <div className="flex-grow border-t border-slate-200" />
                   </div>
 
-                  <GoogleSignInButton onClick={handleGoogleSignIn} isLoading={isGoogleLoading} />
+                  <GoogleSignInButton onSuccess={(idToken) => handleGoogleSignIn(idToken)} isLoading={isGoogleLoading} />
 
                   <p className="text-center text-[11px] text-slate-400 mt-3 leading-relaxed">
                     By signing in you agree to our{' '}

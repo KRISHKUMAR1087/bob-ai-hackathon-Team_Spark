@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { OperationsProvider } from './context/OperationsContext';
 import { MusicProvider } from './context/MusicContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AppShell } from './components/layout/AppShell';
 import { ShippingAppShell } from './components/layout/ShippingAppShell';
 import { RoleProtectedRoute } from './components/auth/RoleProtectedRoute';
@@ -89,7 +90,8 @@ const CatchAllRedirect: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <ThemeProvider>
+    <GoogleOAuthProvider clientId={(import.meta as any).env.VITE_GOOGLE_CLIENT_ID || ''}>
+      <ThemeProvider>
       <AuthProvider>
       <OperationsProvider>
         <MusicProvider>
@@ -176,6 +178,7 @@ export const App: React.FC = () => {
       </OperationsProvider>
     </AuthProvider>
     </ThemeProvider>
+    </GoogleOAuthProvider>
   );
 };
 
