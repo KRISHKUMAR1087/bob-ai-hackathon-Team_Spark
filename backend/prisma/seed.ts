@@ -683,12 +683,12 @@ async function main(): Promise<void> {
       inboundTeu24h: 1450,
       outboundTeu24h: 980,
       congestionRisk: 'High',
-      suggestedRedistribution: {
+      suggestedRedistribution: JSON.stringify({
         targetBlockId: 'CY-04',
         amountTeu: 650,
         rationale:
           'Reefer plug occupancy nearing 92%. Transfer auxiliary dry plugs to CY-04 buffer.',
-      },
+      }),
     },
     {
       id: 'CY-04',
@@ -766,14 +766,14 @@ async function main(): Promise<void> {
       },
       points: {
         create: [
-          { hour: 'Now',  berthData: { B01: 78, B02: 61, B03: 69, B04: 82, B05: 58, B06: 64 }, threshold: 85 },
-          { hour: '+6h',  berthData: { B01: 75, B02: 65, B03: 71, B04: 86, B05: 60, B06: 66 }, threshold: 85 },
-          { hour: '+12h', berthData: { B01: 72, B02: 68, B03: 73, B04: 89, B05: 62, B06: 67 }, threshold: 85 },
-          { hour: '+18h', berthData: { B01: 74, B02: 69, B03: 72, B04: 92, B05: 63, B06: 68 }, threshold: 85 },
-          { hour: '+24h', berthData: { B01: 76, B02: 70, B03: 74, B04: 94, B05: 64, B06: 68 }, threshold: 85 },
-          { hour: '+36h', berthData: { B01: 75, B02: 71, B03: 73, B04: 91, B05: 64, B06: 67 }, threshold: 85 },
-          { hour: '+48h', berthData: { B01: 74, B02: 69, B03: 72, B04: 88, B05: 63, B06: 65 }, threshold: 85 },
-          { hour: '+72h', berthData: { B01: 70, B02: 66, B03: 68, B04: 79, B05: 59, B06: 62 }, threshold: 85 },
+          { hour: 'Now',  berthData: JSON.stringify({ B01: 78, B02: 61, B03: 69, B04: 82, B05: 58, B06: 64 }), threshold: 85 },
+          { hour: '+6h',  berthData: JSON.stringify({ B01: 75, B02: 65, B03: 71, B04: 86, B05: 60, B06: 66 }), threshold: 85 },
+          { hour: '+12h', berthData: JSON.stringify({ B01: 72, B02: 68, B03: 73, B04: 89, B05: 62, B06: 67 }), threshold: 85 },
+          { hour: '+18h', berthData: JSON.stringify({ B01: 74, B02: 69, B03: 72, B04: 92, B05: 63, B06: 68 }), threshold: 85 },
+          { hour: '+24h', berthData: JSON.stringify({ B01: 76, B02: 70, B03: 74, B04: 94, B05: 64, B06: 68 }), threshold: 85 },
+          { hour: '+36h', berthData: JSON.stringify({ B01: 75, B02: 71, B03: 73, B04: 91, B05: 64, B06: 67 }), threshold: 85 },
+          { hour: '+48h', berthData: JSON.stringify({ B01: 74, B02: 69, B03: 72, B04: 88, B05: 63, B06: 65 }), threshold: 85 },
+          { hour: '+72h', berthData: JSON.stringify({ B01: 70, B02: 66, B03: 68, B04: 79, B05: 59, B06: 62 }), threshold: 85 },
         ],
       },
     },
@@ -790,23 +790,21 @@ async function main(): Promise<void> {
       timestamp: 'Just now',
       isApplied: false,
       targetVesselId: 'VES-01',
-      currentPlan: {
+      currentPlan: JSON.stringify({
         vesselId: 'VES-01',
         vesselName: 'Ocean Star',
         berthId: 'B04',
         cranesAssigned: 3,
         expectedWaitHours: 11.4,
         berthUtilizationPercent: 94,
-      },
-      optimizedPlan: {
+      }), optimizedPlan: JSON.stringify({
         vesselId: 'VES-01',
         vesselName: 'Ocean Star',
         berthId: 'B02',
         cranesAssigned: 4,
         expectedWaitHours: 6.8,
         berthUtilizationPercent: 72,
-      },
-      waitTimeDeltaHours: -4.6,
+      }), waitTimeDeltaHours: -4.6,
       waitTimeReductionPercent: 40.3,
       queueReductionCount: 3,
       savingsEstimateUsd: 148000,
@@ -823,7 +821,7 @@ async function main(): Promise<void> {
     update: {},
     create: {
       id: 'SIM-C03-FAIL',
-      scenario: {
+      scenario: JSON.stringify({
         id: 'SCEN-01',
         type: 'crane_failure',
         targetEntityId: 'C03',
@@ -831,18 +829,15 @@ async function main(): Promise<void> {
         durationHours: 8,
         description:
           'Complete drive electronics fault on C03 removing primary high-speed hoist capacity at Berth B04.',
-      },
-      before: {
+      }), before: JSON.stringify({
         queueCount: 7,
         avgWaitHours: 11.4,
         berthUtilizationPercent: 82,
-      },
-      after: {
+      }), after: JSON.stringify({
         queueCount: 11,
         avgWaitHours: 17.8,
         berthUtilizationPercent: 94,
-      },
-      recoveryPlan: {
+      }), recoveryPlan: JSON.stringify({
         id: 'REC-C03-01',
         isApplied: false,
         expectedRecoveryHours: 5.2,
@@ -869,7 +864,7 @@ async function main(): Promise<void> {
             targetEntity: 'Vessel Pacific Voyager',
           },
         ],
-      },
+      }),
     },
   });
 
@@ -893,7 +888,7 @@ async function main(): Promise<void> {
         congestionScore: 92,
         rationale:
           'Severe berth bottleneck (B04 at 94%) and yard overflow cause 31h projected demurrage delay.',
-        coordinates: { x: 180, y: 140 },
+        coordinates: JSON.stringify({ x: 180, y: 140 }),
       },
       {
         portCode: 'PORT-B',
@@ -908,7 +903,7 @@ async function main(): Promise<void> {
         congestionScore: 54,
         rationale:
           '+$10k bunker cost offset by -13h turnaround savings and 4 active deepwater berths available immediately.',
-        coordinates: { x: 320, y: 190 },
+        coordinates: JSON.stringify({ x: 320, y: 190 }),
       },
       {
         portCode: 'PORT-C',
@@ -923,7 +918,7 @@ async function main(): Promise<void> {
         congestionScore: 78,
         rationale:
           'Lower fuel expense, but intermodal rail capacity at Zeebrugge currently restricted by maintenance window.',
-        coordinates: { x: 440, y: 260 },
+        coordinates: JSON.stringify({ x: 440, y: 260 }),
       },
     ],
   });
@@ -932,21 +927,21 @@ async function main(): Promise<void> {
   // 11. ShiftPlanItems
   // ───────────────────────────────────────────────────────────────────────────
   const shiftPlanItems: Parameters<typeof prisma.shiftPlanItem.upsert>[0]['create'][] = [
-    { id: 'SP-01', dayOffset: 0, shift: '06-14', berthId: 'B01', vesselId: 'VES-02', vesselName: 'MSC Orion', assignedCranes: ['C01', 'C02'], status: 'Scheduled' },
-    { id: 'SP-02', dayOffset: 0, shift: '14-22', berthId: 'B01', vesselId: 'VES-02', vesselName: 'MSC Orion', assignedCranes: ['C01', 'C02'], status: 'Scheduled' },
-    { id: 'SP-03', dayOffset: 0, shift: '22-06', berthId: 'B01', vesselId: 'VES-08', vesselName: 'Cosco Glory (Turnaround)', assignedCranes: ['C01'], status: 'Scheduled' },
-    { id: 'SP-04', dayOffset: 0, shift: '06-14', berthId: 'B02', vesselId: 'VES-03', vesselName: 'Maersk Mc-Kinney', assignedCranes: ['C04', 'C06'], status: 'Scheduled' },
-    { id: 'SP-05', dayOffset: 0, shift: '14-22', berthId: 'B02', vesselId: 'VES-03', vesselName: 'Maersk Mc-Kinney', assignedCranes: ['C04', 'C06'], status: 'Scheduled' },
-    { id: 'SP-06', dayOffset: 0, shift: '22-06', berthId: 'B02', vesselId: null, vesselName: 'Buffer Window', assignedCranes: [], status: 'Scheduled' },
-    { id: 'SP-07', dayOffset: 0, shift: '06-14', berthId: 'B04', vesselId: null, vesselName: 'Turnaround Prep', assignedCranes: [], status: 'Scheduled' },
-    { id: 'SP-08', dayOffset: 0, shift: '14-22', berthId: 'B04', vesselId: 'VES-01', vesselName: 'Ocean Star', assignedCranes: ['C03'], status: 'Conflict', conflictReason: 'Crane C03 is FAILED (8h) while Ocean Star requires 3+ STS cranes.' },
-    { id: 'SP-09', dayOffset: 0, shift: '22-06', berthId: 'B04', vesselId: 'VES-01', vesselName: 'Ocean Star', assignedCranes: ['C03'], status: 'Conflict', conflictReason: 'Bottleneck overflow extends into Night Shift.' },
-    { id: 'SP-10', dayOffset: 1, shift: '06-14', berthId: 'B03', vesselId: 'VES-04', vesselName: 'Ever Radiant', assignedCranes: ['C07'], status: 'Scheduled' },
-    { id: 'SP-11', dayOffset: 1, shift: '14-22', berthId: 'B03', vesselId: 'VES-07', vesselName: 'Hapag Express', assignedCranes: ['C07'], status: 'Conflict', conflictReason: 'Delayed ETA overlap with Ever Radiant discharge.' },
-    { id: 'SP-12', dayOffset: 1, shift: '22-06', berthId: 'B03', vesselId: 'VES-07', vesselName: 'Hapag Express', assignedCranes: ['C07'], status: 'Scheduled' },
-    { id: 'SP-13', dayOffset: 1, shift: '06-14', berthId: 'B05', vesselId: null, vesselName: 'Available Capacity', assignedCranes: ['C05'], status: 'Scheduled' },
-    { id: 'SP-14', dayOffset: 1, shift: '14-22', berthId: 'B05', vesselId: 'VES-05', vesselName: 'Pacific Voyager', assignedCranes: ['C05'], status: 'Scheduled' },
-    { id: 'SP-15', dayOffset: 2, shift: '06-14', berthId: 'B06', vesselId: 'VES-06', vesselName: 'CMA CGM Antoine', assignedCranes: ['C08'], status: 'Scheduled' },
+    { id: 'SP-01', dayOffset: 0, shift: '06-14', berthId: 'B01', vesselId: 'VES-02', vesselName: 'MSC Orion', assignedCranes: JSON.stringify(['C01', 'C02']), status: 'Scheduled' },
+    { id: 'SP-02', dayOffset: 0, shift: '14-22', berthId: 'B01', vesselId: 'VES-02', vesselName: 'MSC Orion', assignedCranes: JSON.stringify(['C01', 'C02']), status: 'Scheduled' },
+    { id: 'SP-03', dayOffset: 0, shift: '22-06', berthId: 'B01', vesselId: 'VES-08', vesselName: 'Cosco Glory (Turnaround)', assignedCranes: JSON.stringify(['C01']), status: 'Scheduled' },
+    { id: 'SP-04', dayOffset: 0, shift: '06-14', berthId: 'B02', vesselId: 'VES-03', vesselName: 'Maersk Mc-Kinney', assignedCranes: JSON.stringify(['C04', 'C06']), status: 'Scheduled' },
+    { id: 'SP-05', dayOffset: 0, shift: '14-22', berthId: 'B02', vesselId: 'VES-03', vesselName: 'Maersk Mc-Kinney', assignedCranes: JSON.stringify(['C04', 'C06']), status: 'Scheduled' },
+    { id: 'SP-06', dayOffset: 0, shift: '22-06', berthId: 'B02', vesselId: null, vesselName: 'Buffer Window', assignedCranes: JSON.stringify([]), status: 'Scheduled' },
+    { id: 'SP-07', dayOffset: 0, shift: '06-14', berthId: 'B04', vesselId: null, vesselName: 'Turnaround Prep', assignedCranes: JSON.stringify([]), status: 'Scheduled' },
+    { id: 'SP-08', dayOffset: 0, shift: '14-22', berthId: 'B04', vesselId: 'VES-01', vesselName: 'Ocean Star', assignedCranes: JSON.stringify(['C03']), status: 'Conflict', conflictReason: 'Crane C03 is FAILED (8h) while Ocean Star requires 3+ STS cranes.' },
+    { id: 'SP-09', dayOffset: 0, shift: '22-06', berthId: 'B04', vesselId: 'VES-01', vesselName: 'Ocean Star', assignedCranes: JSON.stringify(['C03']), status: 'Conflict', conflictReason: 'Bottleneck overflow extends into Night Shift.' },
+    { id: 'SP-10', dayOffset: 1, shift: '06-14', berthId: 'B03', vesselId: 'VES-04', vesselName: 'Ever Radiant', assignedCranes: JSON.stringify(['C07']), status: 'Scheduled' },
+    { id: 'SP-11', dayOffset: 1, shift: '14-22', berthId: 'B03', vesselId: 'VES-07', vesselName: 'Hapag Express', assignedCranes: JSON.stringify(['C07']), status: 'Conflict', conflictReason: 'Delayed ETA overlap with Ever Radiant discharge.' },
+    { id: 'SP-12', dayOffset: 1, shift: '22-06', berthId: 'B03', vesselId: 'VES-07', vesselName: 'Hapag Express', assignedCranes: JSON.stringify(['C07']), status: 'Scheduled' },
+    { id: 'SP-13', dayOffset: 1, shift: '06-14', berthId: 'B05', vesselId: null, vesselName: 'Available Capacity', assignedCranes: JSON.stringify(['C05']), status: 'Scheduled' },
+    { id: 'SP-14', dayOffset: 1, shift: '14-22', berthId: 'B05', vesselId: 'VES-05', vesselName: 'Pacific Voyager', assignedCranes: JSON.stringify(['C05']), status: 'Scheduled' },
+    { id: 'SP-15', dayOffset: 2, shift: '06-14', berthId: 'B06', vesselId: 'VES-06', vesselName: 'CMA CGM Antoine', assignedCranes: JSON.stringify(['C08']), status: 'Scheduled' },
   ];
 
   for (const item of shiftPlanItems) {
@@ -968,8 +963,7 @@ async function main(): Promise<void> {
       title: 'Crane C03 Inverter Fault Offline',
       description:
         'Megamax STS 03 at Berth B04 suffered main hoist drive electronics trip. Estimated repair window: 8 hours.',
-      relatedEntity: { type: 'crane', id: 'C03', name: 'Megamax STS 03' },
-      isResolved: false,
+      relatedEntity: JSON.stringify({ type: 'crane', id: 'C03', name: 'Megamax STS 03' }), isResolved: false,
       actionRoute: '/decision/simulator',
       actionLabel: 'Simulate Impact',
     },
@@ -980,8 +974,7 @@ async function main(): Promise<void> {
       title: 'B04 Projected >90% Utilization',
       description:
         'ML model projects Berth B04 utilization climbing to 94% within 24h due to arrival bunching and crane deficit.',
-      relatedEntity: { type: 'berth', id: 'B04', name: 'Berth 04' },
-      isResolved: false,
+      relatedEntity: JSON.stringify({ type: 'berth', id: 'B04', name: 'Berth 04' }), isResolved: false,
       actionRoute: '/decision/optimizer',
       actionLabel: 'Optimize Berth',
     },
@@ -992,8 +985,7 @@ async function main(): Promise<void> {
       title: 'CY-03 Cold Chain Capacity at 88%',
       description:
         'Reefer yard CY-03 is approaching operational saturation (7,480 / 8,500 TEU). Redistribution recommended.',
-      relatedEntity: { type: 'yard', id: 'CY-03', name: 'Yard Block CY-03' },
-      isResolved: false,
+      relatedEntity: JSON.stringify({ type: 'yard', id: 'CY-03', name: 'Yard Block CY-03' }), isResolved: false,
       actionRoute: '/operations/yard',
       actionLabel: 'View Block',
     },
@@ -1004,8 +996,7 @@ async function main(): Promise<void> {
       title: 'Ocean Star Coastal Squall Advisory',
       description:
         'Ocean Star ETA updated +45m due to adverse tidal squall in approach channel. New ETA: 14:30 UTC.',
-      relatedEntity: { type: 'vessel', id: 'VES-01', name: 'Ocean Star' },
-      isResolved: false,
+      relatedEntity: JSON.stringify({ type: 'vessel', id: 'VES-01', name: 'Ocean Star' }), isResolved: false,
       actionRoute: '/operations/vessels/VES-01',
       actionLabel: 'View Vessel',
     },
