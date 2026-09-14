@@ -4,12 +4,6 @@ compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-name = "portpilot"
-main = "src/index.ts"
-compatibility_date = "2024-09-23"
-compatibility_flags = ["nodejs_compat"]
-
-[vars]
 NODE_ENV = "production"
 GOOGLE_CLIENT_ID = "112305367877-abdc6pev7v0ugc12i0g40nvd3j9j53j4.apps.googleusercontent.com"
 # Add your Supabase Database URL here via the dashboard
@@ -17,7 +11,6 @@ GOOGLE_CLIENT_ID = "112305367877-abdc6pev7v0ugc12i0g40nvd3j9j53j4.apps.googleuse
 
 [observability]
 enabled = true
-
 
 [[hyperdrive]]
 binding = "DB"
