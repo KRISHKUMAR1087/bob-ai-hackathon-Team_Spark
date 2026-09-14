@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { OperationsProvider } from './context/OperationsContext';
 import { MusicProvider } from './context/MusicContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { AppShell } from './components/layout/AppShell';
 import { ShippingAppShell } from './components/layout/ShippingAppShell';
 import { RoleProtectedRoute } from './components/auth/RoleProtectedRoute';
@@ -88,6 +89,63 @@ const CatchAllRedirect: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
+    <ThemeProvider>
+      <AuthProvider>
+        <OperationsProvider>
+          <MusicProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* Public Authentication Route */}
+                <Route path="/login" element={<LoginPage />} />
+
+                {/* Root Portal Router */}
+                <Route path="/" element={<RootRedirect />} />
+
+                {/* 1. PORT OPERATIONS ADMIN PORTAL */}
+                <Route element={<RoleProtectedRoute allowedRoles={['admin']} />}>
+                  <Route element={<AppShell />}>
+                    <Route path="/dashboard" element={<DashboardPage />} />
+
+                    {/* Operations Group */}
+                    <Route path="/operations/vessels" element={<VesselsPage />} />
+                    <Route path="/operations/vessels/:id" element={<VesselDetailPage />} />
+                    <Route path="/operations/berths" element={<BerthsPage />} />
+                    <Route path="/operations/cranes" element={<CranesPage />} />
+                    <Route path="/operations/yard" element={<YardPage />} />
+                    <Route path="/operations" element={<OperationsBoardPage />} />
+                    <Route path="/operations/board" element={<OperationsBoardPage />} />
+
+                    {/* Intelligence Group */}
+                    <Route path="/intelligence/forecast" element={<ForecastPage />} />
+                    <Route path="/copilot" element={<CopilotPage />} />
+                    <Route path="/intelligence/routes" element={<RoutesPage />} />
+
+                    {/* Decision Support Group */}
+                    <Route path="/decision/optimizer" element={<OptimizerPage />} />
+                    <Route path="/decision/simulator" element={<SimulatorPage />} />
+                    <Route path="/decision/planner" element={<PlannerPage />} />
+
+                    {/* Analytics */}
+                    <Route path="/analytics" element={<AnalyticsPage />} />
+
+                    {/* System */}
+                    <Route path="/alerts" element={<AlertsPage />} />
+                    <Route path="/settings" element={<SettingsPage />} />
+
+                    {/* Admin Aliases */}
+                    <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
+                    <Route path="/admin/dashboard" element={<DashboardPage />} />
+                    <Route path="/admin/operations" element={<OperationsBoardPage />} />
+                    <Route path="/admin/optimizer" element={<OptimizerPage />} />
+                    <Route path="/admin/simulator" element={<SimulatorPage />} />
+                    <Route path="/admin/planner" element={<PlannerPage />} />
+                    <Route path="/admin/forecast" element={<ForecastPage />} />
+                    <Route path="/admin/copilot" element={<CopilotPage />} />
+                    <Route path="/admin/routes" element={<RoutesPage />} />
+                    <Route path="/admin/analytics" element={<AnalyticsPage />} />
+                    <Route path="/admin/alerts" element={<AlertsPage />} />
+                    <Route path="/admin/settings" element={<SettingsPage />} />
+                  </Route>
     <AuthProvider>
       <OperationsProvider>
         <MusicProvider>
@@ -146,33 +204,33 @@ export const App: React.FC = () => {
                   <Route path="/admin/alerts" element={<AlertsPage />} />
                   <Route path="/admin/settings" element={<SettingsPage />} />
                 </Route>
-              </Route>
 
-              {/* 2. SHIPPING AGENCY PORTAL */}
-              <Route element={<RoleProtectedRoute allowedRoles={['ship-agent']} />}>
-                <Route element={<ShippingAppShell />}>
-                  <Route path="/shipping" element={<Navigate to="/shipping/dashboard" replace />} />
-                  <Route path="/shipping/dashboard" element={<ShippingDashboardPage />} />
-                  <Route path="/shipping/vessels" element={<ShippingVesselsPage />} />
-                  <Route path="/shipping/vessels/add" element={<ShippingAddVesselPage />} />
-                  <Route path="/shipping/vessels/:id" element={<ShippingVesselDetailPage />} />
-                  <Route path="/shipping/berth-requests" element={<ShippingBerthRequestsPage />} />
-                  <Route path="/shipping/schedules" element={<ShippingSchedulesPage />} />
-                  <Route path="/shipping/cargo" element={<ShippingCargoPage />} />
-                  <Route path="/shipping/documents" element={<ShippingDocumentsPage />} />
-                  <Route path="/shipping/alerts" element={<ShippingAlertsPage />} />
-                  <Route path="/shipping/copilot" element={<ShippingCopilotPage />} />
-                  <Route path="/shipping/profile" element={<ShippingProfilePage />} />
+                {/* 2. SHIPPING AGENCY PORTAL */}
+                <Route element={<RoleProtectedRoute allowedRoles={['ship-agent']} />}>
+                  <Route element={<ShippingAppShell />}>
+                    <Route path="/shipping" element={<Navigate to="/shipping/dashboard" replace />} />
+                    <Route path="/shipping/dashboard" element={<ShippingDashboardPage />} />
+                    <Route path="/shipping/vessels" element={<ShippingVesselsPage />} />
+                    <Route path="/shipping/vessels/add" element={<ShippingAddVesselPage />} />
+                    <Route path="/shipping/vessels/:id" element={<ShippingVesselDetailPage />} />
+                    <Route path="/shipping/berth-requests" element={<ShippingBerthRequestsPage />} />
+                    <Route path="/shipping/schedules" element={<ShippingSchedulesPage />} />
+                    <Route path="/shipping/cargo" element={<ShippingCargoPage />} />
+                    <Route path="/shipping/documents" element={<ShippingDocumentsPage />} />
+                    <Route path="/shipping/alerts" element={<ShippingAlertsPage />} />
+                    <Route path="/shipping/copilot" element={<ShippingCopilotPage />} />
+                    <Route path="/shipping/profile" element={<ShippingProfilePage />} />
+                  </Route>
                 </Route>
-              </Route>
 
-              {/* Fallback */}
-              <Route path="*" element={<CatchAllRedirect />} />
-            </Routes>
-          </BrowserRouter>
-        </MusicProvider>
-      </OperationsProvider>
-    </AuthProvider>
+                {/* Fallback */}
+                <Route path="*" element={<CatchAllRedirect />} />
+              </Routes>
+            </BrowserRouter>
+          </MusicProvider>
+        </OperationsProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 

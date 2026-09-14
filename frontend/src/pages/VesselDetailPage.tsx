@@ -13,6 +13,7 @@ import { useOperations } from '../context/OperationsContext';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { RiskBadge } from '../components/common/RiskBadge';
 import { MetricCard } from '../components/common/MetricCard';
+import { Vessel3DViewer } from '../components/common/Vessel3DViewer';
 
 export const VesselDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -127,6 +128,28 @@ export const VesselDetailPage: React.FC = () => {
           </button>
         </div>
       )}
+
+      {/* 3D Vessel Digital Twin Model */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-brand-teal animate-pulse" />
+          <h3 className="text-sm font-semibold text-text-main">
+            3D Vessel Hull & Digital Twin Visualizer
+          </h3>
+          <span className="text-xs text-text-caption">
+            (Interactive 360° Inspection & Deck Telemetry)
+          </span>
+        </div>
+        <Vessel3DViewer
+          vesselName={vessel.name}
+          imo={vessel.imo}
+          loa={vessel.lengthMeters}
+          draught={vessel.draughtMeters}
+          teu={vessel.teuCapacity}
+          berth={vessel.assignedBerth}
+          status={vessel.status}
+        />
+      </div>
 
       {/* Technical Specs & Timeline Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
