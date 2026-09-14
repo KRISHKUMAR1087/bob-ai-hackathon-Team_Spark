@@ -10,7 +10,7 @@ export type Env = {
     SUPABASE_KEY: string;
     GOOGLE_CLIENT_ID: string;
     GEMINI_API_KEY: string;
-    HYPERDRIVE: { connectionString: string };
+    HYPERDRIVE?: { connectionString: string };
   };
   Variables: {
     user: User;
