@@ -21,21 +21,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Hydrate authenticated user session on mount
   useEffect(() => {
     const hydrate = async () => {
-      // First optimistic check from local storage
-      const stored = AuthService.getStoredUser();
-      if (stored) {
-        setUser(stored);
+      try {
+        // First optimistic check from local storage
+        const stored = AuthService.getStoredUser();
+        if (stored) {
+          setUser(stored);
+        }
+        
+        // Then verify with backend
+        const fetched = await AuthService.fetchMe();
+        if (fetched) {
+          setUser(fetched);
+        } else if (stored) {
+          // Token was invalid
+          setUser(null);
+        }
+      } catch (e) {
+        console.error('Auth hydration failed:', e);
+        // If backend is unreachable, still use stored user if available
+        const stored = AuthService.getStoredUser();
+        if (stored) {
+          setUser(stored);
+        }
+      } finally {
+        setIsLoading(false);
       }
-      
-      // Then verify with backend
-      const fetched = await AuthService.fetchMe();
-      if (fetched) {
-        setUser(fetched);
-      } else if (stored) {
-        // Token was invalid
-        setUser(null);
-      }
-      setIsLoading(false);
     };
     hydrate();
   }, []);
