@@ -1,4 +1,4 @@
-name = "portpilot"
+name = "portspilot-backend"
 main = "src/index.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
@@ -10,5 +10,5 @@ GOOGLE_CLIENT_ID = "112305367877-abdc6pev7v0ugc12i0g40nvd3j9j53j4.apps.googleuse
 # DATABASE_URL = "postgresql://postgres:..."
 
 [observability]
-enabled = true
+enabled = false
 
