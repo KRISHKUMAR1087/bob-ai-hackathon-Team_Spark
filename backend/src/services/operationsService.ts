@@ -1,6 +1,25 @@
 import { PrismaClient, Prisma } from '@prisma/client';
+import { Pool } from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-const prisma = new PrismaClient();
+let _prisma: PrismaClient | undefined;
+
+function getPrisma(): PrismaClient {
+  if (!_prisma) {
+    const url = process.env.DATABASE_URL ?? '';
+    const pool = new Pool({ connectionString: url });
+    const adapter = new PrismaPg(pool);
+    _prisma = new PrismaClient({ adapter } as any);
+  }
+  return _prisma;
+}
+
+// Proxy that lazily initializes on first property access (avoids top-level new PrismaClient())
+const prisma: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    return (getPrisma() as any)[prop];
+  },
+});
 
 // ─── Vessels ─────────────────────────────────────────────────────────────────
 

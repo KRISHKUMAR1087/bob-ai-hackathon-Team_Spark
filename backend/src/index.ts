@@ -26,7 +26,7 @@ app.use('*', async (c, next) => {
       const datasourceUrl = (c.env?.DATABASE_URL as string | undefined) ?? process.env.DATABASE_URL ?? '';
       const pool = new Pool({ connectionString: datasourceUrl });
       const adapter = new PrismaPg(pool);
-      globalPrisma = new PrismaClient({ adapter });
+      globalPrisma = new PrismaClient({ adapter } as any);
     }
     c.set('prisma', globalPrisma);
   }
