@@ -5,7 +5,7 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 NODE_ENV = "production"
-GOOGLE_CLIENT_ID = "112305367877-abdc6pev7v0ugc12i0g40nvd3j9j53j4.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = "112305367877-uqesobtgqngibu38ekf4qu22pm4jicvb.apps.googleusercontent.com"
 # Add your Supabase Database URL here via the dashboard
 # DATABASE_URL = "postgresql://postgres:..."
 
