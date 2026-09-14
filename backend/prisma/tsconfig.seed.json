@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "outDir": "../dist-seed",
+    "declaration": false,
+    "declarationMap": false,
+    "lib": ["ES2021"],
+    "types": ["node"]
+  },
+  "include": ["./**/*"]
+}
