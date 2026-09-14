@@ -84,7 +84,7 @@ app.notFound((c) => {
 // Error Handler
 app.onError((err, c) => {
   console.error('[server error]', err);
-  return c.json({ error: 'Internal server error' }, 500);
+  return c.json({ error: 'Internal server error', details: err instanceof Error ? err.message : String(err) }, 500);
 });
 
 // Start the Node.js HTTP server when running via `npm start` / `node dist/index.js`.
