@@ -476,6 +476,7 @@ export async function applyOptimization() {
 export async function runSimulation(scenarioType: string, targetEntityId?: string, durationHours?: number) {
   const sim = await prisma.simulationResult.create({
     data: {
+      id: `SIM-${Date.now()}`,
       scenario: JSON.stringify({
         type: scenarioType,
         durationHours: durationHours || 8,
