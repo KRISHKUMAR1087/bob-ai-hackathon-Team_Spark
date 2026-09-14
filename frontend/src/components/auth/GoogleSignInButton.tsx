@@ -1,5 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
+declare global {
+  interface Window {
+    google?: any;
+  }
+}
+
 interface GoogleSignInButtonProps {
   onSuccess: (idToken: string) => void;
   onError?: () => void;
