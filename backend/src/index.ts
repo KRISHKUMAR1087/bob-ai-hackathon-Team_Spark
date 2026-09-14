@@ -25,8 +25,18 @@ app.use('*', async (c, next) => {
   if (!c.var.prisma) {
     if (!globalPrisma) {
       // Use HYPERDRIVE connection string for Cloudflare Workers pooling, fallback to DATABASE_URL for Node.js
-      const datasourceUrl = c.env?.HYPERDRIVE?.connectionString ?? (c.env?.DATABASE_URL as string | undefined) ?? process.env.DATABASE_URL ?? '';
-      const pool = new Pool({ connectionString: datasourceUrl });
+      let datasourceUrl = c.env?.HYPERDRIVE?.connectionString ?? (c.env?.DATABASE_URL as string | undefined) ?? process.env.DATABASE_URL ?? '';
+      
+      // Supabase requires SSL, so append it if missing
+      if (datasourceUrl && !datasourceUrl.includes('sslmode=') && datasourceUrl.includes('supabase')) {
+        const separator = datasourceUrl.includes('?') ? '&' : '?';
+        datasourceUrl += `${separator}sslmode=require`;
+      }
+      
+      const pool = new Pool({ 
+        connectionString: datasourceUrl,
+        ssl: datasourceUrl.includes('supabase') ? { rejectUnauthorized: false } : undefined
+      });
       const adapter = new PrismaPg(pool);
       globalPrisma = new PrismaClient({ adapter } as any);
       setPrisma(globalPrisma);
