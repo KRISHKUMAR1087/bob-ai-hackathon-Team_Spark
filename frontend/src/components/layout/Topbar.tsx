@@ -155,22 +155,22 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
         {/* Alerts Bell */}
         <button
           onClick={() => navigate('/alerts')}
-          className="relative p-1.5 sm:p-2 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle border border-transparent hover:border-border-subtle transition-colors shrink-0"
+          className="relative p-1.5 sm:p-2 rounded-lg text-text-muted hover:text-text-main hover:bg-surface-subtle border border-transparent hover:border-border-subtle transition-all duration-150 shrink-0 cursor-pointer"
           title={`${unreadAlerts} Active Operational Alerts`}
         >
           <Bell className="w-4 h-4" />
           {unreadAlerts > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white" />
           )}
         </button>
 
         {/* Copilot Trigger Button */}
         <button
           onClick={() => setIsCopilotOpen(!isCopilotOpen)}
-          className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 border shrink-0 ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 border shrink-0 cursor-pointer shadow-xs ${
             isCopilotOpen
-              ? 'bg-brand-teal text-white border-brand-teal'
-              : 'bg-surface text-text-main border-border-subtle hover:bg-surface-subtle hover:border-slate-300'
+              ? 'bg-brand-teal text-white border-brand-teal shadow-teal-500/20 shadow-md'
+              : 'bg-surface text-text-main border-border-subtle hover:bg-teal-50/30 hover:border-brand-teal/50 hover:text-brand-teal'
           }`}
           title="Open Gemini Operational Copilot"
         >

@@ -8,6 +8,7 @@ import { RoleProtectedRoute } from './components/auth/RoleProtectedRoute';
 
 // Port Operations / Admin Pages
 import { LoginPage } from './pages/LoginPage';
+import { AuthPage } from './pages/AuthPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { VesselsPage } from './pages/VesselsPage';
 import { VesselDetailPage } from './pages/VesselDetailPage';
@@ -92,6 +93,8 @@ export const App: React.FC = () => {
           <Routes>
             {/* Public Authentication Route */}
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/auth/login" element={<AuthPage mode="login" />} />
+            <Route path="/auth/signup" element={<AuthPage mode="signup" />} />
 
             {/* Root Portal Router */}
             <Route path="/" element={<RootRedirect />} />
