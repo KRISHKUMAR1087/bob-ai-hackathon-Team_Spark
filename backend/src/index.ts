@@ -35,9 +35,12 @@ app.use('*', async (c, next) => {
 // CORS — explicit origin required when credentials: true.
 // Wildcard origin (*) + credentials is rejected by browsers.
 // Set CORS_ORIGIN env var for production (e.g. https://yourapp.vercel.app).
-const allowedOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
 app.use('/api/*', cors({
-  origin: allowedOrigin,
+  origin: (origin, c) => {
+    // If CORS_ORIGIN is explicitly set, use it. Otherwise allow the requesting origin (for hackathon flexibility).
+    const configuredOrigin = (c.env?.CORS_ORIGIN as string | undefined) ?? process.env.CORS_ORIGIN;
+    return configuredOrigin || origin || '*';
+  },
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
   credentials: true,
