@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { serve } from '@hono/node-server';
 import { PrismaClient } from '@prisma/client';
 import { Env } from './middleware/authenticate.js';
 
@@ -69,10 +68,12 @@ app.onError((err, c) => {
 
 // Start the Node.js HTTP server when running via `npm start` / `node dist/index.js`.
 // Cloudflare Workers deployment uses the default export instead.
-if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'cloudflare') {
-  const port = Number(process.env.PORT) || 3000;
-  serve({ fetch: app.fetch, port }, (info) => {
-    console.log(`[server] listening on http://localhost:${info.port}`);
+if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') {
+  import('@hono/node-server').then(({ serve }) => {
+    const port = Number(process.env.PORT) || 3000;
+    serve({ fetch: app.fetch, port }, (info) => {
+      console.log(`[server] listening on http://localhost:${info.port}`);
+    });
   });
 }
 
