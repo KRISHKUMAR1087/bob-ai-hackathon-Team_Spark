@@ -180,7 +180,7 @@ router.post('/signup', async (c) => {
     return c.json({ token: signToken(user.id, user.email, user.role, c.env), user: sanitizeUser(user) });
   } catch (err) {
     console.error('[auth] signup', err);
-    return c.json({ error: 'Internal server error' }, 500);
+    return c.json({ error: 'Internal server error', details: err instanceof Error ? err.message : String(err) }, 500);
   }
 });
 
