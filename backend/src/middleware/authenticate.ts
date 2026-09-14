@@ -1,37 +1,40 @@
-import { Request, Response, NextFunction } from 'express';
+import { Context, Next } from 'hono';
 import jwt from 'jsonwebtoken';
+import { PrismaClient, User } from '@prisma/client';
 
-export interface JwtPayload {
-  sub: string;   // user id
-  email: string;
-  role: string | null;
-  iat?: number;
-  exp?: number;
-}
+export type Env = {
+  Bindings: {
+    DATABASE_URL: string;
+    JWT_SECRET: string;
+    SUPABASE_URL: string;
+    SUPABASE_KEY: string;
+    GOOGLE_CLIENT_ID: string;
+    GEMINI_API_KEY: string;
+  };
+  Variables: {
+    user: User;
+    prisma: PrismaClient;
+  };
+};
 
-/**
- * Verifies the Bearer JWT from the Authorization header and attaches
- * the decoded payload to `req.user`.
- */
-export function authenticate(req: Request, res: Response, next: NextFunction): void {
-  const header = req.headers.authorization;
-  if (!header || !header.startsWith('Bearer ')) {
-    res.status(401).json({ error: 'Missing or malformed Authorization header' });
-    return;
+export async function authenticate(c: Context<Env>, next: Next) {
+  const authHeader = c.req.header('Authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return c.json({ error: 'Unauthorized' }, 401);
   }
 
-  const token = header.slice(7);
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    res.status(500).json({ error: 'Server misconfiguration: JWT_SECRET not set' });
-    return;
-  }
-
+  const token = authHeader.split(' ')[1];
   try {
-    const payload = jwt.verify(token, secret) as JwtPayload;
-    req.user = { id: payload.sub, email: payload.email, role: payload.role };
-    next();
-  } catch {
-    res.status(401).json({ error: 'Invalid or expired token' });
+    const payload = jwt.verify(token, c.env.JWT_SECRET) as { sub: string };
+    // Prisma is injected in index.ts
+    const user = await c.var.prisma.user.findUnique({ where: { id: payload.sub } });
+    if (!user) {
+      return c.json({ error: 'User not found' }, 401);
+    }
+    
+    c.set('user', user);
+    await next();
+  } catch (err) {
+    return c.json({ error: 'Invalid token' }, 401);
   }
 }

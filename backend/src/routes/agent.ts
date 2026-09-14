@@ -1,86 +1,55 @@
-import { Router, Request, Response } from 'express';
-import { z } from 'zod';
-import { PrismaClient } from '@prisma/client';
-import multer from 'multer';
+import { Hono } from 'hono';
+import { Env } from '../middleware/authenticate.js';
 import { authenticate } from '../middleware/authenticate.js';
 import { requireRole } from '../middleware/requireRole.js';
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js';
 import { normalizeVessel } from '../services/operationsService.js';
 
-const prisma = new PrismaClient();
-const router = Router();
-const uploadDir = process.env.UPLOAD_DIR || './uploads';
+const router = new Hono<Env>();
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: (_req, file, cb) => {
-    cb(null, `${crypto.randomUUID()}-${file.originalname}`);
-  }
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB
-  fileFilter: (_req, file, cb) => {
-    const allowed = ['application/pdf', 'image/jpeg', 'image/png', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-    if (allowed.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type'));
-    }
-  }
-});
-
-router.use(authenticate, requireRole('ship-agent'));
+router.use('*', authenticate, requireRole('ship-agent'));
 
 // ─── Vessels ─────────────────────────────────────────────────────────────────
 
-router.get('/vessels', async (req: Request, res: Response) => {
+router.get('/vessels', async (c) => {
   try {
-    const vessels = await prisma.vessel.findMany({
-      where: { ownerId: req.user!.id },
+    const vessels = await c.var.prisma.vessel.findMany({
+      where: { ownerId: c.var.user!.id },
       include: { timelineEvents: true },
       orderBy: { predictedWaitHours: 'desc' },
     });
-    res.json(vessels.map(normalizeVessel));
+    return c.json(vessels.map(normalizeVessel));
   } catch (err) {
     console.error('[agent] get vessels', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
-router.get('/vessels/:id', async (req: Request, res: Response) => {
+router.get('/vessels/:id', async (c) => {
   try {
-    const vessel = await prisma.vessel.findUnique({
-      where: { id: req.params.id },
+    const vessel = await c.var.prisma.vessel.findUnique({
+      where: { id: c.req.param('id') },
       include: { timelineEvents: true },
     });
     if (!vessel) {
-      return res.status(404).json({ error: 'Vessel not found' });
+      return c.json({ error: 'Vessel not found' }, 404);
     }
-    if (vessel.ownerId !== req.user!.id) {
-      return res.status(403).json({ error: 'Forbidden' });
+    if (vessel.ownerId !== c.var.user!.id) {
+      return c.json({ error: 'Forbidden' }, 403);
     }
-    res.json(normalizeVessel(vessel));
+    return c.json(normalizeVessel(vessel));
   } catch (err) {
     console.error('[agent] get vessel by id', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
-router.post('/vessels', async (req: Request, res: Response) => {
+router.post('/vessels', async (c) => {
   try {
-    const vData = req.body;
+    const vData = await c.req.json();
     const newId = `VES-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
 
-    const newVessel = await prisma.$transaction(async (tx) => {
+    const newVessel = await c.var.prisma.$transaction(async (tx) => {
       const vessel = await tx.vessel.create({
         data: {
           id: newId,
@@ -102,7 +71,7 @@ router.post('/vessels', async (req: Request, res: Response) => {
           demurrageRisk: 'Low',
           historicalTurnaroundHours: 20,
           recommendedAction: 'Awaiting port berth assignment and pilot scheduling.',
-          ownerId: req.user!.id,
+          ownerId: c.var.user!.id,
           shippingCompany: vData.shippingCompany || 'Apex Maritime Agency',
           callSign: vData.callSign || 'CALL-' + Math.floor(100 + Math.random() * 900),
           vesselType: vData.vesselType || 'Container Ship',
@@ -146,7 +115,7 @@ router.post('/vessels', async (req: Request, res: Response) => {
             status: 'Pending',
             submittedAt: new Date().toISOString(),
             notes: vessel.specialNotes || '',
-            ownerId: req.user!.id,
+            ownerId: c.var.user!.id,
           }
         });
       }
@@ -154,69 +123,70 @@ router.post('/vessels', async (req: Request, res: Response) => {
       return vessel;
     });
 
-    res.json(normalizeVessel(newVessel));
+    return c.json(normalizeVessel(newVessel));
   } catch (err) {
     console.error('[agent] post vessels', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
-router.put('/vessels/:id', async (req: Request, res: Response) => {
+router.put('/vessels/:id', async (c) => {
   try {
-    const vessel = await prisma.vessel.findUnique({ where: { id: req.params.id } });
-    if (!vessel) return res.status(404).json({ error: 'Not found' });
-    if (vessel.ownerId !== req.user!.id) return res.status(403).json({ error: 'Forbidden' });
+    const vessel = await c.var.prisma.vessel.findUnique({ where: { id: c.req.param('id') } });
+    if (!vessel) return c.json({ error: 'Not found' }, 404);
+    if (vessel.ownerId !== c.var.user!.id) return c.json({ error: 'Forbidden' }, 403);
 
-    const updated = await prisma.vessel.update({
-      where: { id: req.params.id },
-      data: req.body,
+    const body = await c.req.json();
+    const updated = await c.var.prisma.vessel.update({
+      where: { id: c.req.param('id') },
+      data: body,
       include: { timelineEvents: true },
     });
-    res.json(normalizeVessel(updated));
+    return c.json(normalizeVessel(updated));
   } catch (err) {
     console.error('[agent] put vessels/:id', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
-router.delete('/vessels/:id', async (req: Request, res: Response) => {
+router.delete('/vessels/:id', async (c) => {
   try {
-    const vessel = await prisma.vessel.findUnique({ where: { id: req.params.id } });
-    if (!vessel) return res.status(404).json({ error: 'Not found' });
-    if (vessel.ownerId !== req.user!.id) return res.status(403).json({ error: 'Forbidden' });
+    const vessel = await c.var.prisma.vessel.findUnique({ where: { id: c.req.param('id') } });
+    if (!vessel) return c.json({ error: 'Not found' }, 404);
+    if (vessel.ownerId !== c.var.user!.id) return c.json({ error: 'Forbidden' }, 403);
 
     // hard delete for now
-    await prisma.vessel.delete({ where: { id: req.params.id } });
-    res.json({ success: true });
+    await c.var.prisma.vessel.delete({ where: { id: c.req.param('id') } });
+    return c.json({ success: true });
   } catch (err) {
     console.error('[agent] delete vessels/:id', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── Berth Requests ───────────────────────────────────────────────────────────
 
-router.get('/berth-requests', async (req: Request, res: Response) => {
+router.get('/berth-requests', async (c) => {
   try {
-    const requests = await prisma.berthRequest.findMany({
-      where: { ownerId: req.user!.id },
+    const requests = await c.var.prisma.berthRequest.findMany({
+      where: { ownerId: c.var.user!.id },
       orderBy: { submittedAt: 'desc' },
     });
     const mapped = requests.map(row => ({
       ...row,
       status: (row.status as string).replace('_', ' '),
     }));
-    res.json(mapped);
+    return c.json(mapped);
   } catch (err) {
     console.error('[agent] get berth-requests', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
-router.post('/berth-requests', async (req: Request, res: Response) => {
+router.post('/berth-requests', async (c) => {
   try {
-    const data = req.body;
-    const newReq = await prisma.berthRequest.create({
+    const data = await c.req.json();
+    const newReq = await c.var.prisma.berthRequest.create({
       data: {
         id: `BR-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
         vesselId: data.vesselId,
@@ -230,42 +200,42 @@ router.post('/berth-requests', async (req: Request, res: Response) => {
         status: 'Pending',
         submittedAt: new Date().toISOString(),
         notes: data.notes || '',
-        ownerId: req.user!.id,
+        ownerId: c.var.user!.id,
       }
     });
-    res.json({ ...newReq, status: (newReq.status as string).replace('_', ' ') });
+    return c.json({ ...newReq, status: (newReq.status as string).replace('_', ' ') });
   } catch (err) {
     console.error('[agent] post berth-requests', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── Cargo ───────────────────────────────────────────────────────────────────
 
-router.get('/cargo', async (req: Request, res: Response) => {
+router.get('/cargo', async (c) => {
   try {
-    const vessels = await prisma.vessel.findMany({
-      where: { ownerId: req.user!.id },
+    const vessels = await c.var.prisma.vessel.findMany({
+      where: { ownerId: c.var.user!.id },
       include: { timelineEvents: true },
       orderBy: { predictedWaitHours: 'desc' },
     });
     // For agent, returning vessels is sufficient to get cargo fields
-    res.json(vessels.map(normalizeVessel));
+    return c.json(vessels.map(normalizeVessel));
   } catch (err) {
     console.error('[agent] get cargo', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
-router.put('/cargo/:vesselId', async (req: Request, res: Response) => {
+router.put('/cargo/:vesselId', async (c) => {
   try {
-    const vessel = await prisma.vessel.findUnique({ where: { id: req.params.vesselId } });
-    if (!vessel) return res.status(404).json({ error: 'Not found' });
-    if (vessel.ownerId !== req.user!.id) return res.status(403).json({ error: 'Forbidden' });
+    const vessel = await c.var.prisma.vessel.findUnique({ where: { id: c.req.param('vesselId') } });
+    if (!vessel) return c.json({ error: 'Not found' }, 404);
+    if (vessel.ownerId !== c.var.user!.id) return c.json({ error: 'Forbidden' }, 403);
 
-    const cargoData = req.body;
-    const updated = await prisma.vessel.update({
-      where: { id: req.params.vesselId },
+    const cargoData = await c.req.json();
+    const updated = await c.var.prisma.vessel.update({
+      where: { id: c.req.param('vesselId') },
       data: {
         cargoType: cargoData.cargoType,
         cargoQuantity: cargoData.cargoQuantity,
@@ -276,88 +246,100 @@ router.put('/cargo/:vesselId', async (req: Request, res: Response) => {
       },
       include: { timelineEvents: true },
     });
-    res.json(normalizeVessel(updated));
+    return c.json(normalizeVessel(updated));
   } catch (err) {
     console.error('[agent] put cargo/:vesselId', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── Documents ───────────────────────────────────────────────────────────────
 
-router.get('/documents', async (req: Request, res: Response) => {
+router.get('/documents', async (c) => {
   try {
-    const docs = await prisma.shippingDocument.findMany({
-      where: { ownerId: req.user!.id },
+    const docs = await c.var.prisma.shippingDocument.findMany({
+      where: { ownerId: c.var.user!.id },
       orderBy: { uploadedDate: 'desc' },
     });
-    res.json(docs);
+    return c.json(docs);
   } catch (err) {
     console.error('[agent] get documents', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
-router.post('/documents', upload.single('file'), async (req: Request, res: Response) => {
+router.post('/documents', async (c) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-    const { name, vesselId, vesselName, type } = req.body;
+    const body = await c.req.parseBody();
+    const file = body['file'] as File;
+    const name = body['name'] as string;
+    const vesselId = body['vesselId'] as string;
+    const vesselName = body['vesselName'] as string;
+    const type = body['type'] as string;
 
-    const doc = await prisma.shippingDocument.create({
+    if (!file) {
+      return c.json({ error: 'No file uploaded' }, 400);
+    }
+
+    const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_KEY);
+    const { data, error } = await supabase.storage.from('uploads').upload(`${crypto.randomUUID()}-${file.name}`, file);
+
+    if (error) {
+       console.error('[agent] supabase upload error', error);
+       return c.json({ error: 'File upload failed' }, 500);
+    }
+
+    const doc = await c.var.prisma.shippingDocument.create({
       data: {
         id: `DOC-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
-        name: name || req.file.originalname,
+        name: name || file.name,
         vesselId,
         vesselName,
         type,
         status: 'Under Review',
         uploadedDate: new Date().toISOString(),
-        fileSize: `${(req.file.size / 1024 / 1024).toFixed(2)} MB`,
-        fileUrl: req.file.filename,
-        ownerId: req.user!.id,
+        fileSize: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
+        fileUrl: data.path,
+        ownerId: c.var.user!.id,
       }
     });
-    res.json(doc);
+    return c.json(doc);
   } catch (err) {
     console.error('[agent] post documents', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
-router.delete('/documents/:id', async (req: Request, res: Response) => {
+router.delete('/documents/:id', async (c) => {
   try {
-    const doc = await prisma.shippingDocument.findUnique({ where: { id: req.params.id } });
-    if (!doc) return res.status(404).json({ error: 'Not found' });
-    if (doc.ownerId !== req.user!.id) return res.status(403).json({ error: 'Forbidden' });
+    const doc = await c.var.prisma.shippingDocument.findUnique({ where: { id: c.req.param('id') } });
+    if (!doc) return c.json({ error: 'Not found' }, 404);
+    if (doc.ownerId !== c.var.user!.id) return c.json({ error: 'Forbidden' }, 403);
 
-    await prisma.shippingDocument.delete({ where: { id: req.params.id } });
-    
-    // delete physical file
-    const filePath = path.join(uploadDir, doc.fileUrl);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+    await c.var.prisma.shippingDocument.delete({ where: { id: c.req.param('id') } });
+    if (doc.fileUrl) {
+      const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_KEY);
+      await supabase.storage.from('uploads').remove([doc.fileUrl]);
     }
     
-    res.json({ success: true });
+    return c.json({ success: true });
   } catch (err) {
     console.error('[agent] delete documents/:id', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── Alerts & Schedules ───────────────────────────────────────────────────────
 
-router.get('/alerts', async (req: Request, res: Response) => {
+router.get('/alerts', async (c) => {
   try {
-    const vessels = await prisma.vessel.findMany({
-      where: { ownerId: req.user!.id },
+    const vessels = await c.var.prisma.vessel.findMany({
+      where: { ownerId: c.var.user!.id },
       select: { id: true },
     });
     const vesselIds = vessels.map(v => v.id);
 
-    const alerts = await prisma.operationalAlert.findMany({
+    const alerts = await c.var.prisma.operationalAlert.findMany({
       orderBy: { timestamp: 'desc' },
     });
     
@@ -369,56 +351,56 @@ router.get('/alerts', async (req: Request, res: Response) => {
       return rel && rel.type === 'vessel' && vesselIds.includes(rel.id);
     });
 
-    res.json(agentAlerts);
+    return c.json(agentAlerts);
   } catch (err) {
     console.error('[agent] get alerts', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
-router.get('/schedules', async (req: Request, res: Response) => {
+router.get('/schedules', async (c) => {
   try {
-    const vessels = await prisma.vessel.findMany({
-      where: { ownerId: req.user!.id },
+    const vessels = await c.var.prisma.vessel.findMany({
+      where: { ownerId: c.var.user!.id },
       select: { id: true },
     });
     const vesselIds = vessels.map(v => v.id);
 
-    const shiftPlans = await prisma.shiftPlanItem.findMany({
+    const shiftPlans = await c.var.prisma.shiftPlanItem.findMany({
       where: { vesselId: { in: vesselIds } },
       orderBy: [{ dayOffset: 'asc' }, { shift: 'asc' }],
     });
-    res.json(shiftPlans);
+    return c.json(shiftPlans);
   } catch (err) {
     console.error('[agent] get schedules', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── Profile ──────────────────────────────────────────────────────────────────
 
-router.get('/profile', async (req: Request, res: Response) => {
+router.get('/profile', async (c) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.user!.id } });
-    if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json(user);
+    const user = await c.var.prisma.user.findUnique({ where: { id: c.var.user!.id } });
+    if (!user) return c.json({ error: 'User not found' }, 404);
+    return c.json(user);
   } catch (err) {
     console.error('[agent] get profile', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
-router.put('/profile', async (req: Request, res: Response) => {
+router.put('/profile', async (c) => {
   try {
-    const { name, email } = req.body;
-    const user = await prisma.user.update({
-      where: { id: req.user!.id },
+    const { name, email } = await c.req.json();
+    const user = await c.var.prisma.user.update({
+      where: { id: c.var.user!.id },
       data: { name, email },
     });
-    res.json(user);
+    return c.json(user);
   } catch (err) {
     console.error('[agent] put profile', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
