@@ -28,7 +28,7 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({ onSelectRole, userNa
           {/* Option 1: Port Operations (Admin) */}
           <div
             onClick={() => onSelectRole('admin')}
-            className="p-5 rounded-lg border border-border-subtle hover:border-brand-teal hover:bg-teal-50/20 transition-all cursor-pointer flex flex-col justify-between space-y-4 group shadow-subtle"
+            className="p-5 rounded-lg border border-border-subtle hover:border-brand-teal hover:bg-teal-50/20 transition-all cursor-pointer flex flex-col justify-between space-y-4 group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <div className="space-y-2">
               <div className="w-9 h-9 rounded-lg bg-teal-50 text-brand-teal flex items-center justify-center group-hover:bg-brand-teal group-hover:text-white transition-colors">
@@ -44,7 +44,7 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({ onSelectRole, userNa
 
             <button
               type="button"
-              className="w-full py-2 px-3 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all flex items-center justify-center gap-1.5 shadow-subtle"
+              className="w-full py-2 px-3 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all flex items-center justify-center gap-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
             >
               <span>Port Operations</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -54,7 +54,7 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({ onSelectRole, userNa
           {/* Option 2: Ship Agent */}
           <div
             onClick={() => onSelectRole('ship-agent')}
-            className="p-5 rounded-lg border border-border-subtle hover:border-sky-500 hover:bg-sky-50/20 transition-all cursor-pointer flex flex-col justify-between space-y-4 group shadow-subtle"
+            className="p-5 rounded-lg border border-border-subtle hover:border-sky-500 hover:bg-sky-50/20 transition-all cursor-pointer flex flex-col justify-between space-y-4 group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <div className="space-y-2">
               <div className="w-9 h-9 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center group-hover:bg-sky-600 group-hover:text-white transition-colors">
@@ -70,7 +70,7 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({ onSelectRole, userNa
 
             <button
               type="button"
-              className="w-full py-2 px-3 rounded-md text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-all flex items-center justify-center gap-1.5 shadow-subtle"
+              className="w-full py-2 px-3 rounded-xl text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-all flex items-center justify-center gap-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
             >
               <span>Ship Agent</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -87,3 +87,4 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({ onSelectRole, userNa
     </div>
   );
 };
+

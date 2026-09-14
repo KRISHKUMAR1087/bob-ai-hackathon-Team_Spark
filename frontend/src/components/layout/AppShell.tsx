@@ -76,8 +76,8 @@ export const AppShell: React.FC = () => {
           setIsMobileMenuOpen={setIsMobileMenuOpen}
         />
 
-        {/* Dynamic Page Container: Responsive padding (p-4 on mobile, p-6 on tablet, p-8 on desktop) */}
-        <main className="flex-1 mt-16 p-4 sm:p-6 lg:p-8 min-w-0 w-full overflow-x-hidden">
+        {/* Dynamic Page Container: Responsive padding (p-4 pb-20 on mobile, p-6 on tablet, p-8 on desktop) */}
+        <main className="flex-1 mt-16 p-4 pb-20 md:pb-4 sm:p-6 lg:p-8 min-w-0 w-full overflow-x-hidden">
           <div className="max-w-7xl mx-auto space-y-6 min-w-0 w-full">
             <Outlet />
           </div>

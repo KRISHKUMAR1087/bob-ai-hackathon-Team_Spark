@@ -58,14 +58,14 @@ export const CongestionChart: React.FC<CongestionChartProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="text-xs text-text-muted">Prediction Horizon:</span>
-          <div className="flex items-center bg-surface-subtle p-1 rounded-md border border-border-subtle">
+          <div className="flex items-center bg-surface-subtle p-1 rounded-xl border border-border-subtle">
             {(['6h', '12h', '24h', '48h', '72h'] as const).map(h => (
               <button
                 key={h}
                 onClick={() => setHorizon(h)}
                 className={`px-2.5 py-0.5 text-xs rounded transition-all ${
                   horizon === h
-                    ? 'bg-white text-text-main font-semibold shadow-subtle'
+                    ? 'bg-white text-text-main font-semibold shadow-[0_8px_30px_rgb(0,0,0,0.04)]'
                     : 'text-text-muted hover:text-text-main'
                 }`}
               >
@@ -83,9 +83,9 @@ export const CongestionChart: React.FC<CongestionChartProps> = ({
               <button
                 key={bId}
                 onClick={() => onSelectBerth?.(bId)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs transition-all border ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs transition-all border ${
                   isSelected
-                    ? 'bg-white border-slate-300 text-text-main font-semibold shadow-subtle'
+                    ? 'bg-white border-slate-300 text-text-main font-semibold shadow-[0_8px_30px_rgb(0,0,0,0.04)]'
                     : 'bg-surface-subtle/60 border-border-subtle text-text-muted hover:text-text-main'
                 }`}
               >
@@ -201,3 +201,4 @@ export const CongestionChart: React.FC<CongestionChartProps> = ({
     </div>
   );
 };
+

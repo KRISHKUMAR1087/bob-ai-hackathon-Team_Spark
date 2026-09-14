@@ -42,8 +42,8 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`bg-surface rounded-card p-3.5 sm:p-4 border border-border-subtle shadow-subtle hover:border-slate-300 transition-all min-w-0 ${
-        onClick ? 'cursor-pointer' : ''
+      className={`bg-surface rounded-3xl p-4 sm:p-5 border border-border-subtle shadow-[0_4px_20px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all min-w-0 ${
+        onClick ? 'cursor-pointer active:scale-[0.98]' : ''
       }`}
     >
       <div className="flex items-center justify-between gap-2 mb-2 min-w-0">

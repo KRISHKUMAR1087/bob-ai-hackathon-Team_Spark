@@ -35,20 +35,20 @@ export const CranesPage: React.FC = () => {
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 text-xs">
-            <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+            <span className="px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
               {activeCranes} Active
             </span>
-            <span className="px-2.5 py-1 rounded-md bg-rose-50 text-rose-700 border border-rose-200 font-medium">
+            <span className="px-2.5 py-1 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 font-medium">
               {failedCranes} Failed
             </span>
-            <span className="px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 border border-amber-200 font-medium">
+            <span className="px-2.5 py-1 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 font-medium">
               {maintenanceCranes} Service
             </span>
           </div>
 
           <button
             onClick={() => navigate('/decision/simulator')}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <RefreshCw className="w-3.5 h-3.5 text-text-muted" />
             <span>Simulate Disruption</span>
@@ -57,7 +57,7 @@ export const CranesPage: React.FC = () => {
       </div>
 
       {/* Featured Failure Incident Banner (Crane C03) */}
-      <div className="bg-rose-50/50 p-5 rounded-card border border-rose-200 shadow-subtle flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-rose-50/50 p-5 rounded-3xl border border-rose-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-start gap-3.5">
           <div className="w-9 h-9 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center shrink-0 mt-0.5">
             <AlertTriangle className="w-5 h-5" />
@@ -79,7 +79,7 @@ export const CranesPage: React.FC = () => {
 
         <button
           onClick={() => navigate('/decision/simulator')}
-          className="flex items-center gap-2 px-4 py-2 rounded-md text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 transition-all shadow-subtle"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Simulate Impact & Recovery</span>
@@ -96,7 +96,7 @@ export const CranesPage: React.FC = () => {
             <div
               key={crane.id}
               onClick={() => setSelectedCrane(crane)}
-              className={`bg-surface p-5 rounded-card border cursor-pointer transition-all hover:shadow-elevated flex flex-col justify-between space-y-3 shadow-subtle ${
+              className={`bg-surface p-5 rounded-3xl border cursor-pointer transition-all hover:shadow-elevated flex flex-col justify-between space-y-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ${
                 isFailed
                   ? 'border-rose-300 ring-1 ring-rose-200'
                   : isRedeployed
@@ -107,7 +107,7 @@ export const CranesPage: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between border-b border-border-subtle pb-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-md bg-surface-subtle border border-border-subtle flex items-center justify-center font-semibold text-xs text-text-main">
+                    <div className="w-7 h-7 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-center font-semibold text-xs text-text-main">
                       {crane.id}
                     </div>
                     <div>
@@ -211,7 +211,7 @@ export const CranesPage: React.FC = () => {
                   setSelectedCrane(null);
                   navigate('/decision/simulator');
                 }}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 transition-all shadow-subtle"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span>Simulate Impact & Run AI Recovery</span>
@@ -223,3 +223,4 @@ export const CranesPage: React.FC = () => {
     </div>
   );
 };
+

@@ -52,7 +52,7 @@ export const OptimizerPage: React.FC = () => {
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleAskCopilot}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <Sparkles className="w-3.5 h-3.5 text-brand-teal" />
             <span>Explain with Gemini</span>
@@ -61,13 +61,13 @@ export const OptimizerPage: React.FC = () => {
           {!isOptimizationApplied ? (
             <button
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
             >
               <Zap className="w-4 h-4" />
               <span>Apply Recommendation</span>
             </button>
           ) : (
-            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold">
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
               <span>Recommendation Applied</span>
             </div>
@@ -77,7 +77,7 @@ export const OptimizerPage: React.FC = () => {
 
       {/* Applied Banner if already executed */}
       {isOptimizationApplied && (
-        <div className="bg-emerald-50/50 border border-emerald-200 p-4 rounded-card flex flex-wrap items-center justify-between gap-3 shadow-subtle">
+        <div className="bg-emerald-50/50 border border-emerald-200 p-4 rounded-3xl flex flex-wrap items-center justify-between gap-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <div className="flex items-center gap-3">
             <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             <div>
@@ -91,7 +91,7 @@ export const OptimizerPage: React.FC = () => {
           </div>
           <button
             onClick={() => navigate('/operations')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle shadow-subtle"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <Calendar className="w-3.5 h-3.5 text-brand-teal" />
             <span>View on Operations Board</span>
@@ -150,7 +150,7 @@ export const OptimizerPage: React.FC = () => {
 
       {/* Rationale & Operator Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-surface p-6 rounded-card border border-border-subtle shadow-subtle space-y-4">
+        <div className="lg:col-span-2 bg-surface p-6 rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
           <h3 className="text-sm font-semibold text-text-main border-b border-border-subtle pb-3">
             Optimization Rationale
           </h3>
@@ -177,7 +177,7 @@ export const OptimizerPage: React.FC = () => {
         </div>
 
         {/* Action Panel */}
-        <div className="bg-surface p-6 rounded-card border border-border-subtle shadow-subtle flex flex-col justify-between space-y-5">
+        <div className="bg-surface p-6 rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-between space-y-5">
           <div>
             <h3 className="text-sm font-semibold text-text-main border-b border-border-subtle pb-3">
               Operator Decision
@@ -191,7 +191,7 @@ export const OptimizerPage: React.FC = () => {
             {!isOptimizationApplied ? (
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
               >
                 <Zap className="w-4 h-4" />
                 <span>Apply Recommendation</span>
@@ -199,7 +199,7 @@ export const OptimizerPage: React.FC = () => {
             ) : (
               <button
                 disabled
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200"
               >
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                 <span>Active Across All Modules</span>
@@ -208,7 +208,7 @@ export const OptimizerPage: React.FC = () => {
 
             <button
               onClick={() => navigate('/operations')}
-              className="w-full flex items-center justify-center gap-2 py-2 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors"
             >
               <span>View Operations Board</span>
             </button>
@@ -230,3 +230,4 @@ export const OptimizerPage: React.FC = () => {
     </div>
   );
 };
+

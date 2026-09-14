@@ -42,10 +42,10 @@ export const YardPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3 text-xs text-text-muted">
-          <div className="bg-surface px-3 py-1.5 rounded-md border border-border-subtle shadow-subtle">
+          <div className="bg-surface px-3 py-1.5 rounded-xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             Dwell Average: <strong className="text-text-main">{avgDwell} days</strong>
           </div>
-          <div className="bg-surface px-3 py-1.5 rounded-md border border-border-subtle shadow-subtle">
+          <div className="bg-surface px-3 py-1.5 rounded-xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             Net Flow: <strong className="text-text-main">+{totalInbound - totalOutbound} TEU/24h</strong>
           </div>
         </div>
@@ -60,7 +60,7 @@ export const YardPage: React.FC = () => {
             <div
               key={block.id}
               onClick={() => setSelectedBlock(block)}
-              className={`bg-surface rounded-card p-5 border cursor-pointer transition-all hover:shadow-elevated flex flex-col justify-between space-y-4 shadow-subtle ${
+              className={`bg-surface rounded-3xl p-5 border cursor-pointer transition-all hover:shadow-elevated flex flex-col justify-between space-y-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ${
                 isHighRisk
                   ? 'border-amber-300 ring-1 ring-amber-200'
                   : 'border-border-subtle hover:border-slate-300'
@@ -195,7 +195,7 @@ export const YardPage: React.FC = () => {
                   </span>
                   <button
                     onClick={() => handleApplyRedistribution(selectedBlock)}
-                    className="px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+                    className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                   >
                     Execute Transfer
                   </button>
@@ -208,3 +208,4 @@ export const YardPage: React.FC = () => {
     </div>
   );
 };
+

@@ -101,18 +101,40 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const containerClasses = isMobileDrawer
-    ? 'w-72 max-w-[85vw] h-full bg-surface border-r border-border-subtle flex flex-col z-50 shadow-modal'
-    : `fixed top-0 bottom-0 left-0 z-30 bg-surface border-r border-border-subtle hidden md:flex flex-col transition-all duration-200 ${
+    ? 'fixed bottom-0 left-0 right-0 h-16 bg-surface/90 backdrop-blur-xl border-t border-border-subtle flex flex-row items-center justify-around z-50 shadow-modal md:hidden'
+    : `fixed top-0 bottom-0 left-0 z-30 bg-surface/90 backdrop-blur-xl border-r border-border-subtle hidden md:flex flex-col transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
         isCollapsed ? 'w-16' : 'w-64'
       }`;
+
+  if (isMobileDrawer) {
+    return (
+      <nav className={containerClasses}>
+        {navSections.flatMap(s => s.items).slice(0, 5).map(item => {
+          const Icon = item.icon;
+          const isActive = item.path === '/operations' ? location.pathname === '/operations' : location.pathname.startsWith(item.path);
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={handleNavClick}
+              className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-brand-blue' : 'text-text-muted'}`}
+            >
+              <Icon className={`w-5 h-5 ${isActive ? 'text-brand-blue fill-brand-blue/20' : ''}`} />
+              <span className="text-[10px] font-medium">{item.name.split(' ')[0]}</span>
+            </NavLink>
+          );
+        })}
+      </nav>
+    );
+  }
 
   return (
     <aside className={containerClasses}>
       {/* Brand Header */}
-      <div className="h-16 px-4 flex items-center justify-between border-b border-border-subtle bg-surface shrink-0">
+      <div className="h-16 px-4 flex items-center justify-between border-b border-border-subtle bg-surface/80 backdrop-blur-md shrink-0">
         {!isCollapsed || isMobileDrawer ? (
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-brand-teal text-white flex items-center justify-center shrink-0 shadow-subtle">
+            <div className="w-8 h-8 rounded-xl bg-brand-teal text-white flex items-center justify-center shrink-0 shadow-[0_2px_8px_rgba(20,184,166,0.3)]">
               <Ship className="w-4 h-4" />
             </div>
             <div className="min-w-0">
@@ -120,7 +142,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span className="font-semibold text-sm tracking-tight text-text-main">
                   PortPulse
                 </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-teal-50 text-teal-800 font-semibold border border-teal-200">
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-teal-50 text-teal-800 font-semibold border border-teal-200 shadow-xs">
                   AI
                 </span>
               </div>
@@ -130,7 +152,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
         ) : (
-          <div className="w-8 h-8 rounded-lg bg-brand-teal text-white flex items-center justify-center mx-auto shadow-subtle">
+          <div className="w-8 h-8 rounded-xl bg-brand-teal text-white flex items-center justify-center mx-auto shadow-[0_2px_8px_rgba(20,184,166,0.3)]">
             <Ship className="w-4 h-4" />
           </div>
         )}
@@ -139,7 +161,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {isMobileDrawer ? (
           <button
             onClick={onCloseMobileDrawer}
-            className="p-1.5 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle transition-colors"
+            className="p-1.5 rounded-full text-text-muted hover:text-text-main hover:bg-surface-subtle transition-colors"
             title="Close menu"
           >
             <X className="w-5 h-5" />
@@ -148,7 +170,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           setIsCollapsed && (
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="p-1 rounded-md text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors"
+              className="p-1 rounded-full text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors"
               title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
               {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -164,7 +186,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="flex items-center gap-2">
               <span
                 className={`w-2 h-2 rounded-full ${
-                  isOptimizationApplied ? 'bg-emerald-500' : 'bg-amber-500'
+                  isOptimizationApplied ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'
                 }`}
               />
               <span className="text-xs font-medium text-text-main">
@@ -172,7 +194,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </span>
             </div>
             <span
-              className={`text-[10px] font-medium px-2 py-0.5 rounded border ${
+              className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${
                 isOptimizationApplied
                   ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                   : 'bg-amber-50 text-amber-800 border-amber-200'
@@ -185,15 +207,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       {/* Navigation List */}
-      <div className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
+      <div className="flex-1 overflow-y-auto py-4 px-3 space-y-5">
         {navSections.map((section, idx) => (
-          <div key={idx} className="space-y-0.5">
+          <div key={idx} className="space-y-1">
             {(!isCollapsed || isMobileDrawer) && (
-              <h3 className="px-3 pb-1 text-[11px] font-medium text-text-caption">
+              <h3 className="px-3 pb-1 text-[11px] font-semibold text-text-caption uppercase tracking-wider">
                 {section.label}
               </h3>
             )}
-            <div className="space-y-0.5">
+            <div className="space-y-1">
               {section.items.map(item => {
                 const Icon = item.icon;
                 const isActive =
@@ -207,21 +229,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     to={item.path}
                     onClick={handleNavClick}
                     title={isCollapsed && !isMobileDrawer ? item.name : undefined}
-                    className={`flex items-center gap-2.5 px-3 py-1.5 rounded-md text-xs transition-colors ${
+                    className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ease-out ${
                       isActive
-                        ? 'bg-teal-50 text-teal-900 font-semibold border-l-2 border-brand-teal'
+                        ? 'bg-brand-teal/10 text-brand-teal font-semibold'
                         : 'text-text-muted hover:text-text-main hover:bg-surface-subtle'
-                    } ${isCollapsed && !isMobileDrawer ? 'justify-center px-0' : ''}`}
+                    } ${isCollapsed && !isMobileDrawer ? 'justify-center px-0 mx-2' : ''}`}
                   >
                     <Icon
-                      className={`w-4 h-4 shrink-0 ${
+                      className={`w-4 h-4 shrink-0 transition-colors ${
                         isActive ? 'text-brand-teal' : 'text-text-caption'
                       }`}
                     />
                     {(!isCollapsed || isMobileDrawer) && <span className="truncate">{item.name}</span>}
                     {(!isCollapsed || isMobileDrawer) && item.badge && (
                       <span
-                        className={`ml-auto px-1.5 py-0.2 rounded-full text-[10px] ${item.badgeColor}`}
+                        className={`ml-auto px-2 py-0.5 rounded-full text-[10px] ${item.badgeColor} shadow-xs`}
                       >
                         {item.badge}
                       </span>
@@ -235,23 +257,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Footer / Demo Reset & Profile */}
-      <div className="p-3 border-t border-border-subtle bg-surface space-y-2 shrink-0">
+      <div className="p-4 border-t border-border-subtle bg-surface/80 backdrop-blur-md space-y-3 shrink-0">
         {!isCollapsed || isMobileDrawer ? (
           <>
             <button
               onClick={resetToDefault}
-              className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs text-text-muted hover:text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04)] active:scale-95"
               title="Reset simulation to initial state"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset Demo State</span>
             </button>
-            <div className="flex items-center gap-2.5 pt-1 px-1">
-              <div className="w-7 h-7 rounded-full bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-semibold text-text-main shrink-0">
+            <div className="flex items-center gap-3 pt-2 px-1">
+              <div className="w-8 h-8 rounded-full bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-semibold text-text-main shrink-0 shadow-xs">
                 MV
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-xs font-medium text-text-main truncate">Capt. M. Vance</div>
+                <div className="text-xs font-semibold text-text-main truncate">Capt. M. Vance</div>
                 <div className="text-[11px] text-text-muted truncate">Port Supervisor</div>
               </div>
             </div>
@@ -259,7 +281,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ) : (
           <button
             onClick={resetToDefault}
-            className="w-full flex items-center justify-center p-2 rounded-md text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors"
+            className="w-full flex items-center justify-center p-2 rounded-xl text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors shadow-xs active:scale-95"
             title="Reset Demo State"
           >
             <RotateCcw className="w-4 h-4" />

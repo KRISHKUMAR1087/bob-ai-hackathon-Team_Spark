@@ -50,14 +50,14 @@ export const AnalyticsPage: React.FC = () => {
         </div>
 
         {/* Date Filter Tabs */}
-        <div className="flex items-center bg-surface-subtle p-1 rounded-md border border-border-subtle">
+        <div className="flex items-center bg-surface-subtle p-1 rounded-xl border border-border-subtle">
           {(['7d', '30d', '90d'] as const).map(range => (
             <button
               key={range}
               onClick={() => setDateRange(range)}
-              className={`px-3 py-1 text-xs rounded-md transition-all ${
+              className={`px-3 py-1 text-xs rounded-xl transition-all ${
                 dateRange === range
-                  ? 'bg-surface text-text-main font-semibold shadow-subtle'
+                  ? 'bg-surface text-text-main font-semibold shadow-[0_8px_30px_rgb(0,0,0,0.04)]'
                   : 'text-text-muted hover:text-text-main'
               }`}
             >
@@ -68,7 +68,7 @@ export const AnalyticsPage: React.FC = () => {
       </div>
 
       {/* Featured AI Impact Banner */}
-      <div className="bg-surface p-6 rounded-card border border-border-subtle shadow-subtle space-y-4">
+      <div className="bg-surface p-6 rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
         <div className="flex items-center justify-between border-b border-border-subtle pb-3">
           <span className="text-xs font-semibold uppercase tracking-wider text-text-main flex items-center gap-2">
             <Zap className="w-4 h-4 text-brand-teal" />
@@ -118,7 +118,7 @@ export const AnalyticsPage: React.FC = () => {
       {/* Analytics Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Chart 1: Wait Time Trend */}
-        <div className="bg-surface p-6 rounded-card border border-border-subtle shadow-subtle space-y-4">
+        <div className="bg-surface p-6 rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
           <div className="flex items-center justify-between border-b border-border-subtle pb-3">
             <h3 className="text-sm font-semibold text-text-main">
               Vessel Waiting Time: Standard vs AI Optimized
@@ -163,7 +163,7 @@ export const AnalyticsPage: React.FC = () => {
         </div>
 
         {/* Chart 2: Turnaround Hours by Berth */}
-        <div className="bg-surface p-6 rounded-card border border-border-subtle shadow-subtle space-y-4">
+        <div className="bg-surface p-6 rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
           <div className="flex items-center justify-between border-b border-border-subtle pb-3">
             <h3 className="text-sm font-semibold text-text-main">
               Berth Turnaround Benchmark (Hours per Vessel)
@@ -196,3 +196,4 @@ export const AnalyticsPage: React.FC = () => {
     </div>
   );
 };
+

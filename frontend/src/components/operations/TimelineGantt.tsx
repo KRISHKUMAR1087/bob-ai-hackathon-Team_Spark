@@ -356,7 +356,7 @@ export const TimelineGantt: React.FC = () => {
   return (
     <>
       {/* 10. REMOVE UNNECESSARY CARDS: Single clean workspace surface with subtle borders */}
-      <div className="bg-surface rounded-card border border-border-subtle shadow-subtle overflow-hidden">
+      <div className="bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
         {/* Workspace Subheader: Horizon Context + Tiny Legend */}
         <div className="px-5 py-3 border-b border-border-subtle flex flex-wrap items-center justify-between gap-3 bg-surface">
           <div className="text-xs text-text-muted flex items-center gap-2">
@@ -387,21 +387,24 @@ export const TimelineGantt: React.FC = () => {
         </div>
 
         {/* 13. RESPONSIVE BEHAVIOR: Horizontal scroll with sticky left Berth column */}
-        <div className="overflow-x-auto w-full">
-          <div className="min-w-[980px] w-full select-none">
-            {/* 8. TIME HEADER: Simplified 06:00, 12:00, 18:00, 00:00, 06:00, 12:00 */}
+        <div className="overflow-x-auto w-full relative">
+          {/* Scroll hint on mobile */}
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none md:hidden z-20" />
+          
+          <div className="min-w-[800px] w-full select-none">
+            {/* 8. TIME HEADER */}
             <div className="flex border-b border-border-subtle bg-surface-subtle/70 text-xs text-text-muted sticky top-0 z-20">
               {/* Berth Column Header */}
-              <div className="w-56 sm:w-60 shrink-0 px-4 py-2.5 font-semibold text-xs text-text-muted uppercase tracking-wider sticky left-0 bg-surface-subtle z-30 border-r border-border-subtle">
+              <div className="w-40 sm:w-56 lg:w-60 shrink-0 px-3 py-2.5 font-semibold text-xs text-text-muted uppercase tracking-wider sticky left-0 bg-surface-subtle z-30 border-r border-border-subtle">
                 Berth
               </div>
 
-              {/* 6 Time Interval Columns */}
+              {/* Time Interval Columns */}
               <div className="grid grid-cols-6 divide-x divide-border-subtle flex-1">
                 {timeColumns.map((col, idx) => (
-                  <div key={idx} className="px-3 py-2 text-left">
-                    <span className="font-semibold text-xs text-text-main">{col.time}</span>
-                    <span className="text-[10px] text-text-caption block mt-0.5">{col.shift}</span>
+                  <div key={idx} className="px-2 lg:px-3 py-2 text-left">
+                    <span className="font-semibold text-[10px] lg:text-xs text-text-main">{col.time}</span>
+                    <span className="text-[9px] lg:text-[10px] text-text-caption block mt-0.5">{col.shift}</span>
                   </div>
                 ))}
               </div>
@@ -426,10 +429,10 @@ export const TimelineGantt: React.FC = () => {
                     className="flex items-stretch hover:bg-slate-50/40 transition-colors min-h-[86px]"
                   >
                     {/* LEFT: Clean Fixed Berth Column */}
-                    <div className="w-56 sm:w-60 shrink-0 px-4 py-3 sticky left-0 bg-white z-10 border-r border-border-subtle flex flex-col justify-center">
-                      <div className="flex items-center gap-2">
+                    <div className="w-40 sm:w-56 lg:w-60 shrink-0 px-3 py-3 sticky left-0 bg-white z-10 border-r border-border-subtle flex flex-col justify-center">
+                      <div className="flex flex-wrap items-center gap-1.5">
                         {/* 4. Berth name is the strongest text */}
-                        <span className="font-bold text-sm text-text-main">{berth.id}</span>
+                        <span className="font-bold text-xs sm:text-sm text-text-main">{berth.id}</span>
                         {/* 7. Only B04 receives warning emphasis */}
                         {isB04HighRisk && (
                           <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
@@ -472,7 +475,7 @@ export const TimelineGantt: React.FC = () => {
                             gridColumnEnd: block.startCol + block.span + 1,
                           }}
                           onClick={() => handleBlockClick(block)}
-                          className={`relative z-10 h-[66px] rounded-md border p-2.5 flex flex-col justify-between cursor-pointer transition-all ${getBlockStyle(
+                          className={`relative z-10 h-[66px] rounded-xl border p-2.5 flex flex-col justify-between cursor-pointer transition-all ${getBlockStyle(
                             block.status
                           )}`}
                           title={`${block.name} • ${block.details} (Click to inspect)`}
@@ -578,7 +581,7 @@ export const TimelineGantt: React.FC = () => {
                   onClick={() => {
                     navigate(`/operations/vessels/${inspectedBlock.vesselId}`);
                   }}
-                  className="w-full flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+                  className="w-full flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                   <Ship className="w-3.5 h-3.5" />
                   <span>Open Full Vessel Profile</span>
@@ -589,7 +592,7 @@ export const TimelineGantt: React.FC = () => {
               {inspectedBlock.status === 'bottleneck' && (
                 <button
                   onClick={() => navigate('/decision/optimizer')}
-                  className="w-full flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors"
+                  className="w-full flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors"
                 >
                   <Zap className="w-3.5 h-3.5" />
                   <span>Launch Optimizer for B04</span>
@@ -598,7 +601,7 @@ export const TimelineGantt: React.FC = () => {
 
               <button
                 onClick={() => setInspectedBlock(null)}
-                className="w-full px-3 py-2 rounded-md text-xs font-medium text-text-muted hover:text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors"
+                className="w-full px-3 py-2 rounded-xl text-xs font-medium text-text-muted hover:text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors"
               >
                 Close Inspector
               </button>
@@ -609,3 +612,4 @@ export const TimelineGantt: React.FC = () => {
     </>
   );
 };
+

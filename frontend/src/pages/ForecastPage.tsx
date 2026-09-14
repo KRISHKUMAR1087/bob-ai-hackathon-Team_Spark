@@ -47,14 +47,14 @@ export const ForecastPage: React.FC = () => {
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleExplainWithGemini}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <Sparkles className="w-3.5 h-3.5 text-brand-teal" />
             <span>Explain with Gemini</span>
           </button>
           <button
             onClick={() => navigate('/decision/optimizer')}
-            className="flex items-center gap-2 px-4 py-2 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <Zap className="w-3.5 h-3.5" />
             <span>Optimize {selectedBerthId}</span>
@@ -65,7 +65,7 @@ export const ForecastPage: React.FC = () => {
       {/* Main Grid: Forecast Chart & Analysis Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 2 Cols: Interactive Recharts Visualization */}
-        <div className="lg:col-span-2 bg-surface p-6 rounded-card border border-border-subtle shadow-subtle space-y-4">
+        <div className="lg:col-span-2 bg-surface p-6 rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
           <div className="flex items-center justify-between border-b border-border-subtle pb-3">
             <div>
               <h2 className="text-sm font-semibold text-text-main">
@@ -116,7 +116,7 @@ export const ForecastPage: React.FC = () => {
         </div>
 
         {/* Right 1 Col: Analysis Panel for Selected Berth */}
-        <div className="bg-surface p-6 rounded-card border border-border-subtle shadow-subtle flex flex-col justify-between space-y-5">
+        <div className="bg-surface p-6 rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-between space-y-5">
           <div>
             <div className="flex items-center justify-between border-b border-border-subtle pb-3">
               <div>
@@ -179,7 +179,7 @@ export const ForecastPage: React.FC = () => {
 
               <div className="space-y-2 text-xs">
                 {forecast.drivers.map((d, idx) => (
-                  <div key={idx} className="p-2.5 rounded-md bg-surface-subtle border border-border-subtle space-y-1">
+                  <div key={idx} className="p-2.5 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
                     <div className="flex justify-between">
                       <span className="text-text-main font-medium">{d.factor}</span>
                       <span className="font-semibold text-text-main">{d.percentage}%</span>
@@ -197,14 +197,14 @@ export const ForecastPage: React.FC = () => {
           <div className="pt-4 border-t border-border-subtle space-y-2">
             <button
               onClick={() => navigate('/decision/optimizer')}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
             >
               <Zap className="w-4 h-4" />
               <span>Optimize {selectedBerthId} Operations</span>
             </button>
             <button
               onClick={handleExplainWithGemini}
-              className="w-full flex items-center justify-center gap-2 py-2 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors"
             >
               <Sparkles className="w-4 h-4 text-brand-teal" />
               <span>Explain with Gemini</span>
@@ -215,3 +215,4 @@ export const ForecastPage: React.FC = () => {
     </div>
   );
 };
+

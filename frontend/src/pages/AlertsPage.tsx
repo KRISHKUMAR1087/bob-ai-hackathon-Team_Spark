@@ -51,14 +51,14 @@ export const AlertsPage: React.FC = () => {
         </div>
 
         {/* Severity Filter Tabs */}
-        <div className="flex flex-wrap items-center gap-1 bg-surface-subtle p-1 rounded-md border border-border-subtle">
+        <div className="flex flex-wrap items-center gap-1 bg-surface-subtle p-1 rounded-xl border border-border-subtle">
           {['ALL', 'CRITICAL', 'WARNING', 'INFO', 'RESOLVED'].map(sev => (
             <button
               key={sev}
               onClick={() => setFilterSeverity(sev)}
-              className={`px-3 py-1 text-xs rounded-md transition-all ${
+              className={`px-3 py-1 text-xs rounded-xl transition-all ${
                 filterSeverity === sev
-                  ? 'bg-surface text-text-main font-semibold shadow-subtle'
+                  ? 'bg-surface text-text-main font-semibold shadow-[0_8px_30px_rgb(0,0,0,0.04)]'
                   : 'text-text-muted hover:text-text-main'
               }`}
             >
@@ -74,7 +74,7 @@ export const AlertsPage: React.FC = () => {
           filteredAlerts.map(alert => (
             <div
               key={alert.id}
-              className={`p-5 rounded-card border shadow-subtle transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${getAlertBorder(
+              className={`p-5 rounded-3xl border shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${getAlertBorder(
                 alert.severity,
                 alert.isResolved
               )}`}
@@ -107,7 +107,7 @@ export const AlertsPage: React.FC = () => {
                 {!alert.isResolved && (
                   <button
                     onClick={() => resolveAlert(alert.id)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-text-muted hover:text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-text-muted hover:text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                     title="Mark as resolved"
                   >
                     <Check className="w-3.5 h-3.5 text-emerald-600" />
@@ -117,7 +117,7 @@ export const AlertsPage: React.FC = () => {
 
                 <button
                   onClick={() => navigate(alert.actionRoute)}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                   <span>{alert.actionLabel}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -126,7 +126,7 @@ export const AlertsPage: React.FC = () => {
             </div>
           ))
         ) : (
-          <div className="bg-surface p-12 rounded-card border border-border-subtle text-center space-y-3 shadow-subtle">
+          <div className="bg-surface p-12 rounded-3xl border border-border-subtle text-center space-y-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <CheckCircle2 className="w-9 h-9 text-emerald-600 mx-auto" />
             <div className="text-sm font-semibold text-text-main">No Alerts in this Category</div>
             <p className="text-xs text-text-muted">All operational parameters are currently within normal thresholds.</p>
@@ -136,3 +136,4 @@ export const AlertsPage: React.FC = () => {
     </div>
   );
 };
+

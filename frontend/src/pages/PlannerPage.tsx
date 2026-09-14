@@ -92,21 +92,21 @@ export const PlannerPage: React.FC = () => {
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleOptimizeEntirePlan}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <Zap className="w-3.5 h-3.5" />
             <span>Optimize Entire Plan</span>
           </button>
           <button
             onClick={handleExportPlan}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <Download className="w-3.5 h-3.5 text-text-muted" />
             <span>Export Plan (CSV)</span>
           </button>
           <button
             onClick={handleSendToOps}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <Send className="w-3.5 h-3.5 text-emerald-600" />
             <span>Send to Operations</span>
@@ -160,9 +160,9 @@ export const PlannerPage: React.FC = () => {
             <button
               key={d.offset}
               onClick={() => setActiveDayTab(d.offset)}
-              className={`px-3 py-1.5 rounded-md text-xs transition-colors border ${
+              className={`px-3 py-1.5 rounded-xl text-xs transition-colors border ${
                 activeDayTab === d.offset
-                  ? 'bg-surface text-text-main font-semibold border-slate-300 shadow-subtle'
+                  ? 'bg-surface text-text-main font-semibold border-slate-300 shadow-[0_8px_30px_rgb(0,0,0,0.04)]'
                   : 'bg-surface-subtle text-text-muted hover:text-text-main border-border-subtle'
               }`}
             >
@@ -197,7 +197,7 @@ export const PlannerPage: React.FC = () => {
           return (
             <div
               key={shift}
-              className="bg-surface rounded-card border border-border-subtle p-5 shadow-subtle space-y-4"
+              className="bg-surface rounded-3xl border border-border-subtle p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4"
             >
               <div className="flex items-center justify-between border-b border-border-subtle pb-3">
                 <div>
@@ -270,3 +270,4 @@ export const PlannerPage: React.FC = () => {
     </div>
   );
 };
+

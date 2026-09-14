@@ -81,7 +81,7 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
         {/* Hamburger Menu: visible only on mobile (< 768px) */}
         <button
           onClick={() => setIsMobileMenuOpen(true)}
-          className="p-1.5 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle md:hidden shrink-0"
+          className="p-1.5 rounded-xl text-text-muted hover:text-text-main hover:bg-surface-subtle md:hidden shrink-0"
           aria-label="Open navigation menu"
           title="Open Menu"
         >
@@ -100,13 +100,13 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
       {/* Right Actions & Utilities */}
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         {/* Live Port UTC Clock */}
-        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-subtle border border-border-subtle text-text-muted text-xs shrink-0">
+        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-surface-subtle border border-border-subtle text-text-muted text-xs shrink-0">
           <Clock className="w-3.5 h-3.5 text-text-caption shrink-0" />
           <span className="font-mono text-[11px]">{timeUtc || '00:00:00 UTC'}</span>
         </div>
 
         {/* Port Link / Status Badge */}
-        <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-sky-50 border border-sky-200 text-sky-800 text-xs shrink-0">
+        <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-sky-50 border border-sky-200 text-sky-800 text-xs shrink-0">
           <span className="w-2 h-2 rounded-full bg-sky-500 shrink-0" />
           <span className="font-medium text-[11px]">Port Authority Link Active</span>
         </div>
@@ -114,7 +114,7 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
         {/* Shipping Advisories Bell */}
         <button
           onClick={() => navigate('/shipping/alerts')}
-          className="relative p-1.5 sm:p-2 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle border border-transparent hover:border-border-subtle transition-colors shrink-0"
+          className="relative p-1.5 sm:p-2 rounded-xl text-text-muted hover:text-text-main hover:bg-surface-subtle border border-transparent hover:border-border-subtle transition-colors shrink-0"
           title={isOptimizationApplied ? 'All schedules normal' : '1 Active delay advisory'}
         >
           <Bell className="w-4 h-4" />
@@ -133,7 +133,7 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-            className="flex items-center gap-2 p-1 rounded-full sm:rounded-md hover:bg-surface-subtle transition-colors border border-transparent hover:border-border-subtle cursor-pointer"
+            className="flex items-center gap-2 p-1 rounded-full sm:rounded-xl hover:bg-surface-subtle transition-colors border border-transparent hover:border-border-subtle cursor-pointer"
             aria-label="User profile menu"
             aria-expanded={isProfileMenuOpen}
           >
@@ -199,7 +199,7 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
               <div className="border-t border-border-subtle pt-1 mt-1 px-2">
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium text-rose-700 hover:bg-rose-50 transition-colors text-left cursor-pointer"
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-rose-700 hover:bg-rose-50 transition-colors text-left cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5 text-rose-600" />
                   <span>Sign Out</span>
@@ -212,3 +212,4 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
     </header>
   );
 };
+

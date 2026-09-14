@@ -33,14 +33,14 @@ export const CopilotPage: React.FC = () => {
       </div>
 
       {/* Main Container: Chat on Left, Context Monitor on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-[580px] lg:h-[calc(100vh-210px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-[65vh] lg:h-[calc(100vh-210px)]">
         {/* Left 3 Cols: Copilot Conversation */}
-        <div className="lg:col-span-3 h-[520px] lg:h-full">
+        <div className="lg:col-span-3 h-[60vh] lg:h-full">
           <CopilotChat embedded={true} />
         </div>
 
         {/* Right 1 Col: Operational Context Inspector */}
-        <div className="bg-surface rounded-card border border-border-subtle shadow-subtle p-5 flex flex-col justify-between space-y-4 text-xs overflow-y-auto">
+        <div className="bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 flex flex-col justify-between space-y-4 text-xs overflow-y-auto">
           <div>
             <div className="flex items-center gap-2 border-b border-border-subtle pb-3 text-text-muted text-xs font-semibold uppercase tracking-wider">
               <Terminal className="w-3.5 h-3.5 text-brand-teal" />
@@ -96,3 +96,4 @@ export const CopilotPage: React.FC = () => {
     </div>
   );
 };
+

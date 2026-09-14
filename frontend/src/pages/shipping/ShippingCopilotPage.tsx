@@ -123,7 +123,7 @@ How can I assist your shipping operations today?`,
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-text-muted bg-surface px-3 py-1.5 rounded-md border border-border-subtle shadow-subtle">
+        <div className="flex items-center gap-2 text-xs text-text-muted bg-surface px-3 py-1.5 rounded-xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
           <span>Agency Scoped (Read-Only Port Authority Data)</span>
         </div>
@@ -131,8 +131,8 @@ How can I assist your shipping operations today?`,
 
       {/* 2. Chat Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Chat Feed */}
-        <div className="lg:col-span-3 bg-surface rounded-card border border-border-subtle shadow-subtle flex flex-col h-[640px]">
+        {/* Left 3 Cols: Copilot Conversation */}
+        <div className="lg:col-span-3 bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col h-[65vh] lg:h-full">
           {/* Messages stream */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
             {messages.map(msg => (
@@ -143,7 +143,7 @@ How can I assist your shipping operations today?`,
                 }`}
               >
                 {msg.sender === 'gemini' && (
-                  <div className="w-7 h-7 rounded-lg bg-sky-600 text-white flex items-center justify-center shrink-0 shadow-subtle mt-0.5">
+                  <div className="w-7 h-7 rounded-lg bg-sky-600 text-white flex items-center justify-center shrink-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mt-0.5">
                     <Sparkles className="w-3.5 h-3.5" />
                   </div>
                 )}
@@ -151,7 +151,7 @@ How can I assist your shipping operations today?`,
                 <div
                   className={`max-w-2xl rounded-xl p-3.5 text-xs leading-relaxed ${
                     msg.sender === 'user'
-                      ? 'bg-sky-600 text-white shadow-subtle'
+                      ? 'bg-sky-600 text-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]'
                       : 'bg-surface-subtle text-text-main border border-border-subtle shadow-xs'
                   }`}
                 >
@@ -206,12 +206,12 @@ How can I assist your shipping operations today?`,
                 placeholder="Ask about Ocean Star's status, delay causes, missing documents, or berth assignments..."
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                className="flex-1 px-3.5 py-2.5 rounded-md bg-surface-subtle border border-border-subtle text-xs text-text-main focus:outline-hidden focus:border-sky-500"
+                className="flex-1 px-3.5 py-2.5 rounded-xl bg-surface-subtle border border-border-subtle text-xs text-text-main focus:outline-hidden focus:border-sky-500"
               />
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="px-4 py-2.5 rounded-md bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 shadow-subtle cursor-pointer shrink-0"
+                className="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer shrink-0"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>Ask</span>
@@ -222,7 +222,7 @@ How can I assist your shipping operations today?`,
 
         {/* Right Context Panel */}
         <div className="space-y-4">
-          <div className="p-4 rounded-card bg-surface border border-border-subtle shadow-subtle space-y-3">
+          <div className="p-4 rounded-3xl bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3">
             <div className="flex items-center gap-2 pb-2 border-b border-border-subtle text-xs font-bold text-text-main uppercase tracking-wider">
               <Ship className="w-3.5 h-3.5 text-sky-600" />
               <span>Grounded Fleet Context</span>
@@ -247,7 +247,7 @@ How can I assist your shipping operations today?`,
             </div>
           </div>
 
-          <div className="p-4 rounded-card bg-surface border border-border-subtle shadow-subtle space-y-2 text-xs">
+          <div className="p-4 rounded-3xl bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-2 text-xs">
             <div className="flex items-center gap-2 font-semibold text-text-main">
               <Info className="w-3.5 h-3.5 text-sky-600" />
               <span>Copilot Permissions</span>
@@ -261,3 +261,4 @@ How can I assist your shipping operations today?`,
     </div>
   );
 };
+

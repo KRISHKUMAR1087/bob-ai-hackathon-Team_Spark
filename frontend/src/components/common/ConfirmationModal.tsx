@@ -57,7 +57,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <div className="mt-6 flex items-center justify-end gap-2.5">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs font-medium text-text-muted hover:text-text-main bg-surface-subtle hover:bg-slate-200 rounded-md border border-border-subtle transition-colors"
+            className="px-4 py-2 text-xs font-medium text-text-muted hover:text-text-main bg-surface-subtle hover:bg-slate-200 rounded-xl border border-border-subtle transition-colors"
           >
             {cancelLabel}
           </button>
@@ -66,7 +66,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               onConfirm();
               onClose();
             }}
-            className="px-4 py-2 text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 rounded-md transition-all shadow-subtle"
+            className="px-4 py-2 text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 rounded-xl transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             {confirmLabel}
           </button>
@@ -75,3 +75,4 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     </div>
   );
 };
+

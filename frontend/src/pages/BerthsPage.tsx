@@ -45,12 +45,12 @@ export const BerthsPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="text-xs text-text-muted bg-surface px-3 py-1.5 rounded-md border border-border-subtle shadow-subtle">
+          <div className="text-xs text-text-muted bg-surface px-3 py-1.5 rounded-xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             Total Quay Length: <strong className="text-text-main">2,250m</strong>
           </div>
           <button
             onClick={() => navigate('/decision/optimizer')}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <Zap className="w-3.5 h-3.5" />
             <span>Optimize All Berths</span>
@@ -60,7 +60,7 @@ export const BerthsPage: React.FC = () => {
 
       {/* Incoming Berth Requests from Shipping Agents */}
       {berthRequests.length > 0 && (
-        <div className="bg-surface rounded-card border border-border-subtle p-5 shadow-subtle space-y-3">
+        <div className="bg-surface rounded-3xl border border-border-subtle p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3">
           <div className="flex items-center justify-between pb-2 border-b border-border-subtle">
             <div className="flex items-center gap-2">
               <Anchor className="w-4 h-4 text-brand-teal" />
@@ -137,11 +137,11 @@ export const BerthsPage: React.FC = () => {
             <div
               key={berth.id}
               onClick={() => setInspectedBerth(berth)}
-              className={`bg-surface rounded-card p-5 border transition-all duration-150 cursor-pointer hover:shadow-elevated flex flex-col justify-between space-y-4 ${
+              className={`bg-surface rounded-3xl p-5 border transition-all duration-150 cursor-pointer hover:shadow-elevated flex flex-col justify-between space-y-4 ${
                 isHighRisk
                   ? 'border-rose-300 ring-1 ring-rose-200'
                   : 'border-border-subtle hover:border-slate-300'
-              } shadow-subtle`}
+              } shadow-[0_8px_30px_rgb(0,0,0,0.04)]`}
             >
               <div>
                 {/* Berth Header */}
@@ -242,7 +242,7 @@ export const BerthsPage: React.FC = () => {
                       e.stopPropagation();
                       navigate('/decision/optimizer');
                     }}
-                    className="px-2.5 py-1 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 shadow-subtle"
+                    className="px-2.5 py-1 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                   >
                     Optimize B04
                   </button>
@@ -325,7 +325,7 @@ export const BerthsPage: React.FC = () => {
                   setInspectedBerth(null);
                   navigate('/decision/optimizer');
                 }}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
               >
                 <Zap className="w-4 h-4" />
                 <span>Open in Operations Optimizer</span>
@@ -337,3 +337,4 @@ export const BerthsPage: React.FC = () => {
     </div>
   );
 };
+

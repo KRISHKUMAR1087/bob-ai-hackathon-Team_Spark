@@ -189,7 +189,7 @@ export const CopilotMessageContent: React.FC<CopilotMessageContentProps> = ({ me
       renderedElements.push(
         <div
           key={i}
-          className="p-2.5 my-1.5 rounded-md bg-surface-subtle border-l-2 border-brand-teal text-xs text-text-muted leading-relaxed"
+          className="p-2.5 my-1.5 rounded-xl bg-surface-subtle border-l-2 border-brand-teal text-xs text-text-muted leading-relaxed"
         >
           {renderFormattedInlineText(quoteText)}
         </div>
@@ -237,3 +237,4 @@ export const CopilotMessageContent: React.FC<CopilotMessageContentProps> = ({ me
 
   return <div className="space-y-1 text-xs text-text-main leading-relaxed">{renderedElements}</div>;
 };
+

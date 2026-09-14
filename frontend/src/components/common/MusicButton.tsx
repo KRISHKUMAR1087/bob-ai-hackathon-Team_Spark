@@ -238,7 +238,7 @@ export const MusicButton: React.FC<MusicButtonProps> = ({
                   <button
                     key={preset.label}
                     onClick={() => setVolume(preset.val)}
-                    className={`flex-1 py-1 text-[10px] font-semibold rounded-md border transition-all cursor-pointer ${
+                    className={`flex-1 py-1 text-[10px] font-semibold rounded-xl border transition-all cursor-pointer ${
                       isActive
                         ? 'bg-teal-50 border-teal-300 text-brand-teal font-bold'
                         : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
@@ -277,3 +277,4 @@ export const MusicButton: React.FC<MusicButtonProps> = ({
     </div>
   );
 };
+

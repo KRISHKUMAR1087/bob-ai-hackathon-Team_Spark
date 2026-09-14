@@ -60,21 +60,21 @@ export const ShippingDashboardPage: React.FC = () => {
         <div className="flex items-center gap-2.5 flex-wrap">
           <button
             onClick={() => navigate('/shipping/vessels/add')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-all shadow-subtle cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           >
             <PlusCircle className="w-3.5 h-3.5" />
             <span>Add Vessel</span>
           </button>
           <button
             onClick={() => navigate('/shipping/berth-requests')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           >
             <Anchor className="w-3.5 h-3.5 text-text-caption" />
             <span>Berth Requests {pendingRequestsCount > 0 && `(${pendingRequestsCount})`}</span>
           </button>
           <button
             onClick={() => navigate('/shipping/copilot')}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium text-sky-900 bg-sky-50 hover:bg-sky-100 border border-sky-200 transition-colors shadow-subtle cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-sky-900 bg-sky-50 hover:bg-sky-100 border border-sky-200 transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 text-sky-600" />
             <span>AI Copilot</span>
@@ -194,7 +194,7 @@ export const ShippingDashboardPage: React.FC = () => {
           )}
 
           {/* Action 2: Document Missing */}
-          <div className="p-3.5 rounded-lg bg-surface border border-border-subtle flex flex-col justify-between shadow-subtle">
+          <div className="p-3.5 rounded-lg bg-surface border border-border-subtle flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div className="flex items-start gap-2.5">
               <FileText className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
               <div>
@@ -218,7 +218,7 @@ export const ShippingDashboardPage: React.FC = () => {
           </div>
 
           {/* Action 3: ETA Confirmation */}
-          <div className="p-3.5 rounded-lg bg-surface border border-border-subtle flex flex-col justify-between shadow-subtle">
+          <div className="p-3.5 rounded-lg bg-surface border border-border-subtle flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div className="flex items-start gap-2.5">
               <Clock className="w-4 h-4 text-violet-600 shrink-0 mt-0.5" />
               <div>
@@ -244,7 +244,7 @@ export const ShippingDashboardPage: React.FC = () => {
       </div>
 
       {/* 4. Upcoming Arrivals Table */}
-      <div className="bg-surface rounded-lg border border-border-subtle overflow-hidden shadow-subtle">
+      <div className="bg-surface rounded-lg border border-border-subtle overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <div className="px-4 py-3 border-b border-border-subtle flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Ship className="w-4 h-4 text-sky-600" />
@@ -287,7 +287,7 @@ export const ShippingDashboardPage: React.FC = () => {
                   >
                     <td className="py-3 px-4 font-semibold">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-md bg-sky-50 text-sky-700 flex items-center justify-center font-bold text-[11px] shrink-0 border border-sky-100">
+                        <div className="w-7 h-7 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center font-bold text-[11px] shrink-0 border border-sky-100">
                           {v.name.slice(0, 2).toUpperCase()}
                         </div>
                         <div>
@@ -352,9 +352,9 @@ export const ShippingDashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <div
           onClick={() => navigate('/shipping/schedules')}
-          className="p-4 rounded-lg bg-surface border border-border-subtle hover:border-sky-300 transition-all cursor-pointer group shadow-subtle"
+          className="p-4 rounded-lg bg-surface border border-border-subtle hover:border-sky-300 transition-all cursor-pointer group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
         >
-          <div className="w-8 h-8 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center mb-2.5 group-hover:bg-sky-600 group-hover:text-white transition-colors">
+          <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-2.5 group-hover:bg-sky-600 group-hover:text-white transition-colors">
             <Clock className="w-4 h-4" />
           </div>
           <h3 className="text-xs font-semibold text-text-main">Schedules & ETA Management</h3>
@@ -365,9 +365,9 @@ export const ShippingDashboardPage: React.FC = () => {
 
         <div
           onClick={() => navigate('/shipping/berth-requests')}
-          className="p-4 rounded-lg bg-surface border border-border-subtle hover:border-sky-300 transition-all cursor-pointer group shadow-subtle"
+          className="p-4 rounded-lg bg-surface border border-border-subtle hover:border-sky-300 transition-all cursor-pointer group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
         >
-          <div className="w-8 h-8 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center mb-2.5 group-hover:bg-sky-600 group-hover:text-white transition-colors">
+          <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-2.5 group-hover:bg-sky-600 group-hover:text-white transition-colors">
             <Anchor className="w-4 h-4" />
           </div>
           <h3 className="text-xs font-semibold text-text-main">Berth Requests</h3>
@@ -378,9 +378,9 @@ export const ShippingDashboardPage: React.FC = () => {
 
         <div
           onClick={() => navigate('/shipping/cargo')}
-          className="p-4 rounded-lg bg-surface border border-border-subtle hover:border-sky-300 transition-all cursor-pointer group shadow-subtle"
+          className="p-4 rounded-lg bg-surface border border-border-subtle hover:border-sky-300 transition-all cursor-pointer group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
         >
-          <div className="w-8 h-8 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center mb-2.5 group-hover:bg-sky-600 group-hover:text-white transition-colors">
+          <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-2.5 group-hover:bg-sky-600 group-hover:text-white transition-colors">
             <Layers className="w-4 h-4" />
           </div>
           <h3 className="text-xs font-semibold text-text-main">Cargo Operations</h3>
@@ -391,9 +391,9 @@ export const ShippingDashboardPage: React.FC = () => {
 
         <div
           onClick={() => navigate('/shipping/documents')}
-          className="p-4 rounded-lg bg-surface border border-border-subtle hover:border-sky-300 transition-all cursor-pointer group shadow-subtle"
+          className="p-4 rounded-lg bg-surface border border-border-subtle hover:border-sky-300 transition-all cursor-pointer group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
         >
-          <div className="w-8 h-8 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center mb-2.5 group-hover:bg-sky-600 group-hover:text-white transition-colors">
+          <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-2.5 group-hover:bg-sky-600 group-hover:text-white transition-colors">
             <FileText className="w-4 h-4" />
           </div>
           <h3 className="text-xs font-semibold text-text-main">Document Repository</h3>
@@ -405,3 +405,4 @@ export const ShippingDashboardPage: React.FC = () => {
     </div>
   );
 };
+

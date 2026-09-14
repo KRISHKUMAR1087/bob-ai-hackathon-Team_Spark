@@ -32,7 +32,7 @@ export const SettingsPage: React.FC = () => {
 
         <button
           onClick={handleSave}
-          className="flex items-center gap-2 px-4 py-2 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
         >
           <Save className="w-3.5 h-3.5" />
           <span>Save Changes</span>
@@ -52,9 +52,9 @@ export const SettingsPage: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs transition-colors border ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs transition-colors border ${
                 activeTab === tab.id
-                  ? 'bg-surface text-text-main font-semibold border-slate-300 shadow-subtle'
+                  ? 'bg-surface text-text-main font-semibold border-slate-300 shadow-[0_8px_30px_rgb(0,0,0,0.04)]'
                   : 'bg-surface-subtle text-text-muted hover:text-text-main border-border-subtle'
               }`}
             >
@@ -66,7 +66,7 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Tab Contents */}
-      <div className="bg-surface rounded-card border border-border-subtle shadow-subtle p-6 space-y-6 text-xs">
+      <div className="bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 space-y-6 text-xs">
         {activeTab === 'port' && (
           <div className="space-y-4 max-w-xl">
             <div>
@@ -75,7 +75,7 @@ export const SettingsPage: React.FC = () => {
                 type="text"
                 value={portName}
                 onChange={e => setPortName(e.target.value)}
-                className="w-full bg-surface-subtle border border-border-subtle rounded-md px-3 py-2 text-text-main focus:outline-hidden focus:border-brand-teal"
+                className="w-full bg-surface-subtle border border-border-subtle rounded-xl px-3 py-2 text-text-main focus:outline-hidden focus:border-brand-teal"
               />
             </div>
 
@@ -86,7 +86,7 @@ export const SettingsPage: React.FC = () => {
                   type="number"
                   value={berthCount}
                   onChange={e => setBerthCount(Number(e.target.value))}
-                  className="w-full bg-surface-subtle border border-border-subtle rounded-md px-3 py-2 text-text-main focus:outline-hidden focus:border-brand-teal"
+                  className="w-full bg-surface-subtle border border-border-subtle rounded-xl px-3 py-2 text-text-main focus:outline-hidden focus:border-brand-teal"
                 />
               </div>
 
@@ -96,7 +96,7 @@ export const SettingsPage: React.FC = () => {
                   type="number"
                   disabled
                   value={8}
-                  className="w-full bg-slate-100 border border-border-subtle rounded-md px-3 py-2 text-text-caption cursor-not-allowed"
+                  className="w-full bg-slate-100 border border-border-subtle rounded-xl px-3 py-2 text-text-caption cursor-not-allowed"
                 />
               </div>
             </div>
@@ -104,13 +104,13 @@ export const SettingsPage: React.FC = () => {
             <div>
               <label className="text-text-muted block mb-1.5 font-medium">Daily Shift Windows</label>
               <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="p-2.5 bg-surface-subtle rounded-md border border-border-subtle text-text-main">
+                <div className="p-2.5 bg-surface-subtle rounded-xl border border-border-subtle text-text-main">
                   Shift 1: 06:00 – 14:00
                 </div>
-                <div className="p-2.5 bg-surface-subtle rounded-md border border-border-subtle text-text-main">
+                <div className="p-2.5 bg-surface-subtle rounded-xl border border-border-subtle text-text-main">
                   Shift 2: 14:00 – 22:00
                 </div>
-                <div className="p-2.5 bg-surface-subtle rounded-md border border-border-subtle text-text-main">
+                <div className="p-2.5 bg-surface-subtle rounded-xl border border-border-subtle text-text-main">
                   Shift 3: 22:00 – 06:00
                 </div>
               </div>
@@ -143,7 +143,7 @@ export const SettingsPage: React.FC = () => {
               <select
                 value={lookaheadHorizon}
                 onChange={e => setLookaheadHorizon(e.target.value)}
-                className="w-full bg-surface-subtle border border-border-subtle rounded-md px-3 py-2 text-text-main focus:outline-hidden focus:border-brand-teal"
+                className="w-full bg-surface-subtle border border-border-subtle rounded-xl px-3 py-2 text-text-main focus:outline-hidden focus:border-brand-teal"
               >
                 <option value="24h">24 Hours (Operational Shift)</option>
                 <option value="48h">48 Hours (Tidal Cycle)</option>
@@ -160,7 +160,7 @@ export const SettingsPage: React.FC = () => {
               <select
                 value={aiAutonomy}
                 onChange={e => setAiAutonomy(e.target.value)}
-                className="w-full bg-surface-subtle border border-border-subtle rounded-md px-3 py-2 text-text-main focus:outline-hidden focus:border-brand-teal"
+                className="w-full bg-surface-subtle border border-border-subtle rounded-xl px-3 py-2 text-text-main focus:outline-hidden focus:border-brand-teal"
               >
                 <option value="recommend_only">Human-in-the-Loop (Supervisor must approve every plan)</option>
                 <option value="assisted">Assisted Automation (Auto-draft with timeout window)</option>
@@ -172,7 +172,7 @@ export const SettingsPage: React.FC = () => {
               <select
                 value={geminiModel}
                 onChange={e => setGeminiModel(e.target.value)}
-                className="w-full bg-surface-subtle border border-border-subtle rounded-md px-3 py-2 text-text-main focus:outline-hidden focus:border-brand-teal"
+                className="w-full bg-surface-subtle border border-border-subtle rounded-xl px-3 py-2 text-text-main focus:outline-hidden focus:border-brand-teal"
               >
                 <option value="gemini-1.5-pro">Gemini 1.5 Pro (Deep Maritime Reasoning & Multi-tool)</option>
                 <option value="gemini-1.5-flash">Gemini 1.5 Flash (Ultra Low-latency)</option>
@@ -199,7 +199,7 @@ export const SettingsPage: React.FC = () => {
                 type="email"
                 disabled
                 value="m.vance@portpulse.maritime.gov"
-                className="w-full bg-slate-100 border border-border-subtle rounded-md px-3 py-2 text-text-caption cursor-not-allowed"
+                className="w-full bg-slate-100 border border-border-subtle rounded-xl px-3 py-2 text-text-caption cursor-not-allowed"
               />
             </div>
           </div>
@@ -208,3 +208,4 @@ export const SettingsPage: React.FC = () => {
     </div>
   );
 };
+

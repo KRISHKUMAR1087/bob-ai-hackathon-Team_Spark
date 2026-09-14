@@ -95,7 +95,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/shipping/vessels')}
-            className="p-2 rounded-md bg-surface border border-border-subtle text-text-muted hover:text-text-main hover:bg-surface-subtle transition-colors shadow-subtle cursor-pointer"
+            className="p-2 rounded-xl bg-surface border border-border-subtle text-text-muted hover:text-text-main hover:bg-surface-subtle transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
             title="Back to fleet"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -118,35 +118,35 @@ export const ShippingVesselDetailPage: React.FC = () => {
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors shadow-subtle cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           >
             <Edit2 className="w-3.5 h-3.5 text-text-caption" />
             <span>Edit Vessel</span>
           </button>
           <button
             onClick={() => setIsEtaModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-sky-50 hover:bg-sky-100 border border-sky-200 text-xs font-semibold text-sky-900 transition-colors shadow-subtle cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-xs font-semibold text-sky-900 transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           >
             <Clock className="w-3.5 h-3.5 text-sky-600" />
             <span>Update ETA</span>
           </button>
           <button
             onClick={() => navigate('/shipping/berth-requests')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors shadow-subtle cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           >
             <Anchor className="w-3.5 h-3.5 text-text-caption" />
             <span>Request Berth</span>
           </button>
           <button
             onClick={() => navigate('/shipping/documents')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors shadow-subtle cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           >
             <FileText className="w-3.5 h-3.5 text-text-caption" />
             <span>Upload Document</span>
           </button>
           <button
             onClick={() => setIsContactModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors shadow-subtle cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           >
             <MessageSquare className="w-3.5 h-3.5 text-text-caption" />
             <span>Contact Port Ops</span>
@@ -200,7 +200,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
       {/* 3. Section: Vessel Overview & Port Call Details */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Vessel Overview */}
-        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-subtle space-y-4">
+        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-border-subtle">
             <h2 className="text-xs font-bold text-text-main uppercase tracking-wider flex items-center gap-2">
               <Ship className="w-4 h-4 text-sky-600" />
@@ -242,7 +242,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
         </div>
 
         {/* Port Call & Schedule */}
-        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-subtle space-y-4">
+        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-border-subtle">
             <h2 className="text-xs font-bold text-text-main uppercase tracking-wider flex items-center gap-2">
               <Compass className="w-4 h-4 text-sky-600" />
@@ -292,7 +292,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
       </div>
 
       {/* 4. Turnaround Timeline Stepper */}
-      <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-subtle space-y-4">
+      <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
         <h2 className="text-xs font-bold text-text-main uppercase tracking-wider flex items-center gap-2 border-b border-border-subtle pb-2">
           <Clock className="w-4 h-4 text-sky-600" />
           Turnaround Timeline & Milestone Progression
@@ -337,7 +337,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
       </div>
 
       {/* 5. AI Turnaround Explanation Card */}
-      <div className="bg-surface rounded-card border border-border-subtle shadow-subtle p-5 space-y-3">
+      <div className="bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 space-y-3">
         <div className="flex items-center justify-between border-b border-border-subtle pb-2">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-brand-teal" />
@@ -396,7 +396,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsEtaModalOpen(false)}
-                className="p-1 rounded-md text-text-caption hover:text-text-main cursor-pointer"
+                className="p-1 rounded-xl text-text-caption hover:text-text-main cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -417,7 +417,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
                   placeholder="e.g. Today, 21:00 UTC"
                   value={newEta}
                   onChange={e => setNewEta(e.target.value)}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                   required
                 />
               </div>
@@ -427,7 +427,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
                 <select
                   value={etaReason}
                   onChange={e => setEtaReason(e.target.value)}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                 >
                   <option value="Weather & Heavy Seas">Adverse Weather / Squalls</option>
                   <option value="Mechanical / Propulsion Issue">Engine / Technical Inspection</option>
@@ -446,13 +446,13 @@ export const ShippingVesselDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsEtaModalOpen(false)}
-                  className="px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-md bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-subtle"
+                  className="px-4 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                   Submit Updated ETA
                 </button>
@@ -475,7 +475,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="p-1 rounded-md text-text-caption hover:text-text-main cursor-pointer"
+                className="p-1 rounded-xl text-text-caption hover:text-text-main cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -488,7 +488,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
                   type="text"
                   value={editForm.name}
                   onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                   required
                 />
               </div>
@@ -499,7 +499,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
                   type="text"
                   value={editForm.voyageNumber}
                   onChange={e => setEditForm({ ...editForm, voyageNumber: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs font-mono uppercase focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs font-mono uppercase focus:outline-hidden focus:border-sky-500 mt-1"
                 />
               </div>
 
@@ -509,7 +509,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
                   type="text"
                   value={editForm.shippingCompany}
                   onChange={e => setEditForm({ ...editForm, shippingCompany: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                 />
               </div>
 
@@ -520,7 +520,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
                     type="text"
                     value={editForm.flag}
                     onChange={e => setEditForm({ ...editForm, flag: e.target.value })}
-                    className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                    className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                   />
                 </div>
                 <div>
@@ -529,7 +529,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
                     type="text"
                     value={editForm.callSign}
                     onChange={e => setEditForm({ ...editForm, callSign: e.target.value })}
-                    className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs font-mono uppercase focus:outline-hidden focus:border-sky-500 mt-1"
+                    className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs font-mono uppercase focus:outline-hidden focus:border-sky-500 mt-1"
                   />
                 </div>
               </div>
@@ -540,7 +540,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
                   type="text"
                   value={editForm.destination}
                   onChange={e => setEditForm({ ...editForm, destination: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                 />
               </div>
 
@@ -548,13 +548,13 @@ export const ShippingVesselDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-md bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-subtle"
+                  className="px-4 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                   Save Changes
                 </button>
@@ -577,7 +577,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsContactModalOpen(false)}
-                className="p-1 rounded-md text-text-caption hover:text-text-main cursor-pointer"
+                className="p-1 rounded-xl text-text-caption hover:text-text-main cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -591,7 +591,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
 
               <div>
                 <label className="font-semibold text-text-main">Dispatch Priority</label>
-                <select className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1">
+                <select className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1">
                   <option value="Urgent">Urgent — Quayside Action Requested</option>
                   <option value="Standard">Standard Operational Inquiry</option>
                   <option value="Customs">Customs / Regulatory Clearance Inquiry</option>
@@ -605,7 +605,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
                   placeholder="Type your message regarding tug availability, bunkering, or crane allocations..."
                   value={contactMessage}
                   onChange={e => setContactMessage(e.target.value)}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1 resize-none"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1 resize-none"
                   required
                 />
               </div>
@@ -614,13 +614,13 @@ export const ShippingVesselDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsContactModalOpen(false)}
-                  className="px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-md bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-subtle flex items-center gap-1.5"
+                  className="px-4 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center gap-1.5"
                 >
                   <Send className="w-3 h-3" />
                   <span>Send Notice</span>
@@ -633,3 +633,4 @@ export const ShippingVesselDetailPage: React.FC = () => {
     </div>
   );
 };
+

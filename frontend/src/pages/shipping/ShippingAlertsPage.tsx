@@ -128,7 +128,7 @@ export const ShippingAlertsPage: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={markAllRead}
-            className="px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors cursor-pointer shadow-subtle"
+            className="px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             Mark All as Read
           </button>
@@ -136,7 +136,7 @@ export const ShippingAlertsPage: React.FC = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-surface p-3.5 rounded-lg border border-border-subtle shadow-subtle flex items-center justify-between flex-wrap gap-3">
+      <div className="bg-surface p-3.5 rounded-lg border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-xs text-text-muted mr-1 font-medium flex items-center gap-1">
             <Filter className="w-3.5 h-3.5 text-text-caption" /> Filter:
@@ -172,7 +172,7 @@ export const ShippingAlertsPage: React.FC = () => {
         {filtered.map(alert => (
           <div
             key={alert.id}
-            className={`p-5 rounded-lg border shadow-subtle transition-all bg-surface ${
+            className={`p-5 rounded-lg border shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all bg-surface ${
               !alert.isRead ? 'border-sky-300 bg-sky-50/10' : 'border-border-subtle'
             }`}
           >
@@ -226,14 +226,14 @@ export const ShippingAlertsPage: React.FC = () => {
               <div className="flex items-center gap-2 shrink-0 self-start sm:self-center">
                 <button
                   onClick={() => toggleRead(alert.id)}
-                  className="p-1.5 rounded-md hover:bg-surface-subtle text-text-caption hover:text-text-main transition-colors cursor-pointer text-xs"
+                  className="p-1.5 rounded-xl hover:bg-surface-subtle text-text-caption hover:text-text-main transition-colors cursor-pointer text-xs"
                   title={alert.isRead ? 'Mark as unread' : 'Mark as read'}
                 >
                   <Check className={`w-4 h-4 ${alert.isRead ? 'text-emerald-600' : 'text-text-caption'}`} />
                 </button>
                 <button
                   onClick={() => navigate(`/shipping/vessels/${alert.vesselId}`)}
-                  className="px-3.5 py-1.5 rounded-md text-xs font-semibold text-sky-800 bg-sky-50 hover:bg-sky-100 border border-sky-200 transition-colors flex items-center gap-1.5 cursor-pointer shadow-subtle"
+                  className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-sky-800 bg-sky-50 hover:bg-sky-100 border border-sky-200 transition-colors flex items-center gap-1.5 cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                   <span>{alert.actionLabel}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -246,3 +246,4 @@ export const ShippingAlertsPage: React.FC = () => {
     </div>
   );
 };
+

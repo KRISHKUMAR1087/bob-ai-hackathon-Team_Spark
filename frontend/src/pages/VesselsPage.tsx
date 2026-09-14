@@ -62,14 +62,14 @@ export const VesselsPage: React.FC = () => {
 
         <div className="flex items-center gap-2 text-xs text-text-muted">
           <span>In Queue:</span>
-          <span className="px-2.5 py-1 rounded-md bg-surface border border-border-subtle font-semibold text-text-main shadow-subtle">
+          <span className="px-2.5 py-1 rounded-xl bg-surface border border-border-subtle font-semibold text-text-main shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             {vessels.filter(v => v.status === 'Arriving' || v.status === 'At Anchor').length} Vessels
           </span>
         </div>
       </div>
 
       {/* Filters & Search Toolbar */}
-      <div className="bg-surface p-4 rounded-card border border-border-subtle shadow-subtle flex flex-wrap items-center justify-between gap-3 min-w-0">
+      <div className="bg-surface p-4 rounded-3xl border border-border-subtle shadow-[0_4px_20px_rgb(0,0,0,0.04)] flex flex-wrap items-center justify-between gap-3 min-w-0">
         <div className="flex flex-wrap items-center gap-3 flex-1 min-w-0 w-full sm:w-auto">
           {/* Search */}
           <div className="relative flex-1 min-w-[180px] max-w-sm w-full">
@@ -79,7 +79,7 @@ export const VesselsPage: React.FC = () => {
               placeholder="Search by vessel, IMO, or berth..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full bg-surface-subtle border border-border-subtle rounded-md pl-9 pr-3 py-1.5 text-xs text-text-main placeholder-text-caption focus:outline-hidden focus:border-brand-teal"
+              className="w-full bg-surface-subtle border border-border-subtle rounded-full pl-9 pr-4 py-2 text-sm text-text-main placeholder-text-caption focus:outline-hidden focus:border-brand-teal transition-colors"
             />
           </div>
 
@@ -87,7 +87,7 @@ export const VesselsPage: React.FC = () => {
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="bg-surface-subtle border border-border-subtle rounded-md px-3 py-1.5 text-xs text-text-main focus:outline-hidden focus:border-brand-teal"
+            className="bg-surface-subtle border border-border-subtle rounded-full px-4 py-2 text-sm text-text-main focus:outline-hidden focus:border-brand-teal transition-colors appearance-none"
           >
             <option value="ALL">All Statuses</option>
             <option value="Arriving">Arriving</option>
@@ -102,7 +102,7 @@ export const VesselsPage: React.FC = () => {
           <select
             value={priorityFilter}
             onChange={e => setPriorityFilter(e.target.value)}
-            className="bg-surface-subtle border border-border-subtle rounded-md px-3 py-1.5 text-xs text-text-main focus:outline-hidden focus:border-brand-teal"
+            className="bg-surface-subtle border border-border-subtle rounded-full px-4 py-2 text-sm text-text-main focus:outline-hidden focus:border-brand-teal transition-colors appearance-none"
           >
             <option value="ALL">All Priorities</option>
             <option value="Critical">Critical</option>
@@ -117,44 +117,44 @@ export const VesselsPage: React.FC = () => {
       </div>
 
       {/* Operational Vessels Table */}
-      <div className="bg-surface rounded-card border border-border-subtle shadow-subtle overflow-hidden w-full min-w-0">
+      <div className="bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden w-full min-w-0">
         <div className="overflow-x-auto w-full">
-          <table className="w-full text-left text-xs font-sans min-w-[720px]">
-            <thead className="bg-surface-subtle border-b border-border-subtle text-text-muted font-medium text-[11px] uppercase tracking-wider">
+          <table className="w-full text-left text-sm font-sans min-w-[720px]">
+            <thead className="bg-surface-subtle/50 border-b border-border-subtle text-text-muted font-semibold text-xs tracking-wider">
               <tr>
                 <th
                   onClick={() => toggleSort('name')}
-                  className="py-3.5 px-4 cursor-pointer hover:text-text-main transition-colors"
+                  className="py-4 px-5 cursor-pointer hover:text-text-main transition-colors"
                 >
                   <div className="flex items-center gap-1.5">
                     <span>Vessel</span>
-                    <ArrowUpDown className="w-3 h-3 text-text-caption" />
+                    <ArrowUpDown className="w-3.5 h-3.5 text-text-caption" />
                   </div>
                 </th>
-                <th className="py-3.5 px-3">IMO</th>
+                <th className="py-4 px-4">IMO</th>
                 <th
                   onClick={() => toggleSort('eta')}
-                  className="py-3.5 px-3 cursor-pointer hover:text-text-main transition-colors"
+                  className="py-4 px-4 cursor-pointer hover:text-text-main transition-colors"
                 >
                   <div className="flex items-center gap-1.5">
                     <span>ETA / ETD</span>
-                    <ArrowUpDown className="w-3 h-3 text-text-caption" />
+                    <ArrowUpDown className="w-3.5 h-3.5 text-text-caption" />
                   </div>
                 </th>
-                <th className="py-3.5 px-3">Current Berth</th>
-                <th className="py-3.5 px-3">Assigned Berth</th>
-                <th className="py-3.5 px-3">Priority</th>
-                <th className="py-3.5 px-3">Status</th>
+                <th className="py-4 px-4">Current Berth</th>
+                <th className="py-4 px-4">Assigned Berth</th>
+                <th className="py-4 px-4">Priority</th>
+                <th className="py-4 px-4">Status</th>
                 <th
                   onClick={() => toggleSort('wait')}
-                  className="py-3.5 px-3 cursor-pointer hover:text-text-main transition-colors"
+                  className="py-4 px-4 cursor-pointer hover:text-text-main transition-colors"
                 >
                   <div className="flex items-center gap-1.5">
                     <span>Predicted Wait</span>
-                    <ArrowUpDown className="w-3 h-3 text-text-caption" />
+                    <ArrowUpDown className="w-3.5 h-3.5 text-text-caption" />
                   </div>
                 </th>
-                <th className="py-3.5 px-4 text-right">Action</th>
+                <th className="py-4 px-5 text-right">Action</th>
               </tr>
             </thead>
 
@@ -165,29 +165,29 @@ export const VesselsPage: React.FC = () => {
                   className="hover:bg-surface-subtle/50 transition-colors"
                 >
                   {/* Vessel Name & Flag */}
-                  <td className="py-3.5 px-4">
+                  <td className="py-4 px-5">
                     <div
                       onClick={() => navigate(`/operations/vessels/${v.id}`)}
-                      className="cursor-pointer font-semibold text-text-main hover:text-brand-teal transition-colors"
+                      className="cursor-pointer font-bold text-text-main hover:text-brand-teal transition-colors"
                     >
                       {v.name}
                     </div>
-                    <div className="text-[11px] text-text-caption">
+                    <div className="text-xs text-text-caption mt-0.5">
                       {v.flag} • {v.lengthMeters}m • {v.teuCapacity.toLocaleString()} TEU
                     </div>
                   </td>
 
                   {/* IMO */}
-                  <td className="py-3.5 px-3 text-text-muted font-mono text-[11px]">{v.imo}</td>
+                  <td className="py-4 px-4 text-text-muted font-mono text-xs">{v.imo}</td>
 
                   {/* ETA/ETD */}
-                  <td className="py-3.5 px-3 text-xs">
-                    <div className="text-text-main font-medium">{v.eta}</div>
-                    <div className="text-[11px] text-text-caption">ETD: {v.etd}</div>
+                  <td className="py-4 px-4 text-sm">
+                    <div className="text-text-main font-semibold">{v.eta}</div>
+                    <div className="text-xs text-text-caption mt-0.5">ETD: {v.etd}</div>
                   </td>
 
                   {/* Current Berth */}
-                  <td className="py-3.5 px-3 text-xs">
+                  <td className="py-4 px-4 text-sm">
                     {v.currentBerth ? (
                       <span className="font-semibold text-text-main">{v.currentBerth}</span>
                     ) : (
@@ -196,9 +196,9 @@ export const VesselsPage: React.FC = () => {
                   </td>
 
                   {/* Assigned Berth */}
-                  <td className="py-3.5 px-3">
+                  <td className="py-4 px-4">
                     <span
-                      className={`font-semibold px-2 py-0.5 rounded text-xs border ${
+                      className={`font-semibold px-2.5 py-1 rounded-full text-xs border ${
                         v.assignedBerth === 'B04' && !isOptimizationApplied
                           ? 'bg-rose-50 text-rose-700 border-rose-200'
                           : v.assignedBerth === 'B02' && isOptimizationApplied && v.id === 'VES-01'
@@ -211,9 +211,9 @@ export const VesselsPage: React.FC = () => {
                   </td>
 
                   {/* Priority */}
-                  <td className="py-3.5 px-3">
+                  <td className="py-4 px-4">
                     <span
-                      className={`text-[11px] font-medium px-2 py-0.5 rounded border ${
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-full border shadow-xs ${
                         v.priority === 'Critical'
                           ? 'bg-rose-50 text-rose-700 border-rose-200'
                           : v.priority === 'Priority'
@@ -226,19 +226,19 @@ export const VesselsPage: React.FC = () => {
                   </td>
 
                   {/* Status */}
-                  <td className="py-3.5 px-3">
+                  <td className="py-4 px-4">
                     <StatusBadge status={v.status} />
                   </td>
 
                   {/* Predicted Wait */}
-                  <td className="py-3.5 px-3">
-                    <div className="font-semibold text-text-main text-xs">
+                  <td className="py-4 px-4">
+                    <div className="font-bold text-text-main text-sm">
                       {v.predictedWaitHours}h
                     </div>
                     <div
-                      className={`text-[11px] ${
+                      className={`text-xs mt-0.5 ${
                         v.demurrageRisk === 'High'
-                          ? 'text-rose-600 font-medium'
+                          ? 'text-rose-600 font-semibold'
                           : 'text-text-caption'
                       }`}
                     >
@@ -247,20 +247,20 @@ export const VesselsPage: React.FC = () => {
                   </td>
 
                   {/* Action */}
-                  <td className="py-3.5 px-4 text-right">
+                  <td className="py-4 px-5 text-right">
                     <div className="flex items-center justify-end gap-2">
                       {v.id === 'VES-01' && (
                         <button
                           onClick={() => navigate('/decision/optimizer')}
-                          className="px-2.5 py-1 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle flex items-center gap-1"
+                          className="px-3 py-1.5 rounded-full text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_2px_8px_rgba(20,184,166,0.3)] flex items-center gap-1.5"
                         >
-                          <Zap className="w-3 h-3" />
+                          <Zap className="w-3.5 h-3.5" />
                           <span>Optimize</span>
                         </button>
                       )}
                       <button
                         onClick={() => navigate(`/operations/vessels/${v.id}`)}
-                        className="p-1.5 rounded-md text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors"
+                        className="p-2 rounded-full text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors"
                         title="View Vessel Profile"
                       >
                         <ChevronRight className="w-4 h-4" />
@@ -276,3 +276,4 @@ export const VesselsPage: React.FC = () => {
     </div>
   );
 };
+

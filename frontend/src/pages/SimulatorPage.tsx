@@ -58,7 +58,7 @@ export const SimulatorPage: React.FC = () => {
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleAskCopilot}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <Sparkles className="w-3.5 h-3.5 text-brand-teal" />
             <span>Consult Gemini</span>
@@ -66,7 +66,7 @@ export const SimulatorPage: React.FC = () => {
           <button
             onClick={handleSimulate}
             disabled={isSimulating}
-            className="flex items-center gap-2 px-4 py-2 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 disabled:opacity-50 transition-all shadow-subtle"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 disabled:opacity-50 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isSimulating ? 'animate-spin' : ''}`} />
             <span>{isSimulating ? 'Calculating Impact...' : 'Simulate Scenario'}</span>
@@ -77,7 +77,7 @@ export const SimulatorPage: React.FC = () => {
       {/* Main Grid: Scenario Controls & Three-Stage Simulation Flow */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Stage 1: Scenario Builder Controls */}
-        <div className="bg-surface p-6 rounded-card border border-border-subtle shadow-subtle space-y-4">
+        <div className="bg-surface p-6 rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
           <div className="flex items-center justify-between border-b border-border-subtle pb-3">
             <h2 className="text-sm font-semibold text-text-main flex items-center gap-2">
               <SlidersHorizontal className="w-4 h-4 text-text-muted" />
@@ -92,7 +92,7 @@ export const SimulatorPage: React.FC = () => {
               <select
                 value={selectedScenarioType}
                 onChange={e => setSelectedScenarioType(e.target.value)}
-                className="w-full bg-surface-subtle border border-border-subtle rounded-md px-3 py-2 text-xs text-text-main focus:outline-hidden focus:border-brand-teal"
+                className="w-full bg-surface-subtle border border-border-subtle rounded-xl px-3 py-2 text-xs text-text-main focus:outline-hidden focus:border-brand-teal"
               >
                 <option value="crane_failure">Crane Equipment Outage (STS)</option>
                 <option value="berth_closure">Unscheduled Berth Closure</option>
@@ -107,7 +107,7 @@ export const SimulatorPage: React.FC = () => {
               <select
                 value={selectedEntity}
                 onChange={e => setSelectedEntity(e.target.value)}
-                className="w-full bg-surface-subtle border border-border-subtle rounded-md px-3 py-2 text-xs text-text-main focus:outline-hidden focus:border-brand-teal"
+                className="w-full bg-surface-subtle border border-border-subtle rounded-xl px-3 py-2 text-xs text-text-main focus:outline-hidden focus:border-brand-teal"
               >
                 <option value="C03">Megamax STS 03 (Berth B04)</option>
                 <option value="B04">Berth B04 Quay Structure</option>
@@ -150,7 +150,7 @@ export const SimulatorPage: React.FC = () => {
             <button
               onClick={handleSimulate}
               disabled={isSimulating}
-              className="w-full py-2.5 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center justify-center gap-2"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isSimulating ? 'animate-spin' : ''}`} />
               <span>Simulate Disruption</span>
@@ -198,7 +198,7 @@ export const SimulatorPage: React.FC = () => {
           />
 
           {/* Stage 3: AI Recovery Plan */}
-          <div className="bg-surface p-6 rounded-card border border-emerald-200 shadow-subtle space-y-4">
+          <div className="bg-surface p-6 rounded-3xl border border-emerald-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-3">
               <div>
                 <div className="flex items-center gap-2">
@@ -218,13 +218,13 @@ export const SimulatorPage: React.FC = () => {
               {!isRecoveryPlanApplied ? (
                 <button
                   onClick={applyRecoveryPlan}
-                  className="flex items-center gap-2 px-4 py-2 rounded-md text-xs font-semibold text-white bg-emerald-700 hover:bg-emerald-800 transition-all shadow-subtle"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-emerald-700 hover:bg-emerald-800 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                   <Zap className="w-4 h-4" />
                   <span>Apply Recovery Plan</span>
                 </button>
               ) : (
-                <span className="text-xs font-semibold text-emerald-800 px-3 py-1.5 rounded-md bg-emerald-100 border border-emerald-200 flex items-center gap-1.5">
+                <span className="text-xs font-semibold text-emerald-800 px-3 py-1.5 rounded-xl bg-emerald-100 border border-emerald-200 flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>Recovery Plan Active</span>
                 </span>
@@ -277,3 +277,4 @@ export const SimulatorPage: React.FC = () => {
     </div>
   );
 };
+

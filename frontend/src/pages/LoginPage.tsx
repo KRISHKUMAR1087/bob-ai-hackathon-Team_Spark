@@ -89,7 +89,7 @@ export const LoginPage: React.FC = () => {
         <div className="w-full max-w-7xl mx-auto px-6 z-20 flex flex-col min-h-screen">
           <header className="flex items-center justify-between py-6">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-brand-teal text-white shadow-subtle">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-brand-teal text-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 <Ship className="w-5 h-5" />
               </div>
               <span className="text-2xl font-bold tracking-tight text-white drop-shadow-md">PortPilot</span>
@@ -327,7 +327,7 @@ export const LoginPage: React.FC = () => {
               <motion.div
                 key={title}
                 whileHover={{ y: -4 }}
-                className="group bg-white p-7 rounded-2xl border border-border-subtle shadow-subtle hover:shadow-elevated transition-all"
+                className="group bg-white p-7 rounded-2xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-elevated transition-all"
               >
                 <div className={`w-14 h-14 ${bg} ${fg} rounded-xl flex items-center justify-center mb-5 transition-colors ${hbg} group-hover:text-white`}>
                   <Icon className="w-7 h-7" />
@@ -368,7 +368,7 @@ export const LoginPage: React.FC = () => {
                 { step: '04', icon: CheckCircle2, title: 'Departure', desc: 'All parties notified. Real-time updates throughout, with KPIs captured for analytics.' },
               ].map(({ step, icon: Icon, title, desc }) => (
                 <div key={step} className="flex flex-col items-center text-center">
-                  <div className="w-20 h-20 rounded-full bg-canvas border-2 border-brand-teal flex flex-col items-center justify-center mb-5 shadow-subtle">
+                  <div className="w-20 h-20 rounded-full bg-canvas border-2 border-brand-teal flex flex-col items-center justify-center mb-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                     <Icon className="w-7 h-7 text-brand-teal" />
                   </div>
                   <span className="text-xs font-bold text-brand-teal uppercase tracking-widest mb-1">{step}</span>
@@ -392,7 +392,7 @@ export const LoginPage: React.FC = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Port Admin Card */}
-            <div className="bg-white rounded-2xl border border-border-subtle shadow-subtle overflow-hidden">
+            <div className="bg-white rounded-2xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
               <div className="h-2 bg-gradient-to-r from-brand-teal to-teal-400" />
               <div className="p-8">
                 <div className="flex items-center gap-4 mb-6">
@@ -430,7 +430,7 @@ export const LoginPage: React.FC = () => {
             </div>
 
             {/* Ship Agent Card */}
-            <div className="bg-white rounded-2xl border border-border-subtle shadow-subtle overflow-hidden">
+            <div className="bg-white rounded-2xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
               <div className="h-2 bg-gradient-to-r from-brand-blue to-blue-400" />
               <div className="p-8">
                 <div className="flex items-center gap-4 mb-6">
@@ -496,7 +496,7 @@ export const LoginPage: React.FC = () => {
                 role: 'Port Operations Manager, Atlantic Gateway',
               },
             ].map(({ quote, name, role }) => (
-              <div key={name} className="bg-canvas p-7 rounded-2xl border border-border-subtle shadow-subtle flex flex-col gap-5">
+              <div key={name} className="bg-canvas p-7 rounded-2xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col gap-5">
                 <div className="flex gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
@@ -532,7 +532,7 @@ export const LoginPage: React.FC = () => {
                   { icon: Activity, label: '99.9% SLA Uptime' },
                   { icon: Clock, label: '24/7 Support Desk' },
                 ].map(({ icon: Icon, label }) => (
-                  <div key={label} className="flex items-center gap-3 bg-white rounded-xl border border-border-subtle p-4 shadow-subtle">
+                  <div key={label} className="flex items-center gap-3 bg-white rounded-xl border border-border-subtle p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                     <Icon className="w-5 h-5 text-brand-teal shrink-0" />
                     <span className="text-sm font-semibold text-text-main">{label}</span>
                   </div>
@@ -547,7 +547,7 @@ export const LoginPage: React.FC = () => {
                 { metric: '30+', label: 'Active Port Terminals', sub: 'across 4 continents' },
                 { metric: '100%', label: 'Data Sovereignty', sub: 'Regional data residency options' },
               ].map(({ metric, label, sub }) => (
-                <div key={label} className="bg-white rounded-2xl border border-border-subtle p-6 shadow-subtle">
+                <div key={label} className="bg-white rounded-2xl border border-border-subtle p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                   <div className="text-3xl font-extrabold text-text-main mb-1">{metric}</div>
                   <div className="text-sm font-bold text-text-main">{label}</div>
                   <div className="text-xs text-text-muted mt-1">{sub}</div>
@@ -651,3 +651,4 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
+

@@ -128,12 +128,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
   return (
     <div className="min-h-screen bg-canvas flex flex-col relative overflow-hidden">
       {/* Subtle ambient light gradient in background */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[90vw] max-w-[800px] h-[350px] bg-gradient-to-b from-teal-500/5 via-blue-500/5 to-transparent blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[90vw] max-w-[800px] h-[35vh] max-h-[350px] bg-gradient-to-b from-teal-500/5 via-blue-500/5 to-transparent blur-3xl pointer-events-none" />
 
       {/* Header */}
       <header className="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between shrink-0 relative z-10">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-xl bg-brand-teal flex items-center justify-center shadow-subtle group-hover:scale-105 transition-transform duration-200">
+          <div className="w-9 h-9 rounded-xl bg-brand-teal flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] group-hover:scale-105 transition-transform duration-200">
             <Ship className="w-4 h-4 text-white" />
           </div>
           <span className="text-xl font-bold tracking-tight text-text-main group-hover:text-brand-teal transition-colors">PortPulse</span>
@@ -224,7 +224,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {error && <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md border border-red-200">{error}</div>}
+                {error && <div className="p-3 text-sm text-red-500 bg-red-50 rounded-xl border border-red-200">{error}</div>}
 
                 {/* Full Name — signup only */}
                 {!isLogin && (
@@ -374,3 +374,4 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
     </div>
   );
 };
+

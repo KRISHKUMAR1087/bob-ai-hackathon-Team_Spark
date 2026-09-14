@@ -67,7 +67,7 @@ export const ShippingSchedulesPage: React.FC = () => {
       </div>
 
       {/* 2. Schedule Advisory Banner */}
-      <div className="p-4 rounded-lg bg-surface border border-border-subtle shadow-subtle flex items-start gap-3 text-xs">
+      <div className="p-4 rounded-lg bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-start gap-3 text-xs">
         <Clock className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
         <div className="text-text-muted leading-relaxed">
           <strong className="text-text-main">Schedule Synchronization Notice:</strong> When you adjust an ETA, the port authority’s predictive machine learning models immediately recalibrate berth queue times and fairway passage plans.
@@ -84,7 +84,7 @@ export const ShippingSchedulesPage: React.FC = () => {
           return (
             <div
               key={v.id}
-              className="p-5 rounded-lg bg-surface border border-border-subtle shadow-subtle hover:border-sky-300 transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+              className="p-5 rounded-lg bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-sky-300 transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-4"
             >
               {/* Left Column: Vessel info & Route */}
               <div className="space-y-2 lg:w-1/3">
@@ -138,14 +138,14 @@ export const ShippingSchedulesPage: React.FC = () => {
               <div className="flex items-center gap-2 shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-border-subtle">
                 <button
                   onClick={() => handleOpenModal(v.id)}
-                  className="px-3.5 py-2 rounded-md bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-900 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-subtle"
+                  className="px-3.5 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-900 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                   <Edit2 className="w-3 h-3 text-sky-600" />
                   <span>Update ETA</span>
                 </button>
                 <button
                   onClick={() => navigate(`/shipping/vessels/${v.id}`)}
-                  className="p-2 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-text-muted hover:text-text-main transition-colors cursor-pointer"
+                  className="p-2 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-text-muted hover:text-text-main transition-colors cursor-pointer"
                   title="View Vessel Details"
                 >
                   <ArrowRight className="w-4 h-4" />
@@ -169,7 +169,7 @@ export const ShippingSchedulesPage: React.FC = () => {
               </div>
               <button
                 onClick={() => setSelectedVesselId(null)}
-                className="p-1 rounded-md text-text-caption hover:text-text-main cursor-pointer"
+                className="p-1 rounded-xl text-text-caption hover:text-text-main cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -183,7 +183,7 @@ export const ShippingSchedulesPage: React.FC = () => {
                   placeholder="e.g. Tomorrow, 18:30 UTC"
                   value={newEta}
                   onChange={e => setNewEta(e.target.value)}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                   required
                 />
               </div>
@@ -195,7 +195,7 @@ export const ShippingSchedulesPage: React.FC = () => {
                   placeholder="e.g. +2 Days, 12:00 UTC"
                   value={newEtd}
                   onChange={e => setNewEtd(e.target.value)}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                 />
               </div>
 
@@ -204,7 +204,7 @@ export const ShippingSchedulesPage: React.FC = () => {
                 <select
                   value={reason}
                   onChange={e => setReason(e.target.value)}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                 >
                   <option value="Weather & Sea State">Adverse Weather / Offshore Sea State</option>
                   <option value="Mechanical / Engineering Maintenance">Machinery / Propulsion Inspection</option>
@@ -223,13 +223,13 @@ export const ShippingSchedulesPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedVesselId(null)}
-                  className="px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-md bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-subtle"
+                  className="px-4 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                   Confirm & Sync
                 </button>
@@ -241,3 +241,4 @@ export const ShippingSchedulesPage: React.FC = () => {
     </div>
   );
 };
+

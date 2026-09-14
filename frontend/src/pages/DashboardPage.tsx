@@ -86,21 +86,21 @@ export const DashboardPage: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate('/decision/simulator')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-xs"
           >
             <RefreshCw className="w-3.5 h-3.5 text-text-muted" />
             <span>What-If Simulator</span>
           </button>
           <button
             onClick={() => navigate('/decision/planner')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-xs"
           >
             <Clock className="w-3.5 h-3.5 text-text-muted" />
             <span>72h Plan</span>
           </button>
           <button
             onClick={handleAskGeminiWhy}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-brand-teal bg-teal-50/60 hover:bg-teal-100/60 border border-teal-200/70 transition-colors shadow-subtle"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-teal bg-teal-50/60 hover:bg-teal-100/60 border border-teal-200/70 transition-colors shadow-xs"
           >
             <Sparkles className="w-3.5 h-3.5 text-brand-teal" />
             <span>Ask Gemini</span>
@@ -110,12 +110,12 @@ export const DashboardPage: React.FC = () => {
 
       {/* 2. PRIMARY OPERATIONAL EVENT (Dominant Incident Briefing Panel) */}
       {!isOptimizationApplied ? (
-        <div className="bg-surface rounded-card border-2 border-rose-200/80 shadow-subtle p-6 transition-all">
+        <div className="bg-surface rounded-3xl border-2 border-rose-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] p-6 transition-all">
           <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
             <div className="space-y-4 max-w-3xl">
               {/* Event Badge & Title */}
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-rose-50 text-rose-600 border border-rose-100">
+                <div className="p-2 rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 shadow-xs">
                   <AlertTriangle className="w-5 h-5" />
                 </div>
                 <div>
@@ -137,13 +137,13 @@ export const DashboardPage: React.FC = () => {
               </p>
 
               {/* Machine Learning Drivers Breakdown */}
-              <div className="bg-surface-subtle/80 rounded-lg p-3.5 border border-border-subtle">
+              <div className="bg-surface-subtle/80 rounded-2xl p-4 border border-border-subtle">
                 <div className="text-xs font-semibold text-text-main mb-2">
                   Contributing Factors (ML Attribution):
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                   {forecast.drivers.map((d, idx) => (
-                    <div key={idx} className="bg-surface p-2 rounded border border-border-subtle space-y-1">
+                    <div key={idx} className="bg-surface p-2.5 rounded-xl border border-border-subtle space-y-1 shadow-xs">
                       <div className="flex items-center justify-between text-text-muted">
                         <span>Factor 0{idx + 1}</span>
                         <span className="font-semibold text-text-main">{d.percentage}%</span>
@@ -158,7 +158,7 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             {/* Impact Metrics & Primary Actions */}
-            <div className="lg:w-80 flex flex-col justify-between bg-surface-subtle/50 p-5 rounded-lg border border-border-subtle space-y-5">
+            <div className="lg:w-80 flex flex-col justify-between bg-surface-subtle/50 p-5 rounded-2xl border border-border-subtle space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="text-[11px] font-medium text-text-muted">Current Util</div>
@@ -184,10 +184,10 @@ export const DashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="space-y-2 pt-2 border-t border-border-subtle">
+              <div className="space-y-2.5 pt-3 border-t border-border-subtle">
                 <button
                   onClick={() => navigate('/decision/optimizer')}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle group"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-full text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_4px_12px_rgba(20,184,166,0.3)] group"
                 >
                   <Zap className="w-4 h-4" />
                   <span>Optimize Berth B04</span>
@@ -195,7 +195,7 @@ export const DashboardPage: React.FC = () => {
                 </button>
                 <button
                   onClick={handleAskGeminiWhy}
-                  className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium text-text-main bg-white hover:bg-surface border border-border-subtle transition-colors shadow-subtle"
+                  className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full text-xs font-semibold text-text-main bg-white hover:bg-surface border border-border-subtle transition-colors shadow-xs"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-brand-teal" />
                   <span>Ask Gemini Why</span>
@@ -206,11 +206,11 @@ export const DashboardPage: React.FC = () => {
         </div>
       ) : (
         /* Mitigated State Panel */
-        <div className="bg-surface rounded-card border border-emerald-200 shadow-subtle p-6 transition-all">
+        <div className="bg-surface rounded-3xl border border-emerald-200 shadow-[0_8px_30px_rgb(0,0,0,0.06)] p-6 transition-all">
           <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
             <div className="space-y-4 max-w-3xl">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100">
+                <div className="p-2 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-xs">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
                 <div>
@@ -243,7 +243,8 @@ export const DashboardPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="lg:w-80 flex flex-col justify-between bg-surface-subtle/50 p-5 rounded-lg border border-border-subtle space-y-5">
+            {/* Impact Metrics & Primary Actions */}
+            <div className="lg:w-80 flex flex-col justify-between bg-surface-subtle/50 p-5 rounded-2xl border border-border-subtle space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="text-[11px] font-medium text-text-muted">Current Util</div>
@@ -267,17 +268,17 @@ export const DashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="space-y-2 pt-2 border-t border-border-subtle">
+              <div className="space-y-2.5 pt-3 border-t border-border-subtle">
                 <button
                   onClick={() => navigate('/decision/optimizer')}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-full text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_4px_12px_rgba(20,184,166,0.3)]"
                 >
                   <span>Review Applied Plan</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => navigate('/operations')}
-                  className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium text-text-main bg-white hover:bg-surface border border-border-subtle transition-colors shadow-subtle"
+                  className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full text-xs font-semibold text-text-main bg-white hover:bg-surface border border-border-subtle transition-colors shadow-xs"
                 >
                   <span>View Operations Gantt</span>
                 </button>
@@ -288,7 +289,7 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* 3. PORT FLOW FORECAST (Large, Clean, Uncramped Trajectory Chart) */}
-      <div className="bg-surface rounded-card border border-border-subtle p-6 shadow-subtle space-y-4">
+      <div className="bg-surface rounded-3xl border border-border-subtle p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border-subtle pb-4">
           <div>
             <div className="flex items-center gap-2">
@@ -360,19 +361,19 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* 5. OPERATIONAL SNAPSHOT (Quiet, compact horizontal status strip as supporting context) */}
-      <div className="bg-surface rounded-card border border-border-subtle shadow-subtle p-2">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-border-subtle">
+      <div className="bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-1.5 overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-border-subtle">
           {/* Vessels Cell */}
           <div
             onClick={() => navigate('/operations/vessels')}
-            className="p-3.5 hover:bg-surface-subtle/70 rounded-md cursor-pointer transition-colors group"
+            className="p-4 sm:p-3.5 hover:bg-surface-subtle/70 sm:rounded-2xl cursor-pointer transition-colors group"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs text-text-muted">
-                <Ship className="w-3.5 h-3.5 text-text-muted group-hover:text-brand-teal transition-colors" />
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-text-muted">
+                <Ship className="w-4 h-4 text-text-muted group-hover:text-brand-teal transition-colors" />
                 <span>Vessels</span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-text-caption group-hover:text-text-main group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="w-4 h-4 text-text-caption group-hover:text-text-main group-hover:translate-x-0.5 transition-all" />
             </div>
             <div className="text-xl font-bold text-text-main mt-1.5">{vesselsInPort} in port</div>
             <div className="text-[11px] text-text-caption mt-0.5">
@@ -383,14 +384,14 @@ export const DashboardPage: React.FC = () => {
           {/* Berths Cell */}
           <div
             onClick={() => navigate('/operations/berths')}
-            className="p-3.5 hover:bg-surface-subtle/70 rounded-md cursor-pointer transition-colors group"
+            className="p-4 sm:p-3.5 hover:bg-surface-subtle/70 sm:rounded-2xl cursor-pointer transition-colors group"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs text-text-muted">
-                <Anchor className="w-3.5 h-3.5 text-text-muted group-hover:text-brand-teal transition-colors" />
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-text-muted">
+                <Anchor className="w-4 h-4 text-text-muted group-hover:text-brand-teal transition-colors" />
                 <span>Berths</span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-text-caption group-hover:text-text-main group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="w-4 h-4 text-text-caption group-hover:text-text-main group-hover:translate-x-0.5 transition-all" />
             </div>
             <div className="text-xl font-bold text-text-main mt-1.5">{avgBerthUtil}% avg</div>
             <div className="text-[11px] text-text-caption mt-0.5">
@@ -401,14 +402,14 @@ export const DashboardPage: React.FC = () => {
           {/* Cranes Cell */}
           <div
             onClick={() => navigate('/operations/cranes')}
-            className="p-3.5 hover:bg-surface-subtle/70 rounded-md cursor-pointer transition-colors group"
+            className="p-4 sm:p-3.5 hover:bg-surface-subtle/70 sm:rounded-2xl cursor-pointer transition-colors group"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs text-text-muted">
-                <Zap className="w-3.5 h-3.5 text-text-muted group-hover:text-brand-teal transition-colors" />
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-text-muted">
+                <Zap className="w-4 h-4 text-text-muted group-hover:text-brand-teal transition-colors" />
                 <span>Cranes</span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-text-caption group-hover:text-text-main group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="w-4 h-4 text-text-caption group-hover:text-text-main group-hover:translate-x-0.5 transition-all" />
             </div>
             <div className="text-xl font-bold text-text-main mt-1.5">
               {activeCranes}/{cranes.length} active
@@ -421,14 +422,14 @@ export const DashboardPage: React.FC = () => {
           {/* Yard Cell */}
           <div
             onClick={() => navigate('/operations/yard')}
-            className="p-3.5 hover:bg-surface-subtle/70 rounded-md cursor-pointer transition-colors group"
+            className="p-4 sm:p-3.5 hover:bg-surface-subtle/70 sm:rounded-2xl cursor-pointer transition-colors group"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs text-text-muted">
-                <Layers className="w-3.5 h-3.5 text-text-muted group-hover:text-brand-teal transition-colors" />
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-text-muted">
+                <Layers className="w-4 h-4 text-text-muted group-hover:text-brand-teal transition-colors" />
                 <span>Yard</span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-text-caption group-hover:text-text-main group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="w-4 h-4 text-text-caption group-hover:text-text-main group-hover:translate-x-0.5 transition-all" />
             </div>
             <div className="text-xl font-bold text-text-main mt-1.5">{yardUtil}% capacity</div>
             <div className="text-[11px] text-text-caption mt-0.5">
@@ -439,14 +440,14 @@ export const DashboardPage: React.FC = () => {
           {/* Queue & Alerts Cell */}
           <div
             onClick={() => navigate('/alerts')}
-            className="p-3.5 hover:bg-surface-subtle/70 rounded-md cursor-pointer transition-colors group"
+            className="p-4 sm:p-3.5 hover:bg-surface-subtle/70 sm:rounded-2xl cursor-pointer transition-colors group"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs text-text-muted">
-                <AlertTriangle className="w-3.5 h-3.5 text-text-muted group-hover:text-brand-teal transition-colors" />
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-text-muted">
+                <AlertTriangle className="w-4 h-4 text-text-muted group-hover:text-brand-teal transition-colors" />
                 <span>Active Alerts</span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-text-caption group-hover:text-text-main group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="w-4 h-4 text-text-caption group-hover:text-text-main group-hover:translate-x-0.5 transition-all" />
             </div>
             <div className="text-xl font-bold text-text-main mt-1.5">
               {activeAlertsList.length} operational

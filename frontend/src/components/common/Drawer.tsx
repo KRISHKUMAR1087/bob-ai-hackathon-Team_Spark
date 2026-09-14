@@ -39,7 +39,7 @@ export const Drawer: React.FC<DrawerProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="p-1 rounded-md text-text-caption hover:text-text-main hover:bg-slate-200/60 transition-colors"
+              className="p-1 rounded-xl text-text-caption hover:text-text-main hover:bg-slate-200/60 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -52,3 +52,4 @@ export const Drawer: React.FC<DrawerProps> = ({
     </div>
   );
 };
+

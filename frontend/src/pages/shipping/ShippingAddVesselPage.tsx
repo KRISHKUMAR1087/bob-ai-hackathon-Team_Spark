@@ -166,7 +166,7 @@ export const ShippingAddVesselPage: React.FC = () => {
       {/* Form Container */}
       <div className="space-y-6">
         {/* Section 1: Vessel Information */}
-        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-subtle space-y-4">
+        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
             <div className="flex items-center gap-2">
               <Ship className="w-4 h-4 text-sky-600" />
@@ -186,7 +186,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. Pacific Pioneer"
                 value={formData.name}
                 onChange={e => setFormData({ ...formData, name: e.target.value })}
-                className={`w-full px-3 py-2 rounded-md bg-surface-subtle border text-text-main text-xs focus:outline-hidden focus:border-sky-500 transition-colors ${
+                className={`w-full px-3 py-2 rounded-xl bg-surface-subtle border text-text-main text-xs focus:outline-hidden focus:border-sky-500 transition-colors ${
                   errors.name ? 'border-rose-400 bg-rose-50/30' : 'border-border-subtle'
                 }`}
               />
@@ -204,7 +204,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="7 digits e.g. 9845214"
                 value={formData.imo}
                 onChange={e => setFormData({ ...formData, imo: e.target.value.replace(/\D/g, '') })}
-                className={`w-full px-3 py-2 rounded-md bg-surface-subtle border text-text-main text-xs font-mono focus:outline-hidden focus:border-sky-500 transition-colors ${
+                className={`w-full px-3 py-2 rounded-xl bg-surface-subtle border text-text-main text-xs font-mono focus:outline-hidden focus:border-sky-500 transition-colors ${
                   errors.imo ? 'border-rose-400 bg-rose-50/30' : 'border-border-subtle'
                 }`}
               />
@@ -219,7 +219,7 @@ export const ShippingAddVesselPage: React.FC = () => {
               <select
                 value={formData.vesselType}
                 onChange={e => setFormData({ ...formData, vesselType: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               >
                 <option value="Container Ship (ULCV)">Container Ship (ULCV)</option>
                 <option value="Container Ship (Neo-Panamax)">Container Ship (Neo-Panamax)</option>
@@ -239,7 +239,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. Panama"
                 value={formData.flag}
                 onChange={e => setFormData({ ...formData, flag: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               >
               </input>
             </div>
@@ -254,7 +254,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. 3EFP7"
                 value={formData.callSign}
                 onChange={e => setFormData({ ...formData, callSign: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs font-mono uppercase focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs font-mono uppercase focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
@@ -267,7 +267,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 type="text"
                 value={formData.shippingCompany}
                 onChange={e => setFormData({ ...formData, shippingCompany: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
@@ -281,7 +281,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="366"
                 value={formData.lengthMeters}
                 onChange={e => setFormData({ ...formData, lengthMeters: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
@@ -296,7 +296,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="15.2"
                 value={formData.draughtMeters}
                 onChange={e => setFormData({ ...formData, draughtMeters: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
@@ -310,14 +310,14 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="15000"
                 value={formData.teuCapacity}
                 onChange={e => setFormData({ ...formData, teuCapacity: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
           </div>
         </div>
 
         {/* Section 2: Voyage Information */}
-        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-subtle space-y-4">
+        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
             <div className="flex items-center gap-2">
               <Compass className="w-4 h-4 text-sky-600" />
@@ -337,7 +337,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. APX-2026-10W"
                 value={formData.voyageNumber}
                 onChange={e => setFormData({ ...formData, voyageNumber: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs font-mono uppercase focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs font-mono uppercase focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
@@ -351,7 +351,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. Singapore (SGSIN)"
                 value={formData.origin}
                 onChange={e => setFormData({ ...formData, origin: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
@@ -365,7 +365,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. Rotterdam (NLRTM)"
                 value={formData.destination}
                 onChange={e => setFormData({ ...formData, destination: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
@@ -379,7 +379,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. Port Klang (MYPKG)"
                 value={formData.previousPort}
                 onChange={e => setFormData({ ...formData, previousPort: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
@@ -393,7 +393,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. Hamburg (DEHAM)"
                 value={formData.nextPort}
                 onChange={e => setFormData({ ...formData, nextPort: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
@@ -407,7 +407,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. Tomorrow, 16:30 UTC"
                 value={formData.eta}
                 onChange={e => setFormData({ ...formData, eta: e.target.value })}
-                className={`w-full px-3 py-2 rounded-md bg-surface-subtle border text-text-main text-xs focus:outline-hidden focus:border-sky-500 ${
+                className={`w-full px-3 py-2 rounded-xl bg-surface-subtle border text-text-main text-xs focus:outline-hidden focus:border-sky-500 ${
                   errors.eta ? 'border-rose-400 bg-rose-50/30' : 'border-border-subtle'
                 }`}
               />
@@ -424,7 +424,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. +2 Days, 18:00 UTC"
                 value={formData.etd}
                 onChange={e => setFormData({ ...formData, etd: e.target.value })}
-                className={`w-full px-3 py-2 rounded-md bg-surface-subtle border text-text-main text-xs focus:outline-hidden focus:border-sky-500 ${
+                className={`w-full px-3 py-2 rounded-xl bg-surface-subtle border text-text-main text-xs focus:outline-hidden focus:border-sky-500 ${
                   errors.etd ? 'border-rose-400 bg-rose-50/30' : 'border-border-subtle'
                 }`}
               />
@@ -434,7 +434,7 @@ export const ShippingAddVesselPage: React.FC = () => {
         </div>
 
         {/* Section 3: Port Call Information */}
-        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-subtle space-y-4">
+        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
             <div className="flex items-center gap-2">
               <Anchor className="w-4 h-4 text-sky-600" />
@@ -452,7 +452,7 @@ export const ShippingAddVesselPage: React.FC = () => {
               <select
                 value={formData.requestedBerth}
                 onChange={e => setFormData({ ...formData, requestedBerth: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               >
                 {berths.map(b => (
                   <option key={b.id} value={b.id}>
@@ -472,7 +472,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="24"
                 value={formData.berthDurationHours}
                 onChange={e => setFormData({ ...formData, berthDurationHours: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
@@ -484,7 +484,7 @@ export const ShippingAddVesselPage: React.FC = () => {
               <select
                 value={formData.requestedCranes}
                 onChange={e => setFormData({ ...formData, requestedCranes: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               >
                 <option value="1">1 STS Crane</option>
                 <option value="2">2 STS Cranes</option>
@@ -504,14 +504,14 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. Tug escort required at channel fairway, shore power cold-ironing hookup"
                 value={formData.specialHandling}
                 onChange={e => setFormData({ ...formData, specialHandling: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
           </div>
         </div>
 
         {/* Section 4: Cargo Information */}
-        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-subtle space-y-4">
+        <div className="p-5 rounded-lg bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
             <div className="flex items-center gap-2">
               <Layers className="w-4 h-4 text-sky-600" />
@@ -531,7 +531,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="e.g. Consumer Electronics, Machinery, Reefers"
                 value={formData.cargoType}
                 onChange={e => setFormData({ ...formData, cargoType: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
@@ -545,12 +545,12 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="1200"
                 value={formData.containersTotal}
                 onChange={e => setFormData({ ...formData, containersTotal: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500"
               />
             </div>
 
             <div className="space-y-1 sm:col-span-3">
-              <label className="flex items-center gap-2 p-3 rounded-md bg-surface-subtle border border-border-subtle cursor-pointer hover:border-border-muted transition-colors">
+              <label className="flex items-center gap-2 p-3 rounded-xl bg-surface-subtle border border-border-subtle cursor-pointer hover:border-border-muted transition-colors">
                 <input
                   type="checkbox"
                   checked={formData.dangerousGoods}
@@ -576,7 +576,7 @@ export const ShippingAddVesselPage: React.FC = () => {
                 placeholder="Additional notes for terminal supervisor..."
                 value={formData.specialNotes}
                 onChange={e => setFormData({ ...formData, specialNotes: e.target.value })}
-                className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 resize-none"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 resize-none"
               />
             </div>
           </div>
@@ -587,7 +587,7 @@ export const ShippingAddVesselPage: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate('/shipping/vessels')}
-            className="px-4 py-2 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -596,14 +596,14 @@ export const ShippingAddVesselPage: React.FC = () => {
             <button
               type="button"
               onClick={() => handleSave(false)}
-              className="px-4 py-2 rounded-md bg-surface-subtle hover:bg-slate-200 border border-border-subtle text-xs font-semibold text-text-main transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-surface-subtle hover:bg-slate-200 border border-border-subtle text-xs font-semibold text-text-main transition-colors cursor-pointer"
             >
               Save Vessel
             </button>
             <button
               type="button"
               onClick={() => handleSave(true)}
-              className="px-5 py-2 rounded-md bg-sky-600 hover:bg-sky-700 text-xs font-semibold text-white transition-all shadow-subtle flex items-center gap-1.5 cursor-pointer"
+              className="px-5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-xs font-semibold text-white transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center gap-1.5 cursor-pointer"
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Save & Continue</span>
@@ -614,3 +614,4 @@ export const ShippingAddVesselPage: React.FC = () => {
     </div>
   );
 };
+

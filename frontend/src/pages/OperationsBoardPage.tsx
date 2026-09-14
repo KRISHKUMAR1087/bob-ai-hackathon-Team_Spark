@@ -26,14 +26,14 @@ export const OperationsBoardPage: React.FC = () => {
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => navigate('/decision/optimizer')}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <Zap className="w-3.5 h-3.5" />
             <span>Launch Optimizer</span>
           </button>
           <button
             onClick={() => navigate('/decision/simulator')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             <RefreshCw className="w-3.5 h-3.5 text-text-muted" />
             <span>Simulate Disruption</span>
@@ -46,3 +46,4 @@ export const OperationsBoardPage: React.FC = () => {
     </div>
   );
 };
+

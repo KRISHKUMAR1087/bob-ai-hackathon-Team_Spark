@@ -114,10 +114,32 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
   };
 
   const containerClasses = isMobileDrawer
-    ? 'w-72 max-w-[85vw] h-full bg-surface border-r border-border-subtle flex flex-col z-50 shadow-modal'
-    : `fixed top-0 bottom-0 left-0 z-30 bg-surface border-r border-border-subtle hidden md:flex flex-col transition-all duration-200 ${
+    ? 'fixed bottom-0 left-0 right-0 h-16 bg-surface/90 backdrop-blur-xl border-t border-border-subtle flex flex-row items-center justify-around z-50 shadow-modal md:hidden'
+    : `fixed top-0 bottom-0 left-0 z-30 bg-surface/90 backdrop-blur-xl border-r border-border-subtle hidden md:flex flex-col transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
         isCollapsed ? 'w-16' : 'w-64'
       }`;
+
+  if (isMobileDrawer) {
+    return (
+      <nav className={containerClasses}>
+        {navGroups.flatMap(s => s.items).slice(0, 5).map(item => {
+          const Icon = item.icon;
+          const isActive = item.path === '/shipping/dashboard' ? location.pathname === '/shipping/dashboard' || location.pathname === '/shipping' : location.pathname.startsWith(item.path);
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={handleNavClick}
+              className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-sky-600' : 'text-text-muted'}`}
+            >
+              <Icon className={`w-5 h-5 ${isActive ? 'text-sky-600 fill-sky-600/20' : ''}`} />
+              <span className="text-[10px] font-medium">{item.name.split(' ')[0]}</span>
+            </NavLink>
+          );
+        })}
+      </nav>
+    );
+  }
 
   return (
     <aside className={containerClasses}>
@@ -125,7 +147,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
       <div className="h-16 px-4 flex items-center justify-between border-b border-border-subtle bg-surface shrink-0">
         {!isCollapsed || isMobileDrawer ? (
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center shrink-0 shadow-subtle">
+            <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center shrink-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               <Anchor className="w-4 h-4" />
             </div>
             <div className="min-w-0">
@@ -143,7 +165,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
             </div>
           </div>
         ) : (
-          <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center mx-auto shadow-subtle">
+          <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <Anchor className="w-4 h-4" />
           </div>
         )}
@@ -152,7 +174,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
         {isMobileDrawer ? (
           <button
             onClick={onCloseMobileDrawer}
-            className="p-1.5 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle transition-colors"
+            className="p-1.5 rounded-xl text-text-muted hover:text-text-main hover:bg-surface-subtle transition-colors"
             title="Close menu"
           >
             <X className="w-5 h-5" />
@@ -161,7 +183,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
           setIsCollapsed && (
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="p-1 rounded-md text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors hidden md:block"
+              className="p-1 rounded-xl text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors hidden md:block"
               title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
               {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -206,22 +228,24 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
                   to={item.path}
                   onClick={handleNavClick}
                   title={isCollapsed && !isMobileDrawer ? item.name : undefined}
-                  className={`flex items-center gap-2.5 px-3 py-1.5 rounded-md text-xs transition-colors ${
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200 active:scale-[0.98] ${
                     isActive
-                      ? 'bg-sky-50 text-sky-900 font-semibold border-l-2 border-sky-600'
+                      ? 'bg-sky-600 text-white shadow-md shadow-sky-600/20'
                       : 'text-text-muted hover:text-text-main hover:bg-surface-subtle'
                   } ${isCollapsed && !isMobileDrawer ? 'justify-center px-0' : ''}`}
                 >
                   <Icon
                     className={`w-4 h-4 shrink-0 ${
-                      isActive ? 'text-sky-600' : 'text-text-caption'
+                      isActive ? 'text-white' : 'text-text-caption'
                     }`}
                   />
                   {(!isCollapsed || isMobileDrawer) && (
                     <span className="truncate">{item.name}</span>
                   )}
                   {(!isCollapsed || isMobileDrawer) && item.badge && (
-                    <span className="ml-auto px-1.5 py-0.2 rounded-full text-[10px] bg-sky-100 text-sky-800 font-semibold border border-sky-200">
+                    <span className={`ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-semibold border ${
+                      isActive ? 'bg-white/20 text-white border-transparent' : 'bg-sky-100 text-sky-800 border-sky-200'
+                    }`}>
                       {item.badge}
                     </span>
                   )}
@@ -260,7 +284,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
 
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors cursor-pointer"
+              className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Sign Out</span>
@@ -269,7 +293,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
         ) : (
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center p-2 rounded-md text-text-caption hover:text-rose-600 hover:bg-rose-50 transition-colors"
+            className="w-full flex items-center justify-center p-2 rounded-xl text-text-caption hover:text-rose-600 hover:bg-rose-50 transition-colors"
             title="Sign Out"
           >
             <LogOut className="w-4 h-4" />
@@ -279,3 +303,4 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
     </aside>
   );
 };
+

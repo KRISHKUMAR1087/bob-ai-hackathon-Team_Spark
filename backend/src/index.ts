@@ -41,9 +41,8 @@ app.use('*', async (c, next) => {
 // Set CORS_ORIGIN env var for production (e.g. https://yourapp.vercel.app).
 app.use('/api/*', cors({
   origin: (origin, c) => {
-    // If CORS_ORIGIN is explicitly set, use it. Otherwise allow the requesting origin (for hackathon flexibility).
-    const configuredOrigin = (c.env?.CORS_ORIGIN as string | undefined) ?? process.env.CORS_ORIGIN;
-    return configuredOrigin || origin || '*';
+    const allowedOrigin = (c.env?.CORS_ORIGIN as string) || 'http://localhost:5173';
+    return allowedOrigin;
   },
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],

@@ -88,7 +88,7 @@ export const ShippingCargoPage: React.FC = () => {
           return (
             <div
               key={v.id}
-              className="p-5 rounded-lg bg-surface border border-border-subtle shadow-subtle hover:border-sky-300 transition-all space-y-4"
+              className="p-5 rounded-lg bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-sky-300 transition-all space-y-4"
             >
               {/* Header row */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border-subtle">
@@ -107,14 +107,14 @@ export const ShippingCargoPage: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleOpenEdit(v.id)}
-                    className="px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors flex items-center gap-1.5 cursor-pointer shadow-subtle"
+                    className="px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-text-main transition-colors flex items-center gap-1.5 cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                   >
                     <Edit2 className="w-3 h-3 text-text-caption" />
                     <span>Update Cargo</span>
                   </button>
                   <button
                     onClick={() => navigate(`/shipping/vessels/${v.id}`)}
-                    className="p-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-text-caption hover:text-text-main transition-colors cursor-pointer"
+                    className="p-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-text-caption hover:text-text-main transition-colors cursor-pointer"
                     title="View Vessel"
                   >
                     <ArrowRight className="w-4 h-4" />
@@ -188,7 +188,7 @@ export const ShippingCargoPage: React.FC = () => {
               </div>
               <button
                 onClick={() => setSelectedVesselId(null)}
-                className="p-1 rounded-md text-text-caption hover:text-text-main cursor-pointer"
+                className="p-1 rounded-xl text-text-caption hover:text-text-main cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -202,7 +202,7 @@ export const ShippingCargoPage: React.FC = () => {
                     type="number"
                     value={cargoForm.containersLoaded}
                     onChange={e => setCargoForm({ ...cargoForm, containersLoaded: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                    className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                     required
                   />
                 </div>
@@ -213,7 +213,7 @@ export const ShippingCargoPage: React.FC = () => {
                     type="number"
                     value={cargoForm.containersTotal}
                     onChange={e => setCargoForm({ ...cargoForm, containersTotal: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                    className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                     required
                   />
                 </div>
@@ -225,7 +225,7 @@ export const ShippingCargoPage: React.FC = () => {
                   type="text"
                   value={cargoForm.cargoQuantity}
                   onChange={e => setCargoForm({ ...cargoForm, cargoQuantity: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                 />
               </div>
 
@@ -247,7 +247,7 @@ export const ShippingCargoPage: React.FC = () => {
                   rows={2}
                   value={cargoForm.specialNotes}
                   onChange={e => setCargoForm({ ...cargoForm, specialNotes: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1 resize-none"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1 resize-none"
                 />
               </div>
 
@@ -255,13 +255,13 @@ export const ShippingCargoPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedVesselId(null)}
-                  className="px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-md bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-subtle"
+                  className="px-4 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                   Save Cargo Details
                 </button>
@@ -273,3 +273,4 @@ export const ShippingCargoPage: React.FC = () => {
     </div>
   );
 };
+

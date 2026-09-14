@@ -37,7 +37,7 @@ export const BeforeAfterCard: React.FC<BeforeAfterCardProps> = ({
   afterDetails,
 }) => {
   return (
-    <div className="bg-surface rounded-card border border-border-subtle shadow-subtle overflow-hidden">
+    <div className="bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
       <div className="px-6 py-4 border-b border-border-subtle flex items-center justify-between">
         <h3 className="text-sm font-semibold text-text-main">
           {title}
@@ -142,3 +142,4 @@ export const BeforeAfterCard: React.FC<BeforeAfterCardProps> = ({
     </div>
   );
 };
+

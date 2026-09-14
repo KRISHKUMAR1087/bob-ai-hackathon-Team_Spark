@@ -58,10 +58,11 @@ export const RiskBadge: React.FC<RiskBadgeProps> = ({ level, risk, size = 'md' }
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-md font-medium border ${config.color} ${sizeClasses}`}
+      className={`inline-flex items-center gap-1.5 rounded-xl font-medium border ${config.color} ${sizeClasses}`}
     >
       <Icon className={size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'} />
       {config.text}
     </span>
   );
 };
+

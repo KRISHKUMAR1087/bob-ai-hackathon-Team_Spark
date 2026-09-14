@@ -139,7 +139,7 @@ export const ShippingDocumentsPage: React.FC = () => {
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-all shadow-subtle cursor-pointer shrink-0"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer shrink-0"
         >
           <PlusCircle className="w-3.5 h-3.5" />
           <span>Upload Document</span>
@@ -147,7 +147,7 @@ export const ShippingDocumentsPage: React.FC = () => {
       </div>
 
       {/* 2. Filter Toolbar */}
-      <div className="bg-surface p-4 rounded-card border border-border-subtle shadow-subtle flex flex-wrap items-center justify-between gap-3 min-w-0">
+      <div className="bg-surface p-4 rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-wrap items-center justify-between gap-3 min-w-0">
         <div className="flex flex-wrap items-center gap-3 flex-1 min-w-0 w-full sm:w-auto">
           {/* Search */}
           <div className="relative flex-1 min-w-[200px] max-w-sm w-full">
@@ -157,7 +157,7 @@ export const ShippingDocumentsPage: React.FC = () => {
               placeholder="Search document name, vessel, type..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full bg-surface-subtle border border-border-subtle rounded-md pl-9 pr-3 py-1.5 text-xs text-text-main placeholder-text-caption focus:outline-hidden focus:border-sky-500"
+              className="w-full bg-surface-subtle border border-border-subtle rounded-xl pl-9 pr-3 py-1.5 text-xs text-text-main placeholder-text-caption focus:outline-hidden focus:border-sky-500"
             />
           </div>
 
@@ -165,7 +165,7 @@ export const ShippingDocumentsPage: React.FC = () => {
           <select
             value={selectedVesselFilter}
             onChange={e => setSelectedVesselFilter(e.target.value)}
-            className="bg-surface-subtle border border-border-subtle rounded-md px-3 py-1.5 text-xs text-text-main focus:outline-hidden focus:border-sky-500"
+            className="bg-surface-subtle border border-border-subtle rounded-xl px-3 py-1.5 text-xs text-text-main focus:outline-hidden focus:border-sky-500"
           >
             <option value="ALL">All Vessels</option>
             {vessels.map(v => (
@@ -179,7 +179,7 @@ export const ShippingDocumentsPage: React.FC = () => {
           <select
             value={selectedTypeFilter}
             onChange={e => setSelectedTypeFilter(e.target.value)}
-            className="bg-surface-subtle border border-border-subtle rounded-md px-3 py-1.5 text-xs text-text-main focus:outline-hidden focus:border-sky-500"
+            className="bg-surface-subtle border border-border-subtle rounded-xl px-3 py-1.5 text-xs text-text-main focus:outline-hidden focus:border-sky-500"
           >
             <option value="ALL">All Document Types</option>
             <option value="Bill of Lading">Bill of Lading</option>
@@ -197,7 +197,7 @@ export const ShippingDocumentsPage: React.FC = () => {
       </div>
 
       {/* 3. Documents Table */}
-      <div className="bg-surface rounded-card border border-border-subtle shadow-subtle overflow-hidden w-full min-w-0">
+      <div className="bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden w-full min-w-0">
         <div className="overflow-x-auto w-full">
           <table className="w-full text-left text-xs font-sans min-w-[750px]">
             <thead className="bg-surface-subtle border-b border-border-subtle text-text-muted font-medium text-[11px] uppercase tracking-wider">
@@ -255,14 +255,14 @@ export const ShippingDocumentsPage: React.FC = () => {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => handleDownload(doc.name)}
-                          className="p-1.5 rounded-md hover:bg-surface-subtle text-text-caption hover:text-text-main transition-colors cursor-pointer"
+                          className="p-1.5 rounded-xl hover:bg-surface-subtle text-text-caption hover:text-text-main transition-colors cursor-pointer"
                           title="Download Document"
                         >
                           <Download className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => deleteDocument(doc.id)}
-                          className="p-1.5 rounded-md hover:bg-rose-50 text-text-caption hover:text-rose-600 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-xl hover:bg-rose-50 text-text-caption hover:text-rose-600 transition-colors cursor-pointer"
                           title="Delete Document"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -290,7 +290,7 @@ export const ShippingDocumentsPage: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-md text-text-caption hover:text-text-main cursor-pointer"
+                className="p-1 rounded-xl text-text-caption hover:text-text-main cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -304,7 +304,7 @@ export const ShippingDocumentsPage: React.FC = () => {
                   placeholder="e.g. Master's Dangerous Goods Manifest"
                   value={newDoc.name}
                   onChange={e => setNewDoc({ ...newDoc, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                   required
                 />
               </div>
@@ -314,7 +314,7 @@ export const ShippingDocumentsPage: React.FC = () => {
                 <select
                   value={newDoc.vesselId}
                   onChange={e => setNewDoc({ ...newDoc, vesselId: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                 >
                   {vessels.map(v => (
                     <option key={v.id} value={v.id}>
@@ -329,7 +329,7 @@ export const ShippingDocumentsPage: React.FC = () => {
                 <select
                   value={newDoc.type}
                   onChange={e => setNewDoc({ ...newDoc, type: e.target.value as DocumentType })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                 >
                   <option value="Bill of Lading">Bill of Lading (B/L)</option>
                   <option value="Cargo Manifest">Cargo Manifest</option>
@@ -355,13 +355,13 @@ export const ShippingDocumentsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-md bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-subtle"
+                  className="px-4 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                   Upload & File
                 </button>
@@ -373,3 +373,4 @@ export const ShippingDocumentsPage: React.FC = () => {
     </div>
   );
 };
+

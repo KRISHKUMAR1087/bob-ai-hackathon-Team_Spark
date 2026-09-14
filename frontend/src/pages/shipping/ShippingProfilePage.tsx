@@ -42,7 +42,7 @@ export const ShippingProfilePage: React.FC = () => {
 
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-md text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors shadow-subtle self-start sm:self-auto cursor-pointer"
+          className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.04)] self-start sm:self-auto cursor-pointer"
         >
           <LogOut className="w-4 h-4" />
           <span>Sign Out</span>
@@ -50,16 +50,16 @@ export const ShippingProfilePage: React.FC = () => {
       </div>
 
       {/* Profile Overview Card */}
-      <div className="bg-surface rounded-card border border-border-subtle shadow-subtle p-6 space-y-5">
+      <div className="bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 space-y-5">
         <div className="flex items-center gap-4 border-b border-border-subtle pb-5">
           {user?.photoURL ? (
             <img
               src={user.photoURL}
               alt={user.name}
-              className="w-16 h-16 rounded-full object-cover border border-border-subtle shadow-subtle"
+              className="w-16 h-16 rounded-full object-cover border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
             />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-sky-100 border border-sky-200 text-sky-800 flex items-center justify-center font-bold text-xl shadow-subtle">
+            <div className="w-16 h-16 rounded-full bg-sky-100 border border-sky-200 text-sky-800 flex items-center justify-center font-bold text-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               SA
             </div>
           )}
@@ -105,7 +105,7 @@ export const ShippingProfilePage: React.FC = () => {
       </div>
 
       {/* Notification Preferences */}
-      <div className="bg-surface rounded-card border border-border-subtle shadow-subtle p-6 space-y-4">
+      <div className="bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 space-y-4">
         <h3 className="text-sm font-semibold text-text-main border-b border-border-subtle pb-3">
           Agency Dispatch Alerts & Notification Preferences
         </h3>
@@ -160,7 +160,7 @@ export const ShippingProfilePage: React.FC = () => {
         <div className="pt-2 flex justify-end">
           <button
             onClick={handleSavePreferences}
-            className="px-4 py-2 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle"
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           >
             Save Notification Preferences
           </button>
@@ -169,3 +169,4 @@ export const ShippingProfilePage: React.FC = () => {
     </div>
   );
 };
+

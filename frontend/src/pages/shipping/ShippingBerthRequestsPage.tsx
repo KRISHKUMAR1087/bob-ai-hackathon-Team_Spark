@@ -127,7 +127,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-all shadow-subtle cursor-pointer shrink-0"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer shrink-0"
         >
           <PlusCircle className="w-3.5 h-3.5" />
           <span>+ Request a Berth</span>
@@ -143,7 +143,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
       </div>
 
       {/* 3. Filter Bar */}
-      <div className="bg-surface p-3.5 rounded-lg border border-border-subtle shadow-subtle flex items-center justify-between flex-wrap gap-3">
+      <div className="bg-surface p-3.5 rounded-lg border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-xs text-text-muted mr-1 font-medium flex items-center gap-1">
             <Filter className="w-3.5 h-3.5 text-text-caption" /> Filter:
@@ -178,7 +178,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
           return (
             <div
               key={req.id}
-              className="p-5 rounded-lg bg-surface border border-border-subtle shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-sky-300 transition-colors"
+              className="p-5 rounded-lg bg-surface border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-sky-300 transition-colors"
             >
               {/* Left Details */}
               <div className="space-y-2">
@@ -228,7 +228,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
               <div className="flex items-center gap-2 shrink-0 md:self-center">
                 <button
                   onClick={() => navigate(`/shipping/vessels/${req.vesselId}`)}
-                  className="px-3.5 py-1.5 rounded-md bg-surface-subtle hover:bg-sky-50 text-sky-800 hover:text-sky-900 border border-border-subtle font-medium text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-xl bg-surface-subtle hover:bg-sky-50 text-sky-800 hover:text-sky-900 border border-border-subtle font-medium text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>View Vessel</span>
                   <ArrowRight className="w-3 h-3" />
@@ -252,7 +252,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-md text-text-caption hover:text-text-main cursor-pointer"
+                className="p-1 rounded-xl text-text-caption hover:text-text-main cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -264,7 +264,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
                 <select
                   value={newRequest.vesselId}
                   onChange={e => setNewRequest({ ...newRequest, vesselId: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                 >
                   {vessels.map(v => (
                     <option key={v.id} value={v.id}>
@@ -280,7 +280,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
                   <select
                     value={newRequest.requestedBerth}
                     onChange={e => setNewRequest({ ...newRequest, requestedBerth: e.target.value })}
-                    className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                    className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                   >
                     {berths.map(b => (
                       <option key={b.id} value={b.id}>
@@ -295,7 +295,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
                   <select
                     value={newRequest.requestedCranes}
                     onChange={e => setNewRequest({ ...newRequest, requestedCranes: e.target.value })}
-                    className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                    className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                   >
                     <option value="1">1 STS Crane</option>
                     <option value="2">2 STS Cranes</option>
@@ -313,7 +313,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
                     placeholder="e.g. Tomorrow, 14:00 UTC"
                     value={newRequest.requestedArrivalTime}
                     onChange={e => setNewRequest({ ...newRequest, requestedArrivalTime: e.target.value })}
-                    className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                    className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                     required
                   />
                 </div>
@@ -324,7 +324,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
                     type="number"
                     value={newRequest.estimatedDurationHours}
                     onChange={e => setNewRequest({ ...newRequest, estimatedDurationHours: e.target.value })}
-                    className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                    className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                     required
                   />
                 </div>
@@ -337,7 +337,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
                   placeholder="e.g. Priority ULCV discharge, refrigerated containers"
                   value={newRequest.cargoType}
                   onChange={e => setNewRequest({ ...newRequest, cargoType: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1"
                 />
               </div>
 
@@ -348,7 +348,7 @@ export const ShippingBerthRequestsPage: React.FC = () => {
                   placeholder="Notes for Port Authority harbor master..."
                   value={newRequest.notes}
                   onChange={e => setNewRequest({ ...newRequest, notes: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1 resize-none"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-border-subtle text-text-main text-xs focus:outline-hidden focus:border-sky-500 mt-1 resize-none"
                 />
               </div>
 
@@ -356,13 +356,13 @@ export const ShippingBerthRequestsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-3 py-1.5 rounded-md bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-md bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-subtle"
+                  className="px-4 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                   Submit Request
                 </button>
@@ -374,3 +374,4 @@ export const ShippingBerthRequestsPage: React.FC = () => {
     </div>
   );
 };
+
