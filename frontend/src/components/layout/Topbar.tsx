@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useOperations } from '../../context/OperationsContext';
 import { useAuth } from '../../context/AuthContext';
+import { MusicButton } from '../common/MusicButton';
 
 interface TopbarProps {
   isCollapsed: boolean;
@@ -163,6 +164,9 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white" />
           )}
         </button>
+
+        {/* Ambient Background Music Toggle */}
+        <MusicButton />
 
         {/* Copilot Trigger Button */}
         <button
