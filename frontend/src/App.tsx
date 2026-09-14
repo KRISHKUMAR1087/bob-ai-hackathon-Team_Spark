@@ -9,6 +9,7 @@ import { RoleProtectedRoute } from './components/auth/RoleProtectedRoute';
 
 // Port Operations / Admin Pages
 import { LoginPage } from './pages/LoginPage';
+import { AuthPage } from './pages/AuthPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { VesselsPage } from './pages/VesselsPage';
 import { VesselDetailPage } from './pages/VesselDetailPage';
@@ -89,6 +90,60 @@ export const App: React.FC = () => {
   return (
     <AuthProvider>
       <OperationsProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Authentication Route */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/auth/login" element={<AuthPage mode="login" />} />
+            <Route path="/auth/signup" element={<AuthPage mode="signup" />} />
+
+            {/* Root Portal Router */}
+            <Route path="/" element={<RootRedirect />} />
+
+            {/* 1. PORT OPERATIONS ADMIN PORTAL */}
+            <Route element={<RoleProtectedRoute allowedRoles={['admin']} />}>
+              <Route element={<AppShell />}>
+                <Route path="/dashboard" element={<DashboardPage />} />
+
+                {/* Operations Group */}
+                <Route path="/operations/vessels" element={<VesselsPage />} />
+                <Route path="/operations/vessels/:id" element={<VesselDetailPage />} />
+                <Route path="/operations/berths" element={<BerthsPage />} />
+                <Route path="/operations/cranes" element={<CranesPage />} />
+                <Route path="/operations/yard" element={<YardPage />} />
+                <Route path="/operations" element={<OperationsBoardPage />} />
+                <Route path="/operations/board" element={<OperationsBoardPage />} />
+
+                {/* Intelligence Group */}
+                <Route path="/intelligence/forecast" element={<ForecastPage />} />
+                <Route path="/copilot" element={<CopilotPage />} />
+                <Route path="/intelligence/routes" element={<RoutesPage />} />
+
+                {/* Decision Support Group */}
+                <Route path="/decision/optimizer" element={<OptimizerPage />} />
+                <Route path="/decision/simulator" element={<SimulatorPage />} />
+                <Route path="/decision/planner" element={<PlannerPage />} />
+
+                {/* Analytics */}
+                <Route path="/analytics" element={<AnalyticsPage />} />
+
+                {/* System */}
+                <Route path="/alerts" element={<AlertsPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+
+                {/* Admin Aliases */}
+                <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/admin/dashboard" element={<DashboardPage />} />
+                <Route path="/admin/operations" element={<OperationsBoardPage />} />
+                <Route path="/admin/optimizer" element={<OptimizerPage />} />
+                <Route path="/admin/simulator" element={<SimulatorPage />} />
+                <Route path="/admin/planner" element={<PlannerPage />} />
+                <Route path="/admin/forecast" element={<ForecastPage />} />
+                <Route path="/admin/copilot" element={<CopilotPage />} />
+                <Route path="/admin/routes" element={<RoutesPage />} />
+                <Route path="/admin/analytics" element={<AnalyticsPage />} />
+                <Route path="/admin/alerts" element={<AlertsPage />} />
+                <Route path="/admin/settings" element={<SettingsPage />} />
         <MusicProvider>
           <BrowserRouter>
             <Routes>

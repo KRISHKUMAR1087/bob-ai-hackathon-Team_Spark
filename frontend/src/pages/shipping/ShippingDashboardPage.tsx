@@ -85,42 +85,42 @@ export const ShippingDashboardPage: React.FC = () => {
       </div>
 
       {/* 2. My Fleet Operational Summary Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="p-3.5 rounded-lg bg-surface border border-border-subtle shadow-subtle">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+        <div className="p-4 rounded-xl bg-surface border border-border-subtle shadow-xs hover:shadow-md transition-all duration-200">
           <div className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">
             Total Fleet
           </div>
-          <div className="text-2xl font-bold text-text-main mt-1">
+          <div className="text-2xl font-bold text-text-main mt-1.5">
             {agentVessels.length}
           </div>
           <div className="text-[10px] text-text-caption mt-0.5">Assigned vessels</div>
         </div>
 
-        <div className="p-3.5 rounded-lg bg-surface border border-border-subtle shadow-subtle">
+        <div className="p-4 rounded-xl bg-surface border border-border-subtle shadow-xs hover:shadow-md transition-all duration-200">
           <div className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">
             Arriving
           </div>
-          <div className="text-2xl font-bold text-sky-600 mt-1">
+          <div className="text-2xl font-bold text-sky-600 mt-1.5">
             {arrivingCount}
           </div>
           <div className="text-[10px] text-text-caption mt-0.5">Inbound next 48h</div>
         </div>
 
-        <div className="p-3.5 rounded-lg bg-surface border border-border-subtle shadow-subtle">
+        <div className="p-4 rounded-xl bg-surface border border-border-subtle shadow-xs hover:shadow-md transition-all duration-200">
           <div className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">
             At Port
           </div>
-          <div className="text-2xl font-bold text-emerald-600 mt-1">
+          <div className="text-2xl font-bold text-emerald-600 mt-1.5">
             {atPortCount}
           </div>
           <div className="text-[10px] text-text-caption mt-0.5">Berthing & loading</div>
         </div>
 
-        <div className="p-3.5 rounded-lg bg-surface border border-border-subtle shadow-subtle">
+        <div className="p-4 rounded-xl bg-surface border border-border-subtle shadow-xs hover:shadow-md transition-all duration-200">
           <div className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">
             Delayed / At Risk
           </div>
-          <div className="text-2xl font-bold text-rose-600 mt-1">
+          <div className="text-2xl font-bold text-rose-600 mt-1.5">
             {isOptimizationApplied ? 0 : delayedCount}
           </div>
           <div className="text-[10px] text-text-caption mt-0.5">
@@ -128,11 +128,11 @@ export const ShippingDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-3.5 rounded-lg bg-surface border border-border-subtle shadow-subtle col-span-2 sm:col-span-1">
+        <div className="p-4 rounded-xl bg-surface border border-border-subtle shadow-xs hover:shadow-md transition-all duration-200 col-span-2 sm:col-span-1">
           <div className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">
             Departed
           </div>
-          <div className="text-2xl font-bold text-text-muted mt-1">
+          <div className="text-2xl font-bold text-text-muted mt-1.5">
             {departedCount}
           </div>
           <div className="text-[10px] text-text-caption mt-0.5">Completed calls</div>
