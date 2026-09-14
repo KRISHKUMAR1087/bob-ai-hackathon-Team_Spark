@@ -22,20 +22,20 @@ export async function getVessels(opts: {
       Completed: 'Completed',
     };
     const mapped = statusMap[opts.status];
-    if (mapped) where.status = mapped as Prisma.EnumVesselStatusFilter['equals'];
+    if (mapped) where.status = mapped as string;
   }
 
   if (opts.priority) {
-    where.priority = opts.priority as Prisma.EnumPriorityLevelFilter['equals'];
+    where.priority = opts.priority as string;
   }
 
   if (opts.search) {
     const s = opts.search;
     where.OR = [
-      { name: { contains: s, mode: 'insensitive' } },
-      { imo: { contains: s, mode: 'insensitive' } },
-      { origin: { contains: s, mode: 'insensitive' } },
-      { assignedBerth: { contains: s, mode: 'insensitive' } },
+      { name: { contains: s } },
+      { imo: { contains: s } },
+      { origin: { contains: s } },
+      { assignedBerth: { contains: s } },
     ];
   }
 
@@ -228,7 +228,7 @@ export async function getLatestForecast() {
       detail: d.detail,
     })),
     points: row.points.map(p => {
-      const bd = p.berthData as Record<string, number>;
+      const bd = JSON.parse(p.berthData) as Record<string, number>;
       return {
         hour: p.hour,
         B01: bd['B01'] ?? 0,
@@ -298,7 +298,7 @@ export async function getShiftPlans() {
     berthId: row.berthId,
     vesselId: row.vesselId,
     vesselName: row.vesselName,
-    assignedCranes: row.assignedCranes as string[],
+    assignedCranes: JSON.parse(row.assignedCranes) as string[],
     status: row.status,
     conflictReason: row.conflictReason ?? undefined,
   }));
@@ -449,7 +449,7 @@ export async function applyOptimization() {
         data: {
           berthId: 'B02',
           status: 'Optimized',
-          assignedCranes: ['C04', 'C06'],
+          assignedCranes: JSON.stringify(['C04', 'C06']),
           conflictReason: null,
         }
       });
@@ -476,27 +476,27 @@ export async function applyOptimization() {
 export async function runSimulation(scenarioType: string, targetEntityId?: string, durationHours?: number) {
   const sim = await prisma.simulationResult.create({
     data: {
-      scenario: {
+      scenario: JSON.stringify({
         type: scenarioType,
         durationHours: durationHours || 8,
-      },
-      before: {
+      }),
+      before: JSON.stringify({
         queueCount: 7,
         avgWaitHours: 11.4,
         berthUtilizationPercent: 78,
-      },
-      after: {
+      }),
+      after: JSON.stringify({
         queueCount: 11,
         avgWaitHours: 17.8,
         berthUtilizationPercent: 94,
-      },
-      recoveryPlan: {
+      }),
+      recoveryPlan: JSON.stringify({
         isApplied: false,
         steps: [
           'Move C05 to B04',
           'Reassign Ocean Star to B02'
         ]
-      }
+      })
     }
   });
   return sim;
