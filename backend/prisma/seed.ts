@@ -21,7 +21,7 @@ async function main(): Promise<void> {
   // ───────────────────────────────────────────────────────────────────────────
   await prisma.user.upsert({
     where: { id: 'demo-admin' },
-    update: {},
+    update: { password: adminPasswordHash },
     create: {
       id: 'demo-admin',
       name: 'Port Operations Admin',
@@ -34,7 +34,7 @@ async function main(): Promise<void> {
 
   await prisma.user.upsert({
     where: { id: 'demo-agent' },
-    update: {},
+    update: { password: agentPasswordHash },
     create: {
       id: 'demo-agent',
       name: 'Global Shipping Agent',
