@@ -12,3 +12,6 @@ GOOGLE_CLIENT_ID = "112305367877-abdc6pev7v0ugc12i0g40nvd3j9j53j4.apps.googleuse
 [observability]
 enabled = true
 
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "<replace-with-hyperdrive-id>"

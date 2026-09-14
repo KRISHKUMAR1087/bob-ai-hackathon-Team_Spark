@@ -3,13 +3,11 @@ import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 let _prisma: PrismaClient | undefined;
+export function setPrisma(p: PrismaClient) { _prisma = p; }
 
 function getPrisma(): PrismaClient {
   if (!_prisma) {
-    const url = process.env.DATABASE_URL ?? '';
-    const pool = new Pool({ connectionString: url });
-    const adapter = new PrismaPg(pool);
-    _prisma = new PrismaClient({ adapter } as any);
+    throw new Error("Prisma client not initialized in operationsService. Make sure setPrisma is called.");
   }
   return _prisma;
 }

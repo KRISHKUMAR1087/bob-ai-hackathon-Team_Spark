@@ -19,13 +19,17 @@ import { PrismaPg } from '@prisma/adapter-pg';
 // We need a global cache for the Prisma client so we don't exhaust connections
 let globalPrisma: PrismaClient | undefined;
 
+import { setPrisma } from './services/operationsService.js';
+
 app.use('*', async (c, next) => {
   if (!c.var.prisma) {
     if (!globalPrisma) {
-      const datasourceUrl = (c.env?.DATABASE_URL as string | undefined) ?? process.env.DATABASE_URL ?? '';
+      // Use HYPERDRIVE connection string for Cloudflare Workers pooling, fallback to DATABASE_URL for Node.js
+      const datasourceUrl = c.env?.HYPERDRIVE?.connectionString ?? (c.env?.DATABASE_URL as string | undefined) ?? process.env.DATABASE_URL ?? '';
       const pool = new Pool({ connectionString: datasourceUrl });
       const adapter = new PrismaPg(pool);
       globalPrisma = new PrismaClient({ adapter } as any);
+      setPrisma(globalPrisma);
     }
     c.set('prisma', globalPrisma);
   }
