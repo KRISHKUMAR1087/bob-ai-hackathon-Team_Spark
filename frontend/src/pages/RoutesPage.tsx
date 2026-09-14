@@ -3,6 +3,15 @@ import {
   Sparkles,
   ArrowRight,
   CheckCircle2,
+  Ship,
+  Anchor,
+  Clock,
+  DollarSign,
+  TrendingDown,
+  ShieldCheck,
+  Fuel,
+  Navigation,
+  ExternalLink,
 } from 'lucide-react';
 import { useOperations } from '../context/OperationsContext';
 import { RouteMapGraphic } from '../components/operations/RouteMapGraphic';
@@ -12,151 +21,229 @@ export const RoutesPage: React.FC = () => {
   const { routes, setIsCopilotOpen, sendCopilotMessage } = useOperations();
   const [selectedPortCode, setSelectedPortCode] = useState<string>('PORT-B');
 
+  const selectedPort = routes.find(r => r.portCode === selectedPortCode) || routes[1];
+
   const handleAskGemini = async () => {
     setIsCopilotOpen(true);
-    await sendCopilotMessage('Compare alternate routing options between Rotterdam and Antwerp Gateway.');
+    await sendCopilotMessage(
+      `Compare alternate routing economics between Rotterdam and ${selectedPort.portName}. Provide a commercial briefing with bunker fuel costs and demurrage exposure.`
+    );
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="space-y-6 max-w-7xl mx-auto pb-8">
+      {/* 1. Header with Breadcrumb & Action */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-border-subtle">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-bold text-text-main tracking-tight">
               Route Intelligence & Alternate Port Matrix
             </h1>
-            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-teal-50 text-teal-800 border border-teal-200">
-              Nautical Diversion Analysis
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-brand-teal/15 text-brand-teal border border-brand-teal/30">
+              Nautical AI Diversion
             </span>
           </div>
-          <p className="text-sm text-text-muted mt-1">
-            Evaluate offshore diversion economics, bunker fuel trade-offs, and port turnaround guarantees.
+          <p className="text-xs sm:text-sm text-text-muted mt-1">
+            Evaluate offshore diversion economics, bunker fuel trade-offs, and port turnaround SLA guarantees.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleAskGemini}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-colors shadow-subtle"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 transition-all shadow-md shadow-teal-500/20 cursor-pointer active:scale-95"
           >
-            <Sparkles className="w-3.5 h-3.5 text-brand-teal" />
+            <Sparkles className="w-3.5 h-3.5" />
             <span>Ask Gemini Copilot</span>
           </button>
         </div>
       </div>
 
-      {/* Vector Route Map Visualization */}
+      {/* 2. Responsive Vector Nautical Map Component */}
       <RouteMapGraphic
         routes={routes}
         selectedPortCode={selectedPortCode}
         onSelectPort={setSelectedPortCode}
       />
 
-      {/* Alternate Ports Comparison Cards Grid */}
+      {/* 3. Trade-Off Economics Highlight Strip */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-4 rounded-2xl glass-card space-y-1">
+          <div className="flex items-center justify-between text-xs text-text-muted font-medium">
+            <span>Turnaround Time Saved</span>
+            <Clock className="w-4 h-4 text-emerald-500" />
+          </div>
+          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+            -13.0 hrs
+          </div>
+          <div className="text-[11px] text-text-caption">
+            Antwerp vs Rotterdam queue
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl glass-card space-y-1">
+          <div className="flex items-center justify-between text-xs text-text-muted font-medium">
+            <span>Demurrage Avoidance</span>
+            <DollarSign className="w-4 h-4 text-brand-teal" />
+          </div>
+          <div className="text-2xl font-bold text-text-main">
+            +$148,000
+          </div>
+          <div className="text-[11px] text-text-caption">
+            Charter party penalty saved
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl glass-card space-y-1">
+          <div className="flex items-center justify-between text-xs text-text-muted font-medium">
+            <span>Bunker Steaming Delta</span>
+            <Fuel className="w-4 h-4 text-amber-500" />
+          </div>
+          <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+            +$10,000
+          </div>
+          <div className="text-[11px] text-text-caption">
+            +45 NM steaming at 16 kts
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl glass-card space-y-1">
+          <div className="flex items-center justify-between text-xs text-text-muted font-medium">
+            <span>Net Commercial ROI</span>
+            <TrendingDown className="w-4 h-4 text-emerald-500" />
+          </div>
+          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+            +$138,000 USD
+          </div>
+          <div className="text-[11px] text-emerald-600 font-semibold">
+            High Commercial Benefit
+          </div>
+        </div>
+      </div>
+
+      {/* 4. Alternate Ports Comparison Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {routes.map(port => {
+        {routes.map((port) => {
           const isSelected = selectedPortCode === port.portCode;
 
           return (
             <div
               key={port.portCode}
               onClick={() => setSelectedPortCode(port.portCode)}
-              className={`bg-surface p-5 rounded-card border cursor-pointer transition-all duration-150 hover:shadow-elevated flex flex-col justify-between space-y-4 shadow-subtle ${
+              className={`p-5 rounded-2xl border cursor-pointer transition-all duration-200 glass-card flex flex-col justify-between space-y-4 hover:shadow-xl ${
                 port.isRecommended
-                  ? 'border-emerald-300 ring-1 ring-emerald-200'
+                  ? 'border-emerald-400/80 ring-2 ring-emerald-400/20 bg-emerald-500/5'
                   : port.riskLevel === 'Critical'
-                  ? 'border-rose-300'
-                  : 'border-border-subtle hover:border-slate-300'
-              } ${isSelected ? 'ring-2 ring-brand-teal' : ''}`}
+                  ? 'border-rose-400/80 ring-2 ring-rose-400/20 bg-rose-500/5'
+                  : 'border-border-subtle hover:border-brand-teal/60'
+              } ${isSelected ? 'ring-3 ring-brand-teal scale-102 shadow-2xl' : ''}`}
             >
-              <div>
-                <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+              <div className="space-y-4">
+                {/* Port Card Header */}
+                <div className="flex items-center justify-between border-b border-border-subtle/80 pb-3">
                   <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-semibold text-text-main">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-text-main">
                         {port.portName}
                       </span>
                     </div>
-                    <span className="text-[11px] text-text-caption">
-                      {port.country} • {port.distanceNm} NM
+                    <span className="text-[11px] text-text-muted">
+                      {port.country} • {port.distanceNm} NM from Waypoint
                     </span>
                   </div>
 
                   {port.isRecommended ? (
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">
-                      Recommended
+                    <span className="text-[10px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold border border-emerald-300/40">
+                      RECOMMENDED
                     </span>
                   ) : (
                     <RiskBadge level={port.riskLevel} size="sm" />
                   )}
                 </div>
 
-                {/* Metrics */}
-                <div className="mt-4 space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-text-muted">Turnaround Delay:</span>
+                {/* Metrics Breakdown */}
+                <div className="space-y-2.5 text-xs">
+                  <div className="flex justify-between items-center py-1 border-b border-border-subtle/40">
+                    <span className="text-text-muted flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-text-caption" />
+                      Turnaround Delay:
+                    </span>
                     <span
-                      className={`font-semibold ${
-                        port.delayHours > 25 ? 'text-rose-600' : 'text-text-main'
+                      className={`font-bold ${
+                        port.delayHours > 25 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'
                       }`}
                     >
                       {port.delayHours} hours
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-text-muted">Extra Fuel Cost:</span>
+
+                  <div className="flex justify-between items-center py-1 border-b border-border-subtle/40">
+                    <span className="text-text-muted flex items-center gap-1.5">
+                      <Fuel className="w-3.5 h-3.5 text-text-caption" />
+                      Bunker Steaming:
+                    </span>
                     <span className="font-semibold text-text-main">
                       ${port.extraCostUsd.toLocaleString()} USD
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-text-muted">Congestion Index:</span>
-                    <span className="font-semibold text-text-main">{port.congestionScore} / 100</span>
+
+                  <div className="flex justify-between items-center py-1 border-b border-border-subtle/40">
+                    <span className="text-text-muted flex items-center gap-1.5">
+                      <Navigation className="w-3.5 h-3.5 text-text-caption" />
+                      Congestion Index:
+                    </span>
+                    <span className="font-bold text-text-main">
+                      {port.congestionScore} / 100
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-text-muted">Projected Port ETA:</span>
-                    <span className="text-text-main font-medium">{port.eta}</span>
+
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-text-muted flex items-center gap-1.5">
+                      <Ship className="w-3.5 h-3.5 text-text-caption" />
+                      Projected Port ETA:
+                    </span>
+                    <span className="text-text-main font-semibold">{port.eta}</span>
                   </div>
                 </div>
 
                 {/* Recommendation Rationale */}
-                <div className="mt-4 p-3.5 rounded-lg bg-surface-subtle text-[11px] text-text-muted leading-relaxed">
+                <div className="p-3.5 rounded-xl bg-surface-subtle/80 border border-border-subtle text-xs text-text-muted leading-relaxed">
                   {port.rationale}
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-border-subtle flex items-center justify-between text-xs text-brand-teal hover:underline font-medium">
-                <span>Select Port</span>
-                <ArrowRight className="w-3 h-3" />
+              {/* Select CTA */}
+              <div className="pt-3 border-t border-border-subtle/80 flex items-center justify-between text-xs text-brand-teal font-semibold">
+                <span>{isSelected ? '✓ Selected Route' : 'Select Destination'}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Recommendation Summary Banner */}
-      <div className="bg-surface p-6 rounded-card border border-teal-200 bg-teal-50/20 shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-200 text-brand-teal flex items-center justify-center shrink-0 mt-0.5">
-            <CheckCircle2 className="w-5 h-5" />
+      {/* 5. Optimal Diversion Recommendation Banner */}
+      <div className="p-6 rounded-2xl glass-card border border-teal-300/80 bg-gradient-to-r from-teal-500/10 via-cyan-500/5 to-emerald-500/10 shadow-elevated flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-start gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-cyan-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-md shadow-teal-500/20">
+            <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-xs font-semibold text-teal-950 uppercase tracking-wider">
+            <h3 className="text-xs sm:text-sm font-bold text-text-main uppercase tracking-wider">
               Optimal Diversion Recommendation: Antwerp Gateway (PORT-B)
             </h3>
             <p className="text-xs text-text-muted mt-1 leading-relaxed max-w-3xl">
-              An additional <strong>+$10,000 USD</strong> in steaming fuel avoids <strong>13.0 hours</strong> of waiting anchorage delay and clears the critical B04 bottleneck, preventing $148,000 in demurrage.
+              An additional <strong>+$10,000 USD</strong> in steaming fuel avoids <strong>13.0 hours</strong> of waiting anchorage delay and clears the critical B04 bottleneck, preventing <strong className="text-emerald-600 font-bold">$148,000</strong> in demurrage exposure.
             </p>
           </div>
         </div>
 
         <button
           onClick={handleAskGemini}
-          className="flex items-center gap-2 px-4 py-2 rounded-md text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-subtle shrink-0"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-md shadow-teal-500/20 shrink-0 cursor-pointer active:scale-95"
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Ask Gemini to Draft Notice</span>
+          <span>Draft Advisory with Gemini</span>
         </button>
       </div>
     </div>

@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import { GoogleSignInButton } from '../components/auth/GoogleSignInButton';
 import { RoleSelector } from '../components/auth/RoleSelector';
 import { MusicButton } from '../components/common/MusicButton';
+import { ThemeToggleButton } from '../components/common/ThemeToggleButton';
 import { User, UserRole } from '../types/auth';
 import { motion } from 'framer-motion';
 // @ts-ignore
@@ -74,18 +75,24 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-canvas font-sans text-text-main selection:bg-brand-teal selection:text-white">
-
-      {/* ─── 1. HERO ─────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col overflow-hidden bg-black">
-        {/* Background Video */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <video
-            autoPlay loop muted playsInline
-            className="absolute inset-0 w-full h-full object-cover object-center scale-[1.35]"
-            src={backgroundVideo}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-black/70" />
+    <div className="min-h-screen bg-canvas flex flex-col items-center justify-center p-4 sm:p-6 relative">
+      {/* Top-right Controls for login screen */}
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 flex items-center gap-2">
+        <ThemeToggleButton />
+        <MusicButton />
+      </div>
+      <div className="w-full max-w-lg space-y-6">
+        {/* Brand Header */}
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand-teal text-white shadow-subtle mb-1">
+            <Ship className="w-6 h-6" />
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-text-main">
+            PortPulse <span className="text-brand-teal">AI</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-text-muted max-w-sm mx-auto">
+            “Predict the bottleneck before the world feels it.”
+          </p>
         </div>
 
         {/* Header Nav */}

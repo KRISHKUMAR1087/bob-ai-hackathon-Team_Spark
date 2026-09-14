@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,14 +8,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        'canvas': '#F8FAFC',
-        'surface': '#FFFFFF',
-        'surface-subtle': '#F1F5F7',
-        'border-subtle': '#E2E8EC',
-        'border-hover': '#CBD5E1',
-        'text-main': '#17232D',
-        'text-muted': '#60727D',
-        'text-caption': '#8A9AA3',
+        'canvas': 'var(--color-canvas)',
+        'surface': 'var(--color-surface)',
+        'surface-subtle': 'var(--color-surface-subtle)',
+        'border-subtle': 'var(--color-border-subtle)',
+        'border-hover': 'var(--color-border-hover)',
+        'text-main': 'var(--color-text-main)',
+        'text-muted': 'var(--color-text-muted)',
+        'text-caption': 'var(--color-text-caption)',
         'brand-teal': '#0EA5A8',
         'brand-blue': '#3478C9',
         'op-green': '#168A63',
@@ -26,9 +27,10 @@ export default {
         mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'Courier New', 'monospace'],
       },
       boxShadow: {
-        'subtle': '0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04)',
-        'elevated': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
-        'modal': '0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04)',
+        'subtle': 'var(--shadow-subtle)',
+        'elevated': 'var(--shadow-elevated)',
+        'modal': 'var(--shadow-modal)',
+        'glass': 'var(--shadow-glass)',
       },
       borderRadius: {
         'card': '12px',

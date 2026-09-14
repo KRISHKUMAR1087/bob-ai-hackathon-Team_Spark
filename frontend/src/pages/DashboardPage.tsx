@@ -17,6 +17,7 @@ import {
 import { useOperations } from '../context/OperationsContext';
 import { RiskBadge } from '../components/common/RiskBadge';
 import { CongestionChart } from '../components/operations/CongestionChart';
+import { Port3DOverview } from '../components/common/Port3DOverview';
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -337,7 +338,30 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. OPERATIONAL SNAPSHOT (Quiet, compact horizontal status strip as supporting context) */}
+      {/* 4. 3D PORT TERMINAL & MEGA-SHIP OVERVIEW */}
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-brand-teal animate-pulse" />
+            <h2 className="text-base font-semibold text-text-main">
+              Port Sector Alpha — 3D Terminal & Mega-Ship Visualizer
+            </h2>
+            <span className="text-xs text-text-caption hidden md:inline">
+              (Interactive Quayside Berths B01–B06, STS Gantry Cranes & Container Yard)
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-text-muted font-medium hidden sm:inline">
+              Drag to Orbit • Scroll to Zoom
+            </span>
+          </div>
+        </div>
+
+        <Port3DOverview />
+      </div>
+
+      {/* 5. OPERATIONAL SNAPSHOT (Quiet, compact horizontal status strip as supporting context) */}
       <div className="bg-surface rounded-card border border-border-subtle shadow-subtle p-2">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-border-subtle">
           {/* Vessels Cell */}

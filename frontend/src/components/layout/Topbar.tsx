@@ -14,6 +14,7 @@ import {
 import { useOperations } from '../../context/OperationsContext';
 import { useAuth } from '../../context/AuthContext';
 import { MusicButton } from '../common/MusicButton';
+import { ThemeToggleButton } from '../common/ThemeToggleButton';
 
 interface TopbarProps {
   isCollapsed: boolean;
@@ -167,6 +168,9 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
 
         {/* Ambient Background Music Toggle */}
         <MusicButton />
+
+        {/* Day / Night Theme Switcher */}
+        <ThemeToggleButton />
 
         {/* Copilot Trigger Button */}
         <button
