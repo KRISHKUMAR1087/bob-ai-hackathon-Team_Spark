@@ -38,11 +38,16 @@ app.use('*', async (c, next) => {
 
 // CORS — explicit origin required when credentials: true.
 // Wildcard origin (*) + credentials is rejected by browsers.
-// Set CORS_ORIGIN env var for production (e.g. https://yourapp.vercel.app).
-app.use('/api/*', cors({
+// Set CORS_ORIGIN env var for production (e.g. https://yourapp.pages.dev).
+app.use('*', cors({
   origin: (origin, c) => {
-    const allowedOrigin = (c.env?.CORS_ORIGIN as string) || 'http://localhost:5173';
-    return allowedOrigin;
+    const envOrigin = (c.env?.CORS_ORIGIN as string) || 'http://localhost:5173';
+    // Support comma-separated origins and .pages.dev preview URLs
+    const allowed = envOrigin.split(',').map(o => o.trim());
+    if (origin && (allowed.includes(origin) || origin.endsWith('.pages.dev'))) {
+      return origin;
+    }
+    return allowed[0];
   },
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
