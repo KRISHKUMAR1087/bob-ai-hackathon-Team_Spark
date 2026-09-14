@@ -2,12 +2,14 @@ import React from 'react';
 import { ShieldCheck, AlertTriangle, AlertCircle, Info } from 'lucide-react';
 
 interface RiskBadgeProps {
-  level: string;
+  level?: string;
+  risk?: string;
   size?: 'sm' | 'md';
 }
 
-export const RiskBadge: React.FC<RiskBadgeProps> = ({ level, size = 'md' }) => {
-  const normalized = level.toUpperCase();
+export const RiskBadge: React.FC<RiskBadgeProps> = ({ level, risk, size = 'md' }) => {
+  const actualLevel = level || risk || 'LOW';
+  const normalized = actualLevel.toUpperCase();
 
   const config = {
     LOW: {

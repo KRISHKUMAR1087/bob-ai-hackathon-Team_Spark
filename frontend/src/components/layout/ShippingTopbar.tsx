@@ -1,29 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import {
-  Search,
   Bell,
-  Sparkles,
   Clock,
   Menu,
   ChevronRight,
   LogOut,
-  Settings as SettingsIcon,
-  ShieldCheck,
+  User as UserIcon,
+  Ship,
 } from 'lucide-react';
-import { useOperations } from '../../context/OperationsContext';
 import { useAuth } from '../../context/AuthContext';
+import { useOperations } from '../../context/OperationsContext';
 
-interface TopbarProps {
+interface ShippingTopbarProps {
   isCollapsed: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
 }
 
-export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen }) => {
+export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
+  isCollapsed,
+  setIsMobileMenuOpen,
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { alerts, setIsCopilotOpen, isCopilotOpen, searchQuery, setSearchQuery } = useOperations();
+  const { isOptimizationApplied } = useOperations();
   const [timeUtc, setTimeUtc] = useState<string>('');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -49,26 +50,14 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const unreadAlerts = alerts.filter(a => !a.isResolved).length;
-
   const getBreadcrumb = () => {
     const path = location.pathname;
-    if (path.includes('/dashboard')) return { section: 'Overview', title: 'Command Center' };
-    if (path.includes('/operations/vessels')) return { section: 'Operations', title: 'Vessel Traffic' };
-    if (path.includes('/operations/berths')) return { section: 'Operations', title: 'Berths Utilization' };
-    if (path.includes('/operations/cranes')) return { section: 'Operations', title: 'Cranes Fleet' };
-    if (path.includes('/operations/yard')) return { section: 'Operations', title: 'Yard Capacity' };
-    if (path === '/operations' || path.includes('/operations/board')) return { section: 'Operations', title: 'Operations Board' };
-    if (path.includes('/intelligence/forecast')) return { section: 'Intelligence', title: 'Congestion Forecast' };
-    if (path.includes('/copilot')) return { section: 'Intelligence', title: 'Gemini Copilot' };
-    if (path.includes('/intelligence/routes')) return { section: 'Intelligence', title: 'Route Intelligence' };
-    if (path.includes('/decision/optimizer')) return { section: 'Decision Support', title: 'Optimizer' };
-    if (path.includes('/decision/simulator')) return { section: 'Decision Support', title: 'What-If Simulator' };
-    if (path.includes('/decision/planner')) return { section: 'Decision Support', title: '72-Hour Planner' };
-    if (path.includes('/analytics')) return { section: 'Analytics', title: 'Operations Analytics' };
-    if (path.includes('/alerts')) return { section: 'System', title: 'Operational Alerts' };
-    if (path.includes('/settings')) return { section: 'System', title: 'Settings' };
-    return { section: 'PortPulse', title: 'Command Center' };
+    if (path.includes('/shipping/dashboard')) return { section: 'Shipping Portal', title: 'Agency Overview' };
+    if (path.includes('/shipping/vessels/')) return { section: 'Vessel Tracking', title: 'Turnaround Details' };
+    if (path.includes('/shipping/vessels')) return { section: 'Shipping Portal', title: 'Assigned Fleet' };
+    if (path.includes('/shipping/alerts')) return { section: 'Shipping Portal', title: 'Port Advisories' };
+    if (path.includes('/shipping/profile')) return { section: 'Shipping Portal', title: 'Agency Profile' };
+    return { section: 'Shipping Portal', title: 'Overview' };
   };
 
   const breadcrumb = getBreadcrumb();
@@ -79,15 +68,6 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
     navigate('/login', { replace: true });
   };
 
-  const getUserInitials = () => {
-    if (!user?.name) return 'MV';
-    const parts = user.name.trim().split(/\s+/);
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-    }
-    return user.name.slice(0, 2).toUpperCase();
-  };
-
   return (
     <header
       className={`fixed top-0 right-0 z-20 h-16 bg-surface border-b border-border-subtle transition-all duration-200 flex items-center justify-between px-3 sm:px-4 lg:px-6 left-0 ${
@@ -96,7 +76,7 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
     >
       {/* Left: Mobile Toggle + Breadcrumb */}
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-        {/* Hamburger Menu Button: visible only on mobile (< 768px) */}
+        {/* Hamburger Menu: visible only on mobile (< 768px) */}
         <button
           onClick={() => setIsMobileMenuOpen(true)}
           className="p-1.5 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle md:hidden shrink-0"
@@ -117,68 +97,31 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
 
       {/* Right Actions & Utilities */}
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-        {/* Global Search: visible on larger screens */}
-        <div className="relative hidden xl:block">
-          <div className="flex items-center bg-surface-subtle border border-border-subtle rounded-md px-2.5 py-1.5 w-48 lg:w-60 focus-within:border-brand-teal focus-within:w-68 transition-all">
-            <Search className="w-3.5 h-3.5 text-text-caption mr-2 shrink-0" />
-            <input
-              type="text"
-              placeholder="Search vessel, berth, IMO..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="w-full bg-transparent text-xs text-text-main placeholder-text-caption focus:outline-hidden"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="text-text-caption hover:text-text-main text-[10px] ml-1 shrink-0"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Live Port UTC Clock: hidden on mobile < 640px */}
+        {/* Live Port UTC Clock */}
         <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-subtle border border-border-subtle text-text-muted text-xs shrink-0">
           <Clock className="w-3.5 h-3.5 text-text-caption shrink-0" />
           <span className="font-mono text-[11px]">{timeUtc || '00:00:00 UTC'}</span>
         </div>
 
-        {/* AIS Status: hidden below 1280px */}
-        <div className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-subtle border border-border-subtle text-xs shrink-0">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-          <span className="text-text-muted">AIS:</span>
-          <span className="text-text-main font-medium">Online</span>
+        {/* Port Link / Status Badge */}
+        <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-sky-50 border border-sky-200 text-sky-800 text-xs shrink-0">
+          <span className="w-2 h-2 rounded-full bg-sky-500 shrink-0" />
+          <span className="font-medium text-[11px]">Port Authority Link Active</span>
         </div>
 
-        {/* Alerts Bell */}
+        {/* Shipping Advisories Bell */}
         <button
-          onClick={() => navigate('/alerts')}
+          onClick={() => navigate('/shipping/alerts')}
           className="relative p-1.5 sm:p-2 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle border border-transparent hover:border-border-subtle transition-colors shrink-0"
-          title={`${unreadAlerts} Active Operational Alerts`}
+          title={isOptimizationApplied ? 'All schedules normal' : '1 Active delay advisory'}
         >
           <Bell className="w-4 h-4" />
-          {unreadAlerts > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500" />
+          {!isOptimizationApplied && (
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
           )}
         </button>
 
-        {/* Copilot Trigger Button */}
-        <button
-          onClick={() => setIsCopilotOpen(!isCopilotOpen)}
-          className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 border shrink-0 ${
-            isCopilotOpen
-              ? 'bg-brand-teal text-white border-brand-teal'
-              : 'bg-surface text-text-main border-border-subtle hover:bg-surface-subtle hover:border-slate-300'
-          }`}
-          title="Open Gemini Operational Copilot"
-        >
-          <Sparkles className={`w-3.5 h-3.5 ${isCopilotOpen ? 'text-white' : 'text-brand-teal'} shrink-0`} />
-          <span className="hidden sm:inline">Copilot</span>
-        </button>
-
-        {/* Supervisor Profile Dropdown */}
+        {/* Agent Profile Dropdown Container */}
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
@@ -193,18 +136,16 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
                 className="w-8 h-8 rounded-full object-cover border border-border-subtle shrink-0"
               />
             ) : (
-              <div
-                className="w-8 h-8 rounded-full bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-semibold text-text-main shrink-0"
-              >
-                {getUserInitials()}
+              <div className="w-8 h-8 rounded-full bg-sky-100 border border-sky-200 text-sky-800 flex items-center justify-center font-bold text-xs shrink-0">
+                {user?.name ? user.name.slice(0, 2).toUpperCase() : 'SA'}
               </div>
             )}
-            <div className="hidden xl:block text-left pr-1">
+            <div className="hidden sm:block text-left pr-1">
               <div className="text-xs font-semibold text-text-main leading-tight truncate max-w-[120px]">
-                {user?.name || 'Capt. M. Vance'}
+                {user?.name || 'Shipping Agent'}
               </div>
               <div className="text-[10px] text-text-muted leading-tight">
-                Port Operations
+                Ship Agent
               </div>
             </div>
           </button>
@@ -215,26 +156,34 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
               {/* User Identity Header */}
               <div className="px-4 py-2.5 border-b border-border-subtle">
                 <div className="text-xs font-semibold text-text-main truncate">
-                  {user?.name || 'Capt. M. Vance'}
+                  {user?.name || 'Shipping Agent'}
                 </div>
                 <div className="text-[11px] text-text-muted truncate mt-0.5">
-                  {user?.email || 'admin@portpulse.demo'}
+                  {user?.email || 'agent@portpulse.demo'}
                 </div>
-                <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                  <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                  Role: Port Operations Admin
+                <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-sky-50 text-sky-800 border border-sky-200">
+                  <Ship className="w-3 h-3 text-sky-600" />
+                  Role: Ship Agent
                 </div>
               </div>
 
               {/* Menu Links */}
               <div className="py-1">
                 <Link
-                  to="/settings"
+                  to="/shipping/profile"
                   onClick={() => setIsProfileMenuOpen(false)}
                   className="flex items-center gap-2 px-4 py-2 text-xs text-text-main hover:bg-surface-subtle transition-colors"
                 >
-                  <SettingsIcon className="w-3.5 h-3.5 text-text-caption" />
-                  <span>Port Settings</span>
+                  <UserIcon className="w-3.5 h-3.5 text-text-caption" />
+                  <span>Agency Profile & Settings</span>
+                </Link>
+                <Link
+                  to="/shipping/vessels"
+                  onClick={() => setIsProfileMenuOpen(false)}
+                  className="flex items-center gap-2 px-4 py-2 text-xs text-text-main hover:bg-surface-subtle transition-colors"
+                >
+                  <Ship className="w-3.5 h-3.5 text-text-caption" />
+                  <span>Assigned Fleet (4)</span>
                 </Link>
               </div>
 

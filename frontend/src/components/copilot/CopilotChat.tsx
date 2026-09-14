@@ -5,9 +5,10 @@ import {
   Sparkles,
   ArrowRight,
   Zap,
-  Terminal,
 } from 'lucide-react';
 import { useOperations } from '../../context/OperationsContext';
+import { CopilotMessageContent } from './CopilotMessageContent';
+import { ConfirmationModal } from '../common/ConfirmationModal';
 
 interface CopilotChatProps {
   embedded?: boolean;
@@ -20,8 +21,18 @@ export const CopilotChat: React.FC<CopilotChatProps> = ({ embedded = false }) =>
     sendCopilotMessage,
     isCopilotLoading,
     setIsCopilotOpen,
+    applyOptimization,
+    applyRecoveryPlan,
   } = useOperations();
+
   const [inputQuery, setInputQuery] = useState('');
+  const [pendingAction, setPendingAction] = useState<{
+    type: 'optimization' | 'recovery';
+    title: string;
+    description: string;
+    action: () => void;
+  } | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,9 +52,43 @@ export const CopilotChat: React.FC<CopilotChatProps> = ({ embedded = false }) =>
     await sendCopilotMessage(prompt);
   };
 
-  const handleActionClick = (actionRoute?: string) => {
-    if (actionRoute) {
-      navigate(actionRoute);
+  const handleActionClick = (action: { label: string; actionRoute?: string; prompt?: string; requiresConfirmation?: boolean }) => {
+    if (action.prompt) {
+      handleChipClick(action.prompt);
+      return;
+    }
+
+    const lowerLabel = action.label.toLowerCase();
+
+    // Check if action changes state directly
+    if (lowerLabel.includes('apply optimization')) {
+      setPendingAction({
+        type: 'optimization',
+        title: 'Apply Berth Optimization',
+        description: 'Are you sure you want to execute the OR-Tools optimization plan to reassign Ocean Star to Berth B02?',
+        action: () => {
+          applyOptimization();
+          setPendingAction(null);
+        },
+      });
+      return;
+    }
+
+    if (lowerLabel.includes('apply recovery')) {
+      setPendingAction({
+        type: 'recovery',
+        title: 'Apply AI Recovery Plan',
+        description: 'Are you sure you want to execute the recovery plan (redeploy C05 to B04 and divert Ocean Star to B02)?',
+        action: () => {
+          applyRecoveryPlan();
+          setPendingAction(null);
+        },
+      });
+      return;
+    }
+
+    if (action.actionRoute) {
+      navigate(action.actionRoute);
       if (!embedded) {
         setIsCopilotOpen(false);
       }
@@ -53,11 +98,10 @@ export const CopilotChat: React.FC<CopilotChatProps> = ({ embedded = false }) =>
   const quickChips = [
     'Why is B04 at risk?',
     'What happens if C03 fails?',
-    'Why was Ocean Star moved?',
-    'Which vessel should we prioritize?',
-    'Compare alternate ports',
-    'Generate tomorrow\'s shift plan',
+    'Why did the optimizer move Ocean Star?',
     'What changed after the recovery plan?',
+    'Which berth needs attention?',
+    'Summarize the next 24 hours.',
   ];
 
   return (
@@ -78,70 +122,23 @@ export const CopilotChat: React.FC<CopilotChatProps> = ({ embedded = false }) =>
             )}
 
             <div
-              className={`max-w-[85%] rounded-xl p-4 space-y-3 ${
+              className={`max-w-[90%] rounded-xl p-4 space-y-3 ${
                 msg.sender === 'user'
                   ? 'bg-slate-100 border border-slate-200 text-text-main font-medium'
                   : 'bg-surface border border-border-subtle text-text-main shadow-subtle'
               }`}
             >
-              {/* Tool call indicator */}
-              {msg.toolCalls && msg.toolCalls.length > 0 && (
-                <div className="space-y-1">
-                  {msg.toolCalls.map((tc, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-subtle border border-border-subtle text-[11px] text-text-muted"
-                    >
-                      <Terminal className="w-3 h-3 text-brand-teal shrink-0" />
-                      <span className="font-mono font-medium text-text-main">{tc.toolName}()</span>
-                      <span className="text-text-caption">→ {tc.resultSummary}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Message text */}
-              <div className="prose prose-xs max-w-none space-y-2 whitespace-pre-wrap font-sans text-xs text-text-main">
-                {msg.text.split('\n\n').map((para, pIdx) => {
-                  if (para.startsWith('### ')) {
-                    return (
-                      <h4 key={pIdx} className="text-xs font-bold text-text-main mt-2 mb-1">
-                        {para.replace('### ', '')}
-                      </h4>
-                    );
-                  }
-                  if (para.startsWith('> ')) {
-                    return (
-                      <div
-                        key={pIdx}
-                        className="p-2.5 rounded-md bg-surface-subtle border-l-2 border-brand-teal text-xs text-text-muted"
-                      >
-                        {para.replace('> ', '')}
-                      </div>
-                    );
-                  }
-                  return (
-                    <p key={pIdx} className="leading-relaxed">
-                      {para}
-                    </p>
-                  );
-                })}
-              </div>
+              {/* Message content with clean Markdown, Tables & Charts */}
+              <CopilotMessageContent message={msg} />
 
               {/* Suggested Actions within Gemini reply */}
               {msg.suggestedActions && msg.suggestedActions.length > 0 && (
-                <div className="pt-2.5 border-t border-border-subtle flex flex-wrap gap-1.5">
+                <div className="pt-2 border-t border-border-subtle flex flex-wrap gap-1.5">
                   {msg.suggestedActions.map((act, aIdx) => (
                     <button
                       key={aIdx}
-                      onClick={() => {
-                        if (act.actionRoute) {
-                          handleActionClick(act.actionRoute);
-                        } else if (act.prompt) {
-                          handleChipClick(act.prompt);
-                        }
-                      }}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-surface hover:bg-surface-subtle text-text-main border border-border-subtle transition-colors shadow-subtle"
+                      onClick={() => handleActionClick(act)}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-surface hover:bg-surface-subtle text-text-main border border-border-subtle transition-colors shadow-subtle cursor-pointer"
                     >
                       <Zap className="w-3 h-3 text-brand-teal" />
                       <span>{act.label}</span>
@@ -158,7 +155,7 @@ export const CopilotChat: React.FC<CopilotChatProps> = ({ embedded = false }) =>
 
             {msg.sender === 'user' && (
               <div className="w-7 h-7 rounded-lg bg-surface border border-border-subtle text-text-main flex items-center justify-center shrink-0 mt-0.5 text-xs font-semibold shadow-subtle">
-                MV
+                OP
               </div>
             )}
           </div>
@@ -171,7 +168,7 @@ export const CopilotChat: React.FC<CopilotChatProps> = ({ embedded = false }) =>
             </div>
             <div className="bg-surface border border-border-subtle rounded-xl p-3 flex items-center gap-2 text-text-muted text-xs shadow-subtle">
               <div className="w-2 h-2 rounded-full bg-brand-teal animate-pulse" />
-              <span>Querying telemetry and calculating recommendation...</span>
+              <span>Analyzing port operations...</span>
             </div>
           </div>
         )}
@@ -190,7 +187,7 @@ export const CopilotChat: React.FC<CopilotChatProps> = ({ embedded = false }) =>
               key={idx}
               onClick={() => handleChipClick(chip)}
               disabled={isCopilotLoading}
-              className="px-2.5 py-1 rounded-md bg-surface hover:bg-slate-100 text-text-main border border-border-subtle text-xs transition-colors text-left shadow-subtle"
+              className="px-2.5 py-1 rounded-md bg-surface hover:bg-slate-100 text-text-main border border-border-subtle text-xs transition-colors text-left shadow-subtle cursor-pointer"
             >
               {chip}
             </button>
@@ -198,26 +195,39 @@ export const CopilotChat: React.FC<CopilotChatProps> = ({ embedded = false }) =>
         </div>
       </div>
 
-      {/* Input Box */}
-      <form onSubmit={handleSubmit} className="p-3.5 border-t border-border-subtle bg-surface">
-        <div className="flex items-center gap-2 bg-surface-subtle border border-border-subtle rounded-lg px-3.5 py-2 focus-within:border-brand-teal transition-all">
+      {/* Input Bar */}
+      <div className="p-3.5 border-t border-border-subtle bg-surface">
+        <form onSubmit={handleSubmit} className="flex gap-2">
           <input
             type="text"
-            placeholder="Ask Copilot about vessel ETAs, berth B04, simulations..."
             value={inputQuery}
             onChange={e => setInputQuery(e.target.value)}
+            placeholder="Ask about berths, queues, optimizer, or disruption simulation..."
             disabled={isCopilotLoading}
-            className="flex-1 bg-transparent text-xs text-text-main placeholder-text-caption focus:outline-hidden"
+            className="flex-1 bg-surface-subtle border border-border-subtle rounded-lg px-3.5 py-2.5 text-xs text-text-main placeholder:text-text-caption focus:outline-hidden focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-all disabled:opacity-50"
           />
           <button
             type="submit"
-            disabled={!inputQuery.trim() || isCopilotLoading}
-            className="p-1.5 rounded-md bg-brand-teal text-white hover:bg-teal-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            disabled={isCopilotLoading || !inputQuery.trim()}
+            className="px-4 py-2.5 bg-brand-teal hover:bg-teal-700 disabled:opacity-50 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-subtle cursor-pointer"
           >
             <Send className="w-3.5 h-3.5" />
+            <span>Send</span>
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
+
+      {/* Confirmation Modal for State-Changing Operations */}
+      <ConfirmationModal
+        isOpen={!!pendingAction}
+        onClose={() => setPendingAction(null)}
+        onConfirm={() => pendingAction?.action()}
+        title={pendingAction?.title || 'Confirm Operational Action'}
+        description={pendingAction?.description || ''}
+        confirmLabel="Execute Change"
+        cancelLabel="Cancel"
+        type="warning"
+      />
     </div>
   );
 };
