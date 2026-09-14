@@ -80,6 +80,8 @@
   .dark .divide-slate-200,
   .dark .divide-border-subtle > * + * {
     border-color: #1D4655 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Clean subtle scrollbars for enterprise readability */
@@ -95,6 +97,8 @@
   ::-webkit-scrollbar-thumb {
     background: #94A3B8;
     border-radius: 3px;
+    background: #CBD5E1;
+    border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -123,6 +127,28 @@
 
   .glow-teal {
     box-shadow: 0 0 25px -4px rgba(14, 165, 168, 0.4);
+  }
+  
+  .glass-card {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.7);
+  }
+
+  .glass-card-dark {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .premium-gradient {
+    background: linear-gradient(135deg, #0EA5A8 0%, #3478C9 100%);
+  }
+
+  .premium-gradient-subtle {
+    background: linear-gradient(135deg, rgba(14, 165, 168, 0.05) 0%, rgba(52, 120, 201, 0.05) 100%);
   }
 }
 

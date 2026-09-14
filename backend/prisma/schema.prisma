@@ -1,0 +1,416 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// PortPulse — Prisma Schema
+// Sub-Task 2: Database Schema
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────────────────────
+
+// auth.ts: String = 'admin' | 'ship-agent'
+
+
+// auth.ts: String = 'demo' | 'google'
+
+
+// operations.ts: String = 'Arriving' | 'At Anchor' | 'Berthing' | 'Loading' | 'Delayed' | 'Completed'
+
+
+// operations.ts: String = 'Standard' | 'Priority' | 'Critical' | 'Urgent'
+
+
+// operations.ts: String = 'Occupied' | 'Available' | 'Congested' | 'Maintenance'
+
+
+// operations.ts: String (Crane.type) = 'STS' | 'Yard' | 'Mobile'
+
+
+// operations.ts: String = 'ACTIVE' | 'IDLE' | 'MAINTENANCE' | 'FAILED'
+
+
+// operations.ts: YardBlock.category = 'Dry' | 'Reefer' | 'Hazmat' | 'Empty'
+
+
+// operations.ts: OperationalAlert.severity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'INFO'
+
+
+// operations.ts: String = 'Pending' | 'Under Review' | 'Approved' | 'Changed' | 'Rejected'
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// User
+// ─────────────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String          @id @default(uuid())
+  name         String
+  email        String          @unique
+  photoUrl     String?
+  role         String
+  authProvider String
+  createdAt    DateTime        @default(now())
+
+  // Relations
+  vessels         Vessel[]
+  berthRequests   BerthRequest[]
+  shippingDocs    ShippingDocument[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Vessel
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Vessel {
+  id                       String       @id
+  name                     String
+  imo                      String       @unique
+  flag                     String
+  lengthMeters             Float
+  draughtMeters            Float
+  teuCapacity              Int
+  cargoVolume              Int
+  origin                   String
+  destination              String
+  eta                      String
+  etd                      String
+  status                   String
+  priority                 String
+  currentBerth             String?
+  assignedBerth            String
+  predictedWaitHours       Float
+  demurrageRisk            String       // 'Low' | 'Medium' | 'High'
+  historicalTurnaroundHours Float
+  recommendedAction        String?
+
+  // Ship Agent / Voyage details (optional fields)
+  ownerId              String?
+  shippingCompany      String?
+  callSign             String?
+  vesselType           String?
+  voyageNumber         String?
+  previousPort         String?
+  nextPort             String?
+  requestedBerth       String?
+  requestedArrivalTime String?
+  berthDurationHours   Float?
+  requestedCranes      Int?
+  cargoType            String?
+  cargoQuantity        String?
+  containersLoaded     Int?
+  containersTotal      Int?
+  dangerousGoods       Boolean?
+  specialNotes         String?
+
+  // Relations
+  owner          User?                 @relation(fields: [ownerId], references: [id])
+  timelineEvents VesselTimelineEvent[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// VesselTimelineEvent
+// ─────────────────────────────────────────────────────────────────────────────
+
+model VesselTimelineEvent {
+  id        String  @id @default(uuid())
+  vesselId  String
+  stage     String
+  time      String
+  // status: 'completed' | 'current' | 'scheduled'
+  status    String
+
+  vessel    Vessel  @relation(fields: [vesselId], references: [id], onDelete: Cascade)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Berth
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Berth {
+  id                   String      @id
+  name                 String
+  lengthMeters         Float
+  depthMeters          Float
+  maxDraftMeters       Float
+  status               String
+  currentUtilization   Float
+  predictedUtilization Float
+  queueCount           Int
+  availableCranes      Int
+  maxCranes            Int
+  currentVesselId      String?
+  nextVesselId         String?
+  // riskLevel: 'LOW' | 'MEDIUM' | 'HIGH'
+  riskLevel            String
+
+  // Relations
+  hourlyForecasts   BerthHourlyForecast[]
+  craneAssignments  BerthCraneAssignment[]
+  cranes            Crane[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BerthHourlyForecast
+// ─────────────────────────────────────────────────────────────────────────────
+
+model BerthHourlyForecast {
+  id          String @id @default(uuid())
+  berthId     String
+  hour        String
+  utilization Float
+
+  berth       Berth  @relation(fields: [berthId], references: [id], onDelete: Cascade)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Crane
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Crane {
+  id                  String      @id
+  name                String
+  type                String
+  status              String
+  berthId             String
+  movesPerHour        Float
+  utilizationPercent  Float
+  failureDurationHours Float?
+  // impactSeverity: 'Low' | 'Medium' | 'High' | 'Critical'
+  impactSeverity      String?
+  assignedVesselId    String?
+  lastMaintenance     String
+  nextMaintenance     String
+
+  berth               Berth                @relation(fields: [berthId], references: [id])
+  berthAssignments    BerthCraneAssignment[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BerthCraneAssignment (junction)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model BerthCraneAssignment {
+  berthId String
+  craneId String
+
+  berth   Berth  @relation(fields: [berthId], references: [id], onDelete: Cascade)
+  crane   Crane  @relation(fields: [craneId], references: [id], onDelete: Cascade)
+
+  @@id([berthId, craneId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// YardBlock
+// ─────────────────────────────────────────────────────────────────────────────
+
+model YardBlock {
+  id                       String      @id
+  name                     String
+  category                 String
+  totalTeu                 Int
+  occupiedTeu              Int
+  utilizationPercent       Float
+  dwellTimeDays            Float
+  inboundTeu24h            Int
+  outboundTeu24h           Int
+  // congestionRisk: 'Normal' | 'Moderate' | 'High' | 'Severe'
+  congestionRisk           String
+  // suggestedRedistribution: { targetBlockId, amountTeu, rationale } | null
+  suggestedRedistribution  String?
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CongestionForecast
+// ─────────────────────────────────────────────────────────────────────────────
+
+model CongestionForecast {
+  id                       String  @id @default(uuid())
+  // timeHorizon: '6h' | '12h' | '24h' | '48h' | '72h'
+  timeHorizon              String
+  overallCongestionPercent Float
+  riskBottleneckBerth      String
+  bottleneckConfidence     Float
+  createdAt                DateTime @default(now())
+
+  drivers                  ForecastDriver[]
+  points                   ForecastPoint[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ForecastDriver
+// ─────────────────────────────────────────────────────────────────────────────
+
+model ForecastDriver {
+  id         String @id @default(uuid())
+  forecastId String
+  factor     String
+  percentage Float
+  // impact: 'High' | 'Medium' | 'Low'
+  impact     String
+  detail     String
+
+  forecast   CongestionForecast @relation(fields: [forecastId], references: [id], onDelete: Cascade)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ForecastPoint
+// Stores one row of the `points` array from CongestionForecastData.
+// The per-berth utilization values (B01–B06) are stored as String for flexibility.
+// ─────────────────────────────────────────────────────────────────────────────
+
+model ForecastPoint {
+  id         String @id @default(uuid())
+  forecastId String
+  hour       String
+  // berth columns B01–B06 stored as String
+  berthData  String
+  threshold  Float
+
+  forecast   CongestionForecast @relation(fields: [forecastId], references: [id], onDelete: Cascade)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// OptimizationResult
+// ─────────────────────────────────────────────────────────────────────────────
+
+model OptimizationResult {
+  id                       String   @id
+  timestamp                String
+  isApplied                Boolean  @default(false)
+  targetVesselId           String
+  // currentPlan and optimizedPlan: OptimizationPlanDetail objects as String
+  currentPlan              String
+  optimizedPlan            String
+  waitTimeDeltaHours       Float
+  waitTimeReductionPercent Float
+  queueReductionCount      Int
+  savingsEstimateUsd       Float
+  rationale                String
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SimulationResult
+// ─────────────────────────────────────────────────────────────────────────────
+
+model SimulationResult {
+  id           String @id
+  // scenario: SimulationScenario as String
+  scenario     String
+  // before / after: { queueCount, avgWaitHours, berthUtilizationPercent } as String
+  before       String
+  after        String
+  // recoveryPlan: { id, steps, isApplied, expectedRecoveryHours } as String
+  recoveryPlan String
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RouteOption
+// ─────────────────────────────────────────────────────────────────────────────
+
+model RouteOption {
+  id              String  @id @default(uuid())
+  portCode        String
+  portName        String
+  country         String
+  distanceNm      Float
+  eta             String
+  delayHours      Float
+  extraCostUsd    Float
+  // riskLevel: 'Low' | 'Medium' | 'High' | 'Critical'
+  riskLevel       String
+  isRecommended   Boolean @default(false)
+  congestionScore Float
+  rationale       String
+  // coordinates: { x: number; y: number } as String
+  coordinates     String
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ShiftPlanItem
+// ─────────────────────────────────────────────────────────────────────────────
+
+model ShiftPlanItem {
+  id              String  @id
+  dayOffset       Int
+  // shift: '06-14' | '14-22' | '22-06'
+  shift           String
+  berthId         String
+  vesselId        String?
+  vesselName      String?
+  // assignedCranes: string[] stored as String
+  assignedCranes  String
+  // status: 'Scheduled' | 'Conflict' | 'Optimized' | 'Maintenance'
+  status          String
+  conflictReason  String?
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// OperationalAlert
+// ─────────────────────────────────────────────────────────────────────────────
+
+model OperationalAlert {
+  id            String        @id
+  timestamp     String
+  severity      String
+  title         String
+  description   String
+  // relatedEntity: { type, id, name } as String
+  relatedEntity String
+  isResolved    Boolean       @default(false)
+  actionRoute   String
+  actionLabel   String
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BerthRequest
+// ─────────────────────────────────────────────────────────────────────────────
+
+model BerthRequest {
+  id                    String             @id
+  vesselId              String
+  vesselName            String
+  imo                   String
+  requestedBerth        String
+  requestedArrivalTime  String
+  estimatedDurationHours Float
+  requestedCranes       Int
+  cargoType             String
+  status                String
+  submittedAt           String
+  reviewedAt            String?
+  assignedBerth         String?
+  notes                 String?
+  ownerId               String
+
+  owner                 User               @relation(fields: [ownerId], references: [id])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ShippingDocument
+// ─────────────────────────────────────────────────────────────────────────────
+
+model ShippingDocument {
+  id           String  @id
+  name         String
+  vesselId     String
+  vesselName   String
+  // type: DocumentType union
+  type         String
+  // status: 'Approved' | 'Under Review' | 'Required' | 'Draft'
+  status       String
+  uploadedDate String
+  fileSize     String
+  fileUrl      String?
+  ownerId      String
+
+  owner        User    @relation(fields: [ownerId], references: [id])
+}
