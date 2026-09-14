@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useOperations } from '../../context/OperationsContext';
+import { MusicButton } from '../common/MusicButton';
 
 interface ShippingTopbarProps {
   isCollapsed: boolean;
@@ -120,6 +121,9 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
           )}
         </button>
+
+        {/* Ambient Background Music Toggle */}
+        <MusicButton />
 
         {/* Agent Profile Dropdown Container */}
         <div className="relative" ref={dropdownRef}>

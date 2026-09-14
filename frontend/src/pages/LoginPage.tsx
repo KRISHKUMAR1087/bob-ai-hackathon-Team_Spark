@@ -4,6 +4,7 @@ import { Ship, Anchor, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { GoogleSignInButton } from '../components/auth/GoogleSignInButton';
 import { RoleSelector } from '../components/auth/RoleSelector';
+import { MusicButton } from '../components/common/MusicButton';
 import { User, UserRole } from '../types/auth';
 
 export const LoginPage: React.FC = () => {
@@ -58,6 +59,11 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-canvas flex flex-col items-center justify-center p-4 sm:p-6 relative">
+      {/* Top-right Music button for login screen */}
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 flex items-center gap-2">
+        <span className="hidden sm:inline text-[11px] text-text-muted">Ambient Sound</span>
+        <MusicButton />
+      </div>
       <div className="w-full max-w-lg space-y-6">
         {/* Brand Header */}
         <div className="text-center space-y-2">
