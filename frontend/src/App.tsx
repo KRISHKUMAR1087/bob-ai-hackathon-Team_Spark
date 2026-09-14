@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { OperationsProvider } from './context/OperationsContext';
 import { MusicProvider } from './context/MusicContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { AppShell } from './components/layout/AppShell';
 import { ShippingAppShell } from './components/layout/ShippingAppShell';
 import { RoleProtectedRoute } from './components/auth/RoleProtectedRoute';
@@ -88,7 +89,8 @@ const CatchAllRedirect: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
       <OperationsProvider>
         <MusicProvider>
           <BrowserRouter>
@@ -173,6 +175,7 @@ export const App: React.FC = () => {
         </MusicProvider>
       </OperationsProvider>
     </AuthProvider>
+    </ThemeProvider>
   );
 };
 
