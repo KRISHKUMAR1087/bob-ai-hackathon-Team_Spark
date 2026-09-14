@@ -1,0 +1,9 @@
+name = "bob-ai-backend"
+main = "src/index.ts"
+compatibility_date = "2024-03-20"
+node_compat = true
+
+[vars]
+NODE_ENV = "production"
+# Add your Supabase Database URL here via the dashboard
+# DATABASE_URL = "postgresql://postgres:..."

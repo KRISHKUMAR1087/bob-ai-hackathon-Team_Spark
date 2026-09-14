@@ -1,5 +1,6 @@
-import { Router, Request, Response } from 'express';
+import { Hono } from 'hono';
 import { z } from 'zod';
+import { Env } from '../middleware/authenticate.js';
 import { authenticate } from '../middleware/authenticate.js';
 import { requireRole } from '../middleware/requireRole.js';
 import {
@@ -20,10 +21,10 @@ import {
   getBerthRequests,
 } from '../services/operationsService.js';
 
-const router = Router();
+const router = new Hono<Env>();
 
 // All operations endpoints require admin authentication
-router.use(authenticate, requireRole('admin'));
+router.use('/*', authenticate, requireRole('admin'));
 
 // ─── Zod schemas ─────────────────────────────────────────────────────────────
 
@@ -37,223 +38,217 @@ const VesselsQuerySchema = z.object({
 
 // ─── GET /port-status ─────────────────────────────────────────────────────────
 
-router.get('/port-status', async (_req: Request, res: Response) => {
+router.get('/port-status', async (c) => {
   try {
     const data = await getPortStatus();
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] port-status', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /vessels ─────────────────────────────────────────────────────────────
 
-router.get('/vessels', async (req: Request, res: Response) => {
-  const parse = VesselsQuerySchema.safeParse(req.query);
+router.get('/vessels', async (c) => {
+  const query = c.req.query();
+  const parse = VesselsQuerySchema.safeParse(query);
   if (!parse.success) {
-    res.status(400).json({ error: 'Invalid query params', details: parse.error.issues });
-    return;
+    return c.json({ error: 'Invalid query params', details: parse.error.issues }, 400);
   }
   try {
     const data = await getVessels(parse.data);
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] vessels', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /vessels/:id ─────────────────────────────────────────────────────────
 
-router.get('/vessels/:id', async (req: Request, res: Response) => {
+router.get('/vessels/:id', async (c) => {
   try {
-    const data = await getVesselById(req.params.id);
+    const data = await getVesselById(c.req.param('id'));
     if (!data) {
-      res.status(404).json({ error: 'Vessel not found' });
-      return;
+      return c.json({ error: 'Vessel not found' }, 404);
     }
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] vessels/:id', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /berths ──────────────────────────────────────────────────────────────
 
-router.get('/berths', async (_req: Request, res: Response) => {
+router.get('/berths', async (c) => {
   try {
     const data = await getBerths();
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] berths', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /berths/:id ──────────────────────────────────────────────────────────
 
-router.get('/berths/:id', async (req: Request, res: Response) => {
+router.get('/berths/:id', async (c) => {
   try {
-    const data = await getBerthById(req.params.id);
+    const data = await getBerthById(c.req.param('id'));
     if (!data) {
-      res.status(404).json({ error: 'Berth not found' });
-      return;
+      return c.json({ error: 'Berth not found' }, 404);
     }
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] berths/:id', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /cranes ──────────────────────────────────────────────────────────────
 
-router.get('/cranes', async (_req: Request, res: Response) => {
+router.get('/cranes', async (c) => {
   try {
     const data = await getCranes();
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] cranes', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /cranes/:id ─────────────────────────────────────────────────────────
 
-router.get('/cranes/:id', async (req: Request, res: Response) => {
+router.get('/cranes/:id', async (c) => {
   try {
-    const data = await getCraneById(req.params.id);
+    const data = await getCraneById(c.req.param('id'));
     if (!data) {
-      res.status(404).json({ error: 'Crane not found' });
-      return;
+      return c.json({ error: 'Crane not found' }, 404);
     }
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] cranes/:id', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /yard-blocks ────────────────────────────────────────────────────────
 
-router.get('/yard-blocks', async (_req: Request, res: Response) => {
+router.get('/yard-blocks', async (c) => {
   try {
     const data = await getYardBlocks();
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] yard-blocks', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /forecast ────────────────────────────────────────────────────────────
 
-router.get('/forecast', async (_req: Request, res: Response) => {
+router.get('/forecast', async (c) => {
   try {
     const data = await getLatestForecast();
     if (!data) {
-      res.status(404).json({ error: 'No forecast data found' });
-      return;
+      return c.json({ error: 'No forecast data found' }, 404);
     }
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] forecast', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /optimization ───────────────────────────────────────────────────────
 
-router.get('/optimization', async (_req: Request, res: Response) => {
+router.get('/optimization', async (c) => {
   try {
     const data = await getLatestOptimization();
     if (!data) {
-      res.status(404).json({ error: 'No optimization result found' });
-      return;
+      return c.json({ error: 'No optimization result found' }, 404);
     }
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] optimization', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /simulation ─────────────────────────────────────────────────────────
 
-router.get('/simulation', async (_req: Request, res: Response) => {
+router.get('/simulation', async (c) => {
   try {
     const data = await getLatestSimulation();
     if (!data) {
-      res.status(404).json({ error: 'No simulation result found' });
-      return;
+      return c.json({ error: 'No simulation result found' }, 404);
     }
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] simulation', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /routes ──────────────────────────────────────────────────────────────
 
-router.get('/routes', async (_req: Request, res: Response) => {
+router.get('/routes', async (c) => {
   try {
     const data = await getRoutes();
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] routes', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /shift-plans ────────────────────────────────────────────────────────
 
-router.get('/shift-plans', async (_req: Request, res: Response) => {
+router.get('/shift-plans', async (c) => {
   try {
     const data = await getShiftPlans();
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] shift-plans', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /alerts ──────────────────────────────────────────────────────────────
 
-router.get('/alerts', async (_req: Request, res: Response) => {
+router.get('/alerts', async (c) => {
   try {
     const data = await getAlerts();
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] alerts', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── GET /berth-requests ─────────────────────────────────────────────────────
 
-router.get('/berth-requests', async (_req: Request, res: Response) => {
+router.get('/berth-requests', async (c) => {
   try {
     const data = await getBerthRequests();
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] berth-requests', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── POST /optimization/apply ─────────────────────────────────────────────────
 
-router.post('/optimization/apply', async (_req: Request, res: Response) => {
+router.post('/optimization/apply', async (c) => {
   try {
     const { applyOptimization } = await import('../services/operationsService.js');
     const data = await applyOptimization();
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] optimization/apply', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
@@ -265,45 +260,45 @@ const SimulationRunSchema = z.object({
   durationHours: z.number().optional()
 });
 
-router.post('/simulation/run', async (req: Request, res: Response) => {
-  const parse = SimulationRunSchema.safeParse(req.body);
+router.post('/simulation/run', async (c) => {
+  const body = await c.req.json();
+  const parse = SimulationRunSchema.safeParse(body);
   if (!parse.success) {
-    res.status(400).json({ error: 'Invalid request body', details: parse.error.issues });
-    return;
+    return c.json({ error: 'Invalid request body', details: parse.error.issues }, 400);
   }
   try {
     const { runSimulation } = await import('../services/operationsService.js');
     const data = await runSimulation(parse.data.scenarioType, parse.data.targetEntityId, parse.data.durationHours);
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] simulation/run', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── POST /recovery-plan/apply ────────────────────────────────────────────────
 
-router.post('/recovery-plan/apply', async (_req: Request, res: Response) => {
+router.post('/recovery-plan/apply', async (c) => {
   try {
     const { applyRecoveryPlan } = await import('../services/operationsService.js');
     const data = await applyRecoveryPlan();
-    res.json(data);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] recovery-plan/apply', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── POST /alerts/:id/resolve ─────────────────────────────────────────────────
 
-router.post('/alerts/:id/resolve', async (req: Request, res: Response) => {
+router.post('/alerts/:id/resolve', async (c) => {
   try {
     const { resolveAlert } = await import('../services/operationsService.js');
-    const data = await resolveAlert(req.params.id);
-    res.json(data);
+    const data = await resolveAlert(c.req.param('id'));
+    return c.json(data);
   } catch (err) {
     console.error('[operations] alerts/:id/resolve', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
@@ -313,32 +308,33 @@ const ReassignVesselSchema = z.object({
   berthId: z.string(),
 });
 
-router.put('/vessels/:id/reassign', async (req: Request, res: Response) => {
-  const parse = ReassignVesselSchema.safeParse(req.body);
+router.put('/vessels/:id/reassign', async (c) => {
+  const body = await c.req.json();
+  const parse = ReassignVesselSchema.safeParse(body);
   if (!parse.success) {
-    res.status(400).json({ error: 'Invalid request body', details: parse.error.issues });
-    return;
+    return c.json({ error: 'Invalid request body', details: parse.error.issues }, 400);
   }
   try {
     const { reassignVesselBerth } = await import('../services/operationsService.js');
-    const data = await reassignVesselBerth(req.params.id, parse.data.berthId);
-    res.json(data);
+    const data = await reassignVesselBerth(c.req.param('id'), parse.data.berthId);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] vessels/:id/reassign', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
 // ─── PUT /vessels/:id ─────────────────────────────────────────────────────────
 
-router.put('/vessels/:id', async (req: Request, res: Response) => {
+router.put('/vessels/:id', async (c) => {
   try {
+    const body = await c.req.json();
     const { updateVessel } = await import('../services/operationsService.js');
-    const data = await updateVessel(req.params.id, req.body);
-    res.json(data);
+    const data = await updateVessel(c.req.param('id'), body);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] vessels/:id', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
@@ -350,19 +346,19 @@ const BerthRequestStatusSchema = z.object({
   notes: z.string().optional()
 });
 
-router.put('/berth-requests/:id/status', async (req: Request, res: Response) => {
-  const parse = BerthRequestStatusSchema.safeParse(req.body);
+router.put('/berth-requests/:id/status', async (c) => {
+  const body = await c.req.json();
+  const parse = BerthRequestStatusSchema.safeParse(body);
   if (!parse.success) {
-    res.status(400).json({ error: 'Invalid request body', details: parse.error.issues });
-    return;
+    return c.json({ error: 'Invalid request body', details: parse.error.issues }, 400);
   }
   try {
     const { updateBerthRequestStatus } = await import('../services/operationsService.js');
-    const data = await updateBerthRequestStatus(req.params.id, parse.data.status, parse.data.assignedBerth, parse.data.notes);
-    res.json(data);
+    const data = await updateBerthRequestStatus(c.req.param('id'), parse.data.status, parse.data.assignedBerth, parse.data.notes);
+    return c.json(data);
   } catch (err) {
     console.error('[operations] berth-requests/:id/status', err);
-    res.status(500).json({ error: 'Internal server error' });
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
