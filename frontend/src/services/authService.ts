@@ -15,9 +15,25 @@ export class AuthService {
       if (!serialized) return null;
       return JSON.parse(serialized) as User;
     } catch (e) {
-      console.error('Failed to parse stored user from localStorage', e);
+      if (import.meta.env.DEV) console.error('Failed to parse stored user from localStorage', e);
       return null;
     }
+  }
+
+  public static async login(email: string, password: string): Promise<User> {
+    const response = await apiClient.post('/auth/login', { email, password });
+    localStorage.setItem(STORAGE_KEY_TOKEN, response.token);
+    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
+    localStorage.setItem(STORAGE_KEY_ROLE, response.user.role);
+    return response.user;
+  }
+
+  public static async signup(name: string, email: string, password: string): Promise<User> {
+    const response = await apiClient.post('/auth/signup', { name, email, password });
+    localStorage.setItem(STORAGE_KEY_TOKEN, response.token);
+    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
+    localStorage.setItem(STORAGE_KEY_ROLE, response.user.role);
+    return response.user;
   }
 
   /**
@@ -80,7 +96,7 @@ export class AuthService {
       localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
       return response.user;
     } catch (e) {
-      console.error('Failed to fetch user', e);
+      if (import.meta.env.DEV) console.error('Failed to fetch user', e);
       this.logout();
       return null;
     }

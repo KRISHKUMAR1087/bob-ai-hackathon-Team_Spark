@@ -1,5 +1,5 @@
 export class ApiClient {
-  private baseUrl = (import.meta as any).env.VITE_API_URL ? (import.meta as any).env.VITE_API_URL + '/api' : '/api';
+  private baseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL + '/api' : '/api';
 
   private getHeaders() {
     const token = localStorage.getItem('portpulse_token');

@@ -25,7 +25,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
           }
         }}
         onError={() => {
-          console.error('Google Login Failed');
+          if (import.meta.env.DEV) console.error('Google Login Failed');
           if (onError) onError();
         }}
         useOneTap

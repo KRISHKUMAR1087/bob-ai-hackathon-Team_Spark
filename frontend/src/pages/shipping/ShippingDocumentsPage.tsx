@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   FileText,
   PlusCircle,
@@ -18,7 +17,6 @@ import { useAuth } from '../../context/AuthContext';
 import { DocumentType, ShippingDocument } from '../../types/operations';
 
 export const ShippingDocumentsPage: React.FC = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const {
     shippingDocuments,

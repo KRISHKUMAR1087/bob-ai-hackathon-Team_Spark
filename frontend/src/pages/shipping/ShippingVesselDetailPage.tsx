@@ -14,8 +14,7 @@ import {
   FileText,
   MessageSquare,
   X,
-  Send,
-  Calendar,
+  Send
 } from 'lucide-react';
 import { useOperations } from '../../context/OperationsContext';
 import { StatusBadge } from '../../components/common/StatusBadge';
@@ -30,8 +29,6 @@ export const ShippingVesselDetailPage: React.FC = () => {
     isOptimizationApplied,
     updateVesselEta,
     updateVessel,
-    submitBerthRequest,
-    uploadDocument,
     showToast,
   } = useOperations();
 

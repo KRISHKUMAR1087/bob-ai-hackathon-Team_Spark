@@ -110,7 +110,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
 
   const handleLogout = () => {
     logout();
-    navigate('/login', { replace: true });
+    navigate('/', { replace: true });
   };
 
   const containerClasses = isMobileDrawer

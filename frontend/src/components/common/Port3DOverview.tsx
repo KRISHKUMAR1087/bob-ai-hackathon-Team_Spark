@@ -1,17 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import {
-  Compass,
   RotateCw,
   Maximize2,
   Minimize2,
-  Ship,
-  Anchor,
-  Layers,
-  Activity,
-  Cpu,
-  Eye,
-  Sliders,
+  Anchor
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -681,16 +674,16 @@ export const Port3DOverview: React.FC<Port3DOverviewProps> = ({
       <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
         {/* Preset Angle Buttons */}
         <div className="pointer-events-auto flex items-center gap-1 p-1.5 rounded-xl glass-card">
-          {[
+          {([] as { id: 'aerial' | 'ship' | 'cranes' | 'yard' | 'entrance'; label: string }[]).concat([
             { id: 'aerial', label: '🚁 Port Panorama' },
             { id: 'ship', label: '🚢 Mega-Ship' },
             { id: 'cranes', label: '🏗️ STS Cranes' },
             { id: 'yard', label: '📦 Container Yard' },
             { id: 'entrance', label: '🌊 Harbour Approach' },
-          ].map((item) => (
+          ]).map((item) => (
             <button
               key={item.id}
-              onClick={() => setPresetView(item.id as any)}
+              onClick={() => setPresetView(item.id)}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 activeView === item.id
                   ? 'bg-brand-teal text-white shadow-xs'

@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useOperations } from '../../context/OperationsContext';
 import { useAuth } from '../../context/AuthContext';
-import { Vessel } from '../../types/operations';
+import {} from '../../types/operations';
 
 export const ShippingAddVesselPage: React.FC = () => {
   const navigate = useNavigate();

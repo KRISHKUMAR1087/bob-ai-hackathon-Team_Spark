@@ -67,7 +67,7 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
   const handleLogout = () => {
     setIsProfileMenuOpen(false);
     logout();
-    navigate('/login', { replace: true });
+    navigate('/', { replace: true });
   };
 
   return (

@@ -41,17 +41,17 @@ export const SettingsPage: React.FC = () => {
 
       {/* Tabs */}
       <div className="flex flex-wrap items-center gap-2 border-b border-border-subtle pb-3">
-        {[
+        {([] as { id: 'profile' | 'port' | 'ml' | 'ai'; label: string; icon: any }[]).concat([
           { id: 'port', label: 'Port Configuration', icon: Sliders },
           { id: 'ml', label: 'Prediction Thresholds', icon: Cpu },
           { id: 'ai', label: 'Copilot Settings', icon: ShieldCheck },
           { id: 'profile', label: 'Supervisor Profile', icon: User },
-        ].map(tab => {
+        ]).map(tab => {
           const Icon = tab.icon;
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs transition-colors border ${
                 activeTab === tab.id
                   ? 'bg-surface text-text-main font-semibold border-slate-300 shadow-subtle'

@@ -78,7 +78,7 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
   const handleLogout = () => {
     setIsProfileMenuOpen(false);
     logout();
-    navigate('/login', { replace: true });
+    navigate('/', { replace: true });
   };
 
   const getUserInitials = () => {

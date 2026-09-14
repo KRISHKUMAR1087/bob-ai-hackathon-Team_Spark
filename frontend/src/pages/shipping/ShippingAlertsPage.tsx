@@ -5,8 +5,6 @@ import {
   CheckCircle2,
   Clock,
   ArrowRight,
-  Ship,
-  Info,
   Check,
   Filter,
 } from 'lucide-react';

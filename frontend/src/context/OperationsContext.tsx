@@ -257,7 +257,7 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
       scenario: {
         ...prev.scenario,
         durationHours: duration,
-        type: scenarioType as any,
+        type: scenarioType as 'crane_failure' | 'berth_closure' | 'vessel_surge' | 'vessel_delay' | 'yard_capacity_reduction',
       },
       after: {
         queueCount: 11,
@@ -645,7 +645,7 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
 
       setCopilotMessages(prev => [...prev, response]);
     } catch (error) {
-      console.error('Error executing Gemini Copilot query:', error);
+      if (import.meta.env.DEV) console.error('Error executing Gemini Copilot query:', error);
       const errResponse: CopilotMessage = {
         id: 'msg-err-' + Date.now(),
         sender: 'gemini',

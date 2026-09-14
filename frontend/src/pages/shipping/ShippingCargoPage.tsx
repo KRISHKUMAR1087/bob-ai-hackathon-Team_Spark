@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Layers,
-  Ship,
-  AlertTriangle,
-  CheckCircle2,
   Edit2,
   X,
   Package,

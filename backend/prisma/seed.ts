@@ -9,10 +9,13 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main(): Promise<void> {
+  const adminPasswordHash = await bcrypt.hash('Admin@2026!', 10);
+  const agentPasswordHash = await bcrypt.hash('Agent@2026!', 10);
   // ───────────────────────────────────────────────────────────────────────────
   // 1. Users
   // ───────────────────────────────────────────────────────────────────────────
@@ -23,6 +26,7 @@ async function main(): Promise<void> {
       id: 'demo-admin',
       name: 'Port Operations Admin',
       email: 'admin@portpulse.demo',
+      password: adminPasswordHash,
       role: 'admin',
       authProvider: 'demo',
     },
@@ -33,8 +37,9 @@ async function main(): Promise<void> {
     update: {},
     create: {
       id: 'demo-agent',
-      name: 'Shipping Agent',
+      name: 'Global Shipping Agent',
       email: 'agent@portpulse.demo',
+      password: agentPasswordHash,
       role: 'ship_agent',
       authProvider: 'demo',
     },

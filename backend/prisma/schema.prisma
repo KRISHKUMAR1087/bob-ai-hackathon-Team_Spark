@@ -5,6 +5,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -55,6 +56,7 @@ model User {
   id           String          @id @default(uuid())
   name         String
   email        String          @unique
+  password     String?
   photoUrl     String?
   role         String
   authProvider String

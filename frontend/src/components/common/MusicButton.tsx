@@ -8,9 +8,7 @@ import {
   Play,
   Disc3,
   Sliders,
-  Sparkles,
-  Waves,
-  Check,
+  Waves
 } from 'lucide-react';
 import { useMusic } from '../../context/MusicContext';
 

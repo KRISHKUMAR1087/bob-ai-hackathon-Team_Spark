@@ -6,14 +6,7 @@ import {
   Wind,
   Waves,
   Compass,
-  AlertTriangle,
-  CheckCircle2,
-  Layers,
-  Sparkles,
-  ArrowRight,
-  TrendingDown,
-  DollarSign,
-  Clock,
+  Sparkles
 } from 'lucide-react';
 import { RouteOption } from '../../types/operations';
 

@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Zap,
   ArrowRight,
-  Anchor,
-  Clock,
-  CheckCircle2,
+  Anchor
 } from 'lucide-react';
 import { useOperations } from '../context/OperationsContext';
 import { UtilizationBar } from '../components/common/UtilizationBar';

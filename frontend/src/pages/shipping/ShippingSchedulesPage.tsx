@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Clock,
-  Calendar,
   Anchor,
-  Ship,
-  AlertTriangle,
-  CheckCircle2,
   Edit2,
   X,
   ArrowRight,

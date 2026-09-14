@@ -8,7 +8,7 @@ interface AuthContextValue {
   isLoading: boolean;
   loginAsDemo: (role: UserRole) => Promise<User>;
   loginWithGoogleToken: (idToken: string) => Promise<{ needsRoleSelection: boolean; tempUser: User | null }>;
-  confirmRoleSelection: (role: UserRole, tempUser?: User | null) => Promise<User>;
+  confirmRoleSelection: (role: UserRole) => Promise<User>;
   logout: () => void;
 }
 
@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const confirmRoleSelection = async (role: UserRole, tempUser?: User | null): Promise<User> => {
+  const confirmRoleSelection = async (role: UserRole): Promise<User> => {
     setIsLoading(true);
     try {
       const confirmedUser = await AuthService.setUserRole(role);

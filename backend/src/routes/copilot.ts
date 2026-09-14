@@ -66,8 +66,8 @@ router.post('/query', async (c) => {
         conversationHistory: contextHints?.conversationHistory || [],
       };
 
-      process.env.GEMINI_API_KEY = apiKey;
-      const response = await geminiCopilotService.processUserQuery(userQuery, context as any);
+      // Pass apiKey directly — never mutate process.env in a request handler
+      const response = await geminiCopilotService.processUserQuery(apiKey, userQuery, context as any);
       return c.json(response);
 
     } else {
@@ -91,8 +91,8 @@ router.post('/query', async (c) => {
         conversationHistory: contextHints?.conversationHistory || [],
       };
 
-      process.env.GEMINI_API_KEY = apiKey;
-      const responseText = await geminiCopilotService.processShipAgentQuery(userQuery, context as any);
+      // Pass apiKey directly — never mutate process.env in a request handler
+      const responseText = await geminiCopilotService.processShipAgentQuery(apiKey, userQuery, context as any);
       return c.json({
         id: 'msg-' + Date.now(),
         sender: 'gemini',

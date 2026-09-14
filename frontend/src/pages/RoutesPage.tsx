@@ -2,16 +2,13 @@ import React, { useState } from 'react';
 import {
   Sparkles,
   ArrowRight,
-  CheckCircle2,
   Ship,
-  Anchor,
   Clock,
   DollarSign,
   TrendingDown,
   ShieldCheck,
   Fuel,
-  Navigation,
-  ExternalLink,
+  Navigation
 } from 'lucide-react';
 import { useOperations } from '../context/OperationsContext';
 import { RouteMapGraphic } from '../components/operations/RouteMapGraphic';

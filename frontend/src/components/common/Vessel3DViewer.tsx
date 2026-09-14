@@ -4,15 +4,8 @@ import {
   Maximize2,
   Minimize2,
   RotateCw,
-  Compass,
   Layers,
-  Sun,
-  Moon,
-  Eye,
-  Ship,
-  Anchor,
-  Activity,
-  Zap,
+  Ship
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -31,7 +24,7 @@ interface Vessel3DViewerProps {
 export const Vessel3DViewer: React.FC<Vessel3DViewerProps> = ({
   vesselName = 'Ocean Star',
   imo = '9811002',
-  teu = 15200,
+
   loa = 366,
   draught = 15.2,
   berth = 'Berth B02',

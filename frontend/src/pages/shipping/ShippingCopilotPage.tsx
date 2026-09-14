@@ -3,11 +3,6 @@ import {
   Sparkles,
   Send,
   Ship,
-  Anchor,
-  Clock,
-  AlertTriangle,
-  CheckCircle2,
-  FileText,
   ShieldCheck,
   Info,
 } from 'lucide-react';
@@ -16,13 +11,7 @@ import { useAuth } from '../../context/AuthContext';
 import { geminiCopilotService } from '../../services/geminiCopilotService';
 import { CopilotMessageContent } from '../../components/copilot/CopilotMessageContent';
 
-interface AgentCopilotMessage {
-  id: string;
-  sender: 'user' | 'gemini';
-  text: string;
-  timestamp: string;
-}
-
+import { CopilotMessage } from '../../types/operations';
 export const ShippingCopilotPage: React.FC = () => {
   const { user } = useAuth();
   const {
@@ -41,7 +30,7 @@ export const ShippingCopilotPage: React.FC = () => {
   const oceanStar = vessels.find(v => v.id === 'VES-01') || vessels[0];
   const pacificVoyager = vessels.find(v => v.id === 'VES-05');
 
-  const [messages, setMessages] = useState<AgentCopilotMessage[]>([
+  const [messages, setMessages] = useState<CopilotMessage[]>([
     {
       id: 'init-1',
       sender: 'gemini',
@@ -62,7 +51,7 @@ How can I assist your shipping operations today?`,
     const textToSend = queryText || input;
     if (!textToSend.trim() || isLoading) return;
 
-    const userMsg: AgentCopilotMessage = {
+    const userMsg: CopilotMessage = {
       id: 'msg-' + Date.now(),
       sender: 'user',
       text: textToSend,
@@ -85,7 +74,7 @@ How can I assist your shipping operations today?`,
         conversationHistory: messages.map(m => ({ sender: m.sender, text: m.text })),
       });
 
-      const aiMsg: AgentCopilotMessage = {
+      const aiMsg: CopilotMessage = {
         id: 'ai-' + Date.now(),
         sender: 'gemini',
         text: responseText,
@@ -94,8 +83,8 @@ How can I assist your shipping operations today?`,
 
       setMessages(prev => [...prev, aiMsg]);
     } catch (err) {
-      console.error('Ship agent copilot query failed:', err);
-      const fallbackMsg: AgentCopilotMessage = {
+      if (import.meta.env.DEV) console.error('Ship agent copilot query failed:', err);
+      const fallbackMsg: CopilotMessage = {
         id: 'ai-err-' + Date.now(),
         sender: 'gemini',
         text: 'An error occurred while connecting to the Shipping Copilot service. Telemetry remains active.',
@@ -166,7 +155,7 @@ How can I assist your shipping operations today?`,
                       : 'bg-surface-subtle text-text-main border border-border-subtle shadow-xs'
                   }`}
                 >
-                  <CopilotMessageContent message={msg as any} />
+                  <CopilotMessageContent message={msg} />
                   <div
                     className={`text-[10px] mt-1.5 ${
                       msg.sender === 'user' ? 'text-sky-200' : 'text-text-caption'

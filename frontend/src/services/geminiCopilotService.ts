@@ -63,7 +63,7 @@ const CANDIDATE_MODELS = [
 export class GeminiCopilotService {
   private getApiKey(): string {
     try {
-      const meta = import.meta as any;
+      const meta = import.meta as { env?: { GEMINI_API_KEY?: string } };
       if (meta && meta.env && meta.env.GEMINI_API_KEY) {
         return String(meta.env.GEMINI_API_KEY).trim();
       }
@@ -71,7 +71,7 @@ export class GeminiCopilotService {
       // ignore
     }
     try {
-      const proc = typeof process !== 'undefined' ? (process as any) : null;
+      const proc = typeof process !== 'undefined' ? (process as { env?: { GEMINI_API_KEY?: string } }) : null;
       if (proc && proc.env && proc.env.GEMINI_API_KEY) {
         return String(proc.env.GEMINI_API_KEY).trim();
       }
@@ -656,7 +656,6 @@ ${query}`;
 
     // 3. Why did the optimizer move Ocean Star?
     if (q.includes('ocean star') || q.includes('move') || q.includes('optimizer')) {
-      const curBerth = isOpt ? 'B02' : 'B04';
       return {
         message: `The optimizer recommends moving Ocean Star from Berth B04 to Berth B02 because Berth B02 has 4 operational Super STS cranes ready, bypassing the C03 failure at B04. This allocation reduces expected vessel wait time from 11.4 hours to 6.8 hours (-4.6 hours) and yields an estimated $148,000 in demurrage savings.`,
         blocks: [

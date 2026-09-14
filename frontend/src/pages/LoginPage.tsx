@@ -9,11 +9,9 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { GoogleSignInButton } from '../components/auth/GoogleSignInButton';
 import { RoleSelector } from '../components/auth/RoleSelector';
-import { MusicButton } from '../components/common/MusicButton';
-import { User, UserRole } from '../types/auth';
+import { UserRole } from '../types/auth';
 import { motion } from 'framer-motion';
-// @ts-ignore
-import backgroundVideo from '../generate_a_video_for_a_port_ma.mp4';
+const backgroundVideo = '/generate_a_video_for_a_port_ma.mp4';
 
 const fadeUp: any = {
   hidden: { opacity: 0, y: 28 },
@@ -32,11 +30,11 @@ export const LoginPage: React.FC = () => {
 
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [pendingGoogleUser, setPendingGoogleUser] = useState<User | null>(null);
   const [showRoleSelector, setShowRoleSelector] = useState(false);
 
   const getRedirectPath = (role: UserRole) => {
-    const from = (location.state as any)?.from?.pathname;
+    const state = location.state as { from?: { pathname: string } } | null;
+    const from = state?.from?.pathname;
     if (from && from !== '/login') {
       if (role === 'admin' && !from.startsWith('/shipping')) return from;
       if (role === 'ship-agent' && from.startsWith('/shipping')) return from;
@@ -54,7 +52,6 @@ export const LoginPage: React.FC = () => {
     try {
       const result = await loginWithGoogleToken(idToken);
       if (result.needsRoleSelection && result.tempUser) {
-        setPendingGoogleUser(result.tempUser);
         setShowRoleSelector(true);
       } else {
         const storedRole = localStorage.getItem('portpulse_user_role') as UserRole || 'admin';
@@ -68,7 +65,7 @@ export const LoginPage: React.FC = () => {
   };
 
   const handleRoleSelected = async (role: UserRole) => {
-    const confirmed = await confirmRoleSelection(role, pendingGoogleUser);
+    const confirmed = await confirmRoleSelection(role);
     setShowRoleSelector(false);
     navigate(getRedirectPath(confirmed.role), { replace: true });
   };
@@ -649,7 +646,6 @@ export const LoginPage: React.FC = () => {
       {showRoleSelector && (
         <RoleSelector
           onSelectRole={handleRoleSelected}
-          userName={pendingGoogleUser?.name}
         />
       )}
     </div>

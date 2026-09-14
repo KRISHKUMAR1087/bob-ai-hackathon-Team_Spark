@@ -11,9 +11,7 @@ import {
   PlusCircle,
   FileText,
   Layers,
-  Sparkles,
-  ExternalLink,
-  Calendar,
+  Sparkles
 } from 'lucide-react';
 import { useOperations } from '../../context/OperationsContext';
 import { useAuth } from '../../context/AuthContext';
@@ -23,7 +21,7 @@ import { RiskBadge } from '../../components/common/RiskBadge';
 export const ShippingDashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { vessels, isOptimizationApplied, berthRequests, shippingDocuments } = useOperations();
+  const { vessels, isOptimizationApplied, berthRequests } = useOperations();
 
   // Filter vessels belonging to agent (or all demo fleet)
   const agentVessels = vessels.filter(
@@ -35,7 +33,7 @@ export const ShippingDashboardPage: React.FC = () => {
   const delayedCount = agentVessels.filter(v => v.demurrageRisk === 'High' || v.status === 'Delayed').length;
   const departedCount = agentVessels.filter(v => v.status === 'Completed').length;
 
-  const pendingDocsCount = shippingDocuments.filter(d => d.status === 'Required').length;
+
   const pendingRequestsCount = berthRequests.filter(r => r.status === 'Pending').length;
 
   // Agent name

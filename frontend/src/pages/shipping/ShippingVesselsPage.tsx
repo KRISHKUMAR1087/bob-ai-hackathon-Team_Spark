@@ -2,30 +2,21 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Search,
-  Ship,
   PlusCircle,
-  ArrowRight,
-  MoreVertical,
-  Edit2,
   Trash2,
-  Clock,
   Anchor,
-  AlertTriangle,
 } from 'lucide-react';
 import { useOperations } from '../../context/OperationsContext';
 import { useAuth } from '../../context/AuthContext';
 import { StatusBadge } from '../../components/common/StatusBadge';
 import { RiskBadge } from '../../components/common/RiskBadge';
-import { Vessel } from '../../types/operations';
 
 export const ShippingVesselsPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { vessels, isOptimizationApplied, deleteVessel } = useOperations();
-
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
-  const [activeMenuVesselId, setActiveMenuVesselId] = useState<string | null>(null);
 
   // Filter vessels belonging to agency
   const agentVessels = vessels.filter(
@@ -53,7 +44,7 @@ export const ShippingVesselsPage: React.FC = () => {
 
   const handleDelete = (vesselId: string, vesselName: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setActiveMenuVesselId(null);
+    e.stopPropagation();
     if (window.confirm(`Are you sure you want to archive ${vesselName} from your active fleet?`)) {
       deleteVessel(vesselId);
     }

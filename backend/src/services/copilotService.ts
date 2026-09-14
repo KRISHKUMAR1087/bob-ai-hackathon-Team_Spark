@@ -61,34 +61,14 @@ const CANDIDATE_MODELS = [
 ];
 
 export class GeminiCopilotService {
-  private getApiKey(): string {
-    try {
-      const meta = {} as any;
-      if (meta && meta.env && meta.env.GEMINI_API_KEY) {
-        return String(meta.env.GEMINI_API_KEY).trim();
-      }
-    } catch {
-      // ignore
-    }
-    try {
-      const proc = typeof process !== 'undefined' ? (process as any) : null;
-      if (proc && proc.env && proc.env.GEMINI_API_KEY) {
-        return String(proc.env.GEMINI_API_KEY).trim();
-      }
-    } catch {
-      // ignore
-    }
-    return '';
-  }
-
   // =================================================================
   // PORT ADMIN QUERY HANDLER
   // =================================================================
   async processUserQuery(
+    apiKey: string,
     userQuery: string,
     context: PortAdminContext = {}
   ): Promise<CopilotMessage> {
-    const apiKey = this.getApiKey();
     const query = userQuery.trim();
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' UTC';
 
@@ -247,10 +227,10 @@ ${query}`;
   // SHIP AGENT QUERY HANDLER
   // =================================================================
   async processShipAgentQuery(
+    apiKey: string,
     userQuery: string,
     context: ShipAgentContext = {}
   ): Promise<string> {
-    const apiKey = this.getApiKey();
     const query = userQuery.trim();
 
     // Verify strict role authorization boundary
@@ -532,7 +512,7 @@ ${query}`;
   private validateAndSanitizeStructuredResponse(
     rawJson: string,
     query: string,
-    data: any
+    data: ReturnType<typeof this.buildStructuredContext>
   ): CopilotStructuredResponse {
     try {
       // Find JSON block if wrapped in markdown code fence
@@ -605,11 +585,11 @@ ${query}`;
   // GROUNDED STRUCTURED FALLBACK GENERATOR (Strict Data-Grounding)
   // =================================================================
 
-  private generateGroundedStructuredFallback(query: string, data: any): CopilotStructuredResponse {
+  private generateGroundedStructuredFallback(query: string, data: ReturnType<typeof this.buildStructuredContext>): CopilotStructuredResponse {
     const q = query.toLowerCase();
     const isOpt = data.currentState.isOptimizationApplied;
     const isRec = data.currentState.isRecoveryPlanApplied;
-    const b04 = data.currentState.berths.find((b: any) => b.id === 'B04');
+    const b04 = data.currentState.berths.find((b) => b.id === 'B04');
 
     // 1. Why is B04 at risk?
     if (q.includes('b04') && (q.includes('risk') || q.includes('congest') || q.includes('why'))) {

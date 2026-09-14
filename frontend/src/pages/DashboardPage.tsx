@@ -32,8 +32,7 @@ export const DashboardPage: React.FC = () => {
     setIsCopilotOpen,
     sendCopilotMessage,
   } = useOperations();
-
-  const [selectedBerth, setSelectedBerth] = useState<string>('B04');
+  const [selectedBerth, setSelectedBerth] = useState<string | undefined>(undefined);
 
   // Aggregated Operational Figures for Snapshot
   const vesselsInPort = vessels.filter(v => ['Berthing', 'Loading'].includes(v.status)).length;
@@ -45,7 +44,6 @@ export const DashboardPage: React.FC = () => {
   const totalOccupiedYard = yardBlocks.reduce((acc, y) => acc + y.occupiedTeu, 0);
   const totalYardCap = yardBlocks.reduce((acc, y) => acc + y.totalTeu, 0);
   const yardUtil = Math.round((totalOccupiedYard / totalYardCap) * 100);
-  const totalQueue = berths.reduce((acc, b) => acc + b.queueCount, 0);
   const activeAlertsList = alerts.filter(a => !a.isResolved);
 
   const b04 = berths.find(b => b.id === 'B04');

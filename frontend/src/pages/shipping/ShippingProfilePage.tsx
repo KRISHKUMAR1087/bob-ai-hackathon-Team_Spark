@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  User,
   LogOut,
   Mail,
   Building,
-  Radio,
-  Bell,
-  CheckCircle2,
-  Ship,
+  Radio
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useOperations } from '../../context/OperationsContext';
@@ -24,7 +20,7 @@ export const ShippingProfilePage: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login', { replace: true });
+    navigate('/', { replace: true });
   };
 
   const handleSavePreferences = () => {

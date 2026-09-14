@@ -3,6 +3,7 @@ import jwt, { SignOptions } from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import { z } from 'zod';
 import { User } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 import { authenticate, Env } from '../middleware/authenticate.js';
 
 const router = new Hono<Env>();
@@ -40,6 +41,16 @@ function sanitizeUser(user: User) {
 const LoginDemoSchema = z.object({ role: z.enum(['admin', 'ship-agent']) });
 const GoogleSchema = z.object({ idToken: z.string().min(1) });
 const RoleSchema = z.object({ role: z.enum(['admin', 'ship-agent']) });
+const SignupSchema = z.object({ 
+  email: z.string().email(), 
+  password: z.string().min(6), 
+  name: z.string(), 
+  role: z.enum(['admin', 'ship-agent']).optional().default('admin') 
+});
+const LoginSchema = z.object({ 
+  email: z.string().email(), 
+  password: z.string() 
+});
 
 // ── POST /api/auth/login-demo ─────────────────────────────────────────────────
 
@@ -141,6 +152,57 @@ router.get('/me', authenticate, async (c) => {
 
 router.post('/logout', authenticate, async (c) => {
   return c.json({ success: true });
+});
+
+// ── POST /api/auth/signup ─────────────────────────────────────────────────────
+
+router.post('/signup', async (c) => {
+  const body = await c.req.json();
+  const parse = SignupSchema.safeParse(body);
+  if (!parse.success) { return c.json({ error: 'Invalid body', details: parse.error.issues }, 400); }
+
+  try {
+    const existing = await c.var.prisma.user.findUnique({ where: { email: parse.data.email } });
+    if (existing) { return c.json({ error: 'User already exists' }, 400); }
+
+    const hashedPassword = await bcrypt.hash(parse.data.password, 10);
+    const user = await c.var.prisma.user.create({
+      data: {
+        id: crypto.randomUUID(),
+        email: parse.data.email,
+        name: parse.data.name,
+        password: hashedPassword,
+        role: wireToDbRole(parse.data.role),
+        authProvider: 'email',
+      },
+    });
+
+    return c.json({ token: signToken(user.id, user.email, user.role, c.env), user: sanitizeUser(user) });
+  } catch (err) {
+    console.error('[auth] signup', err);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+// ── POST /api/auth/login ──────────────────────────────────────────────────────
+
+router.post('/login', async (c) => {
+  const body = await c.req.json();
+  const parse = LoginSchema.safeParse(body);
+  if (!parse.success) { return c.json({ error: 'Invalid body', details: parse.error.issues }, 400); }
+
+  try {
+    const user = await c.var.prisma.user.findUnique({ where: { email: parse.data.email } });
+    if (!user || !user.password) { return c.json({ error: 'Invalid email or password' }, 401); }
+
+    const valid = await bcrypt.compare(parse.data.password, user.password);
+    if (!valid) { return c.json({ error: 'Invalid email or password' }, 401); }
+
+    return c.json({ token: signToken(user.id, user.email, user.role, c.env), user: sanitizeUser(user) });
+  } catch (err) {
+    console.error('[auth] login', err);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
 });
 
 export default router;

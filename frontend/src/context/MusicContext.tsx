@@ -65,7 +65,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       localStorage.setItem(STORAGE_KEY_PLAYING, 'true');
     } catch (err) {
       // Browser autoplay policy might block play before user interaction
-      console.warn('Audio play request prevented by browser policy or error:', err);
+      if (import.meta.env.DEV) console.warn('Audio play request prevented by browser policy or error:', err);
       setIsPlaying(false);
     }
   }, [isMuted, volume]);

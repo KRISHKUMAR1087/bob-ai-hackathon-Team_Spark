@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { AuthService } from '../services/authService';
 import {
   Ship, Shield, Anchor, ArrowLeft,
   Eye, EyeOff, Mail, Lock, User as UserIcon
@@ -7,7 +8,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { GoogleSignInButton } from '../components/auth/GoogleSignInButton';
 import { RoleSelector } from '../components/auth/RoleSelector';
-import { User, UserRole } from '../types/auth';
+import { UserRole } from '../types/auth';
 import { motion } from 'framer-motion';
 
 interface AuthPageProps {
@@ -17,7 +18,7 @@ interface AuthPageProps {
 export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { loginAsDemo, loginWithGoogleToken, confirmRoleSelection } = useAuth();
+  const { loginWithGoogleToken, confirmRoleSelection } = useAuth();
 
   const isLogin = mode === 'login';
 
@@ -25,6 +26,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
   const queryParams = new URLSearchParams(location.search);
   const initialRole = (queryParams.get('role') as UserRole) || 'admin';
   const [selectedRole, setSelectedRole] = useState<UserRole>(initialRole);
+  const [error, setError] = useState('');
 
   // Login fields
   const [loginEmail, setLoginEmail] = useState('');
@@ -42,45 +44,40 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
 
   // Google
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [pendingGoogleUser, setPendingGoogleUser] = useState<User | null>(null);
   const [showRoleSelector, setShowRoleSelector] = useState(false);
 
   // ─── helpers ────────────────────────────────────────────────────────────
 
   const getRedirectPath = (role: UserRole) => {
-    const from = (location.state as any)?.from?.pathname;
-    if (from && from !== '/login' && from !== '/auth/login' && from !== '/auth/signup') {
+    const state = location.state as { from?: { pathname: string } } | null;
+    const from = state?.from?.pathname;
+    if (from && from !== '/' && from !== '/auth/login' && from !== '/auth/signup') {
       if (role === 'admin' && !from.startsWith('/shipping')) return from;
       if (role === 'ship-agent' && from.startsWith('/shipping')) return from;
     }
     return role === 'admin' ? '/dashboard' : '/shipping/dashboard';
   };
 
-  const handleDemoLogin = async (role: UserRole) => {
-    const user = await loginAsDemo(role);
-    navigate(getRedirectPath(user.role), { replace: true });
-  };
 
   const handleGoogleSignIn = async (idToken: string) => {
     setIsGoogleLoading(true);
     try {
       const result = await loginWithGoogleToken(idToken);
       if (result.needsRoleSelection && result.tempUser) {
-        setPendingGoogleUser(result.tempUser);
         setShowRoleSelector(true);
       } else {
         const storedRole = localStorage.getItem('portpulse_user_role') as UserRole || 'admin';
         navigate(getRedirectPath(storedRole), { replace: true });
       }
     } catch (e) {
-      console.error('Google sign in error:', e);
+      if (import.meta.env.DEV) console.error('Google sign in error:', e);
     } finally {
       setIsGoogleLoading(false);
     }
   };
 
   const handleRoleSelected = async (role: UserRole) => {
-    const confirmed = await confirmRoleSelection(role, pendingGoogleUser);
+    const confirmed = await confirmRoleSelection(role);
     setShowRoleSelector(false);
     navigate(getRedirectPath(confirmed.role), { replace: true });
   };
@@ -100,10 +97,23 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    handleDemoLogin(selectedRole);
+    
+    setError('');
+    
+    try {
+      if (isLogin) {
+        const user = await AuthService.login(loginEmail, loginPassword);
+        navigate(getRedirectPath(user.role), { replace: true });
+      } else {
+        const user = await AuthService.signup(signupName, signupEmail, signupPassword);
+        navigate(getRedirectPath(user.role), { replace: true });
+      }
+    } catch (err: any) {
+      setError(err.message || 'Authentication failed');
+    }
   };
 
   // ─── derived ─────────────────────────────────────────────────────────────
@@ -118,18 +128,18 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
   return (
     <div className="min-h-screen bg-canvas flex flex-col relative overflow-hidden">
       {/* Subtle ambient light gradient in background */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-b from-teal-500/5 via-blue-500/5 to-transparent blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[90vw] max-w-[800px] h-[350px] bg-gradient-to-b from-teal-500/5 via-blue-500/5 to-transparent blur-3xl pointer-events-none" />
 
       {/* Header */}
       <header className="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between shrink-0 relative z-10">
-        <Link to="/login" className="flex items-center gap-2.5 group">
+        <Link to="/" className="flex items-center gap-2.5 group">
           <div className="w-9 h-9 rounded-xl bg-brand-teal flex items-center justify-center shadow-subtle group-hover:scale-105 transition-transform duration-200">
             <Ship className="w-4 h-4 text-white" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-text-main group-hover:text-brand-teal transition-colors">PortPilot</span>
+          <span className="text-xl font-bold tracking-tight text-text-main group-hover:text-brand-teal transition-colors">PortPulse</span>
         </Link>
         <Link
-          to="/login"
+          to="/"
           className="flex items-center gap-1.5 text-sm font-semibold text-text-muted hover:text-brand-teal transition-colors px-3 py-1.5 rounded-lg hover:bg-surface-subtle"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Home
@@ -213,7 +223,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {error && <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md border border-red-200">{error}</div>}
 
                 {/* Full Name — signup only */}
                 {!isLogin && (
@@ -358,7 +369,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
 
       {/* Google role modal */}
       {showRoleSelector && (
-        <RoleSelector onSelectRole={handleRoleSelected} userName={pendingGoogleUser?.name} />
+        <RoleSelector onSelectRole={handleRoleSelected} />
       )}
     </div>
   );
