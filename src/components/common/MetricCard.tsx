@@ -42,12 +42,12 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`bg-surface rounded-card p-4 border border-border-subtle shadow-subtle hover:border-slate-300 transition-all ${
+      className={`bg-surface rounded-card p-3.5 sm:p-4 border border-border-subtle shadow-subtle hover:border-slate-300 transition-all min-w-0 ${
         onClick ? 'cursor-pointer' : ''
       }`}
     >
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <span className="text-xs font-medium text-text-muted">
+      <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
+        <span className="text-xs font-medium text-text-muted truncate">
           {label}
         </span>
         {Icon && <Icon className="w-4 h-4 text-text-caption shrink-0" />}

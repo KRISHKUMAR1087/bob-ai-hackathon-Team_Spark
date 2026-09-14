@@ -87,7 +87,7 @@ export const ForecastPage: React.FC = () => {
           />
 
           {/* Quick Metrics of Selected Berth */}
-          <div className="grid grid-cols-3 gap-4 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2">
             <div className="bg-surface-subtle p-3.5 rounded-lg border border-border-subtle">
               <span className="text-xs text-text-muted">Current Utilization</span>
               <div className="text-xl font-bold text-text-main mt-0.5">

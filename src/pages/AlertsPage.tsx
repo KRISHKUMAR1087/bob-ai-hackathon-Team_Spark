@@ -51,7 +51,7 @@ export const AlertsPage: React.FC = () => {
         </div>
 
         {/* Severity Filter Tabs */}
-        <div className="flex items-center bg-surface-subtle p-1 rounded-md border border-border-subtle">
+        <div className="flex flex-wrap items-center gap-1 bg-surface-subtle p-1 rounded-md border border-border-subtle">
           {['ALL', 'CRITICAL', 'WARNING', 'INFO', 'RESOLVED'].map(sev => (
             <button
               key={sev}

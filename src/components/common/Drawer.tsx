@@ -27,9 +27,9 @@ export const Drawer: React.FC<DrawerProps> = ({
         className="absolute inset-0 bg-slate-900/30 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <div
-          className={`w-screen ${width} bg-surface border-l border-border-subtle shadow-modal flex flex-col animate-in slide-in-from-right duration-300`}
+          className={`w-screen ${width} max-w-full bg-surface border-l border-border-subtle shadow-modal flex flex-col animate-in slide-in-from-right duration-300`}
         >
           {/* Header */}
           <div className="px-6 py-5 border-b border-border-subtle flex items-center justify-between bg-surface-subtle/50">

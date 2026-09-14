@@ -69,10 +69,10 @@ export const VesselsPage: React.FC = () => {
       </div>
 
       {/* Filters & Search Toolbar */}
-      <div className="bg-surface p-4 rounded-card border border-border-subtle shadow-subtle flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
+      <div className="bg-surface p-4 rounded-card border border-border-subtle shadow-subtle flex flex-wrap items-center justify-between gap-3 min-w-0">
+        <div className="flex flex-wrap items-center gap-3 flex-1 min-w-0 w-full sm:w-auto">
           {/* Search */}
-          <div className="relative flex-1 min-w-[220px] max-w-sm">
+          <div className="relative flex-1 min-w-[180px] max-w-sm w-full">
             <Search className="w-4 h-4 text-text-caption absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -117,9 +117,9 @@ export const VesselsPage: React.FC = () => {
       </div>
 
       {/* Operational Vessels Table */}
-      <div className="bg-surface rounded-card border border-border-subtle shadow-subtle overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs font-sans">
+      <div className="bg-surface rounded-card border border-border-subtle shadow-subtle overflow-hidden w-full min-w-0">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left text-xs font-sans min-w-[720px]">
             <thead className="bg-surface-subtle border-b border-border-subtle text-text-muted font-medium text-[11px] uppercase tracking-wider">
               <tr>
                 <th

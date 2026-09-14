@@ -18,7 +18,7 @@ interface TopbarProps {
 export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { alerts, isOptimizationApplied, setIsCopilotOpen, isCopilotOpen, searchQuery, setSearchQuery } = useOperations();
+  const { alerts, setIsCopilotOpen, isCopilotOpen, searchQuery, setSearchQuery } = useOperations();
   const [timeUtc, setTimeUtc] = useState<string>('');
 
   useEffect(() => {
@@ -59,30 +59,35 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
 
   return (
     <header
-      className={`fixed top-0 right-0 z-20 h-16 bg-surface border-b border-border-subtle transition-all duration-200 flex items-center justify-between px-4 lg:px-6 ${
-        isCollapsed ? 'left-16' : 'left-0 lg:left-64'
+      className={`fixed top-0 right-0 z-20 h-16 bg-surface border-b border-border-subtle transition-all duration-200 flex items-center justify-between px-3 sm:px-4 lg:px-6 left-0 ${
+        isCollapsed ? 'md:left-16' : 'md:left-64'
       }`}
     >
       {/* Left: Mobile Toggle + Breadcrumb */}
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        {/* Hamburger Menu Button: visible only on mobile (< 768px) */}
         <button
           onClick={() => setIsMobileMenuOpen(true)}
-          className="p-1.5 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle lg:hidden"
+          className="p-1.5 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle md:hidden shrink-0"
+          aria-label="Open navigation menu"
+          title="Open Menu"
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-1.5 text-xs text-text-muted">
-          <span>{breadcrumb.section}</span>
-          <ChevronRight className="w-3.5 h-3.5 text-text-caption" />
-          <span className="text-text-main font-semibold truncate">{breadcrumb.title}</span>
+        <div className="flex items-center gap-1.5 text-xs text-text-muted min-w-0">
+          <span className="hidden sm:inline shrink-0">{breadcrumb.section}</span>
+          <ChevronRight className="w-3.5 h-3.5 text-text-caption hidden sm:inline shrink-0" />
+          <span className="text-text-main font-semibold truncate text-xs sm:text-sm">
+            {breadcrumb.title}
+          </span>
         </div>
       </div>
 
       {/* Right Actions & Utilities */}
-      <div className="flex items-center gap-3">
-        {/* Global Search */}
-        <div className="relative hidden md:block">
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        {/* Global Search: visible on larger screens */}
+        <div className="relative hidden xl:block">
           <div className="flex items-center bg-surface-subtle border border-border-subtle rounded-md px-2.5 py-1.5 w-48 lg:w-60 focus-within:border-brand-teal focus-within:w-68 transition-all">
             <Search className="w-3.5 h-3.5 text-text-caption mr-2 shrink-0" />
             <input
@@ -95,7 +100,7 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="text-text-caption hover:text-text-main text-[10px] ml-1"
+                className="text-text-caption hover:text-text-main text-[10px] ml-1 shrink-0"
               >
                 Clear
               </button>
@@ -103,15 +108,15 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
           </div>
         </div>
 
-        {/* Live Port UTC Clock */}
-        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-subtle border border-border-subtle text-text-muted text-xs">
-          <Clock className="w-3.5 h-3.5 text-text-caption" />
-          <span className="font-mono">{timeUtc || '00:00:00 UTC'}</span>
+        {/* Live Port UTC Clock: hidden on mobile < 640px */}
+        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-subtle border border-border-subtle text-text-muted text-xs shrink-0">
+          <Clock className="w-3.5 h-3.5 text-text-caption shrink-0" />
+          <span className="font-mono text-[11px]">{timeUtc || '00:00:00 UTC'}</span>
         </div>
 
-        {/* AIS Status */}
-        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-subtle border border-border-subtle text-xs">
-          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+        {/* AIS Status: hidden below 1280px */}
+        <div className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-subtle border border-border-subtle text-xs shrink-0">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
           <span className="text-text-muted">AIS:</span>
           <span className="text-text-main font-medium">Online</span>
         </div>
@@ -119,7 +124,7 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
         {/* Alerts Bell */}
         <button
           onClick={() => navigate('/alerts')}
-          className="relative p-2 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle border border-transparent hover:border-border-subtle transition-colors"
+          className="relative p-1.5 sm:p-2 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle border border-transparent hover:border-border-subtle transition-colors shrink-0"
           title={`${unreadAlerts} Active Operational Alerts`}
         >
           <Bell className="w-4 h-4" />
@@ -131,21 +136,21 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
         {/* Copilot Trigger Button */}
         <button
           onClick={() => setIsCopilotOpen(!isCopilotOpen)}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 border ${
+          className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 border shrink-0 ${
             isCopilotOpen
               ? 'bg-brand-teal text-white border-brand-teal'
               : 'bg-surface text-text-main border-border-subtle hover:bg-surface-subtle hover:border-slate-300'
           }`}
           title="Open Gemini Operational Copilot"
         >
-          <Sparkles className={`w-3.5 h-3.5 ${isCopilotOpen ? 'text-white' : 'text-brand-teal'}`} />
+          <Sparkles className={`w-3.5 h-3.5 ${isCopilotOpen ? 'text-white' : 'text-brand-teal'} shrink-0`} />
           <span className="hidden sm:inline">Copilot</span>
         </button>
 
         {/* Supervisor Profile Avatar */}
         <div
           onClick={() => navigate('/settings')}
-          className="w-8 h-8 rounded-full bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-semibold text-text-main cursor-pointer hover:border-slate-300 transition-colors"
+          className="w-8 h-8 rounded-full bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-semibold text-text-main cursor-pointer hover:border-slate-300 transition-colors shrink-0"
           title="Capt. M. Vance — Port Supervisor"
         >
           MV

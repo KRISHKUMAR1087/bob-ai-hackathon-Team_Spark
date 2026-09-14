@@ -33,9 +33,9 @@ export const CopilotPage: React.FC = () => {
       </div>
 
       {/* Main Container: Chat on Left, Context Monitor on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-210px)] min-h-[580px]">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-[580px] lg:h-[calc(100vh-210px)]">
         {/* Left 3 Cols: Copilot Conversation */}
-        <div className="lg:col-span-3 h-full">
+        <div className="lg:col-span-3 h-[520px] lg:h-full">
           <CopilotChat embedded={true} />
         </div>
 

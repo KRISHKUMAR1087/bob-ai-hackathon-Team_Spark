@@ -19,15 +19,23 @@ import {
   ChevronLeft,
   ChevronRight,
   RotateCcw,
+  X,
 } from 'lucide-react';
 import { useOperations } from '../../context/OperationsContext';
 
 interface SidebarProps {
   isCollapsed: boolean;
-  setIsCollapsed: (collapsed: boolean) => void;
+  setIsCollapsed?: (collapsed: boolean) => void;
+  isMobileDrawer?: boolean;
+  onCloseMobileDrawer?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed }) => {
+export const Sidebar: React.FC<SidebarProps> = ({
+  isCollapsed,
+  setIsCollapsed,
+  isMobileDrawer = false,
+  onCloseMobileDrawer,
+}) => {
   const location = useLocation();
   const { alerts, isOptimizationApplied, resetToDefault } = useOperations();
   const unreadAlerts = alerts.filter(a => !a.isResolved).length;
@@ -86,15 +94,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
     },
   ];
 
-  return (
-    <aside
-      className={`fixed top-0 bottom-0 left-0 z-30 bg-surface border-r border-border-subtle flex flex-col transition-all duration-200 ${
+  const handleNavClick = () => {
+    if (isMobileDrawer && onCloseMobileDrawer) {
+      onCloseMobileDrawer();
+    }
+  };
+
+  const containerClasses = isMobileDrawer
+    ? 'w-72 max-w-[85vw] h-full bg-surface border-r border-border-subtle flex flex-col z-50 shadow-modal'
+    : `fixed top-0 bottom-0 left-0 z-30 bg-surface border-r border-border-subtle hidden md:flex flex-col transition-all duration-200 ${
         isCollapsed ? 'w-16' : 'w-64'
-      }`}
-    >
+      }`;
+
+  return (
+    <aside className={containerClasses}>
       {/* Brand Header */}
-      <div className="h-16 px-4 flex items-center justify-between border-b border-border-subtle bg-surface">
-        {!isCollapsed ? (
+      <div className="h-16 px-4 flex items-center justify-between border-b border-border-subtle bg-surface shrink-0">
+        {!isCollapsed || isMobileDrawer ? (
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-8 h-8 rounded-lg bg-brand-teal text-white flex items-center justify-center shrink-0 shadow-subtle">
               <Ship className="w-4 h-4" />
@@ -119,18 +135,31 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
           </div>
         )}
 
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1 rounded-md text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors hidden lg:block"
-          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-        </button>
+        {/* Action button: Close X on mobile, Toggle Chevron on desktop/tablet */}
+        {isMobileDrawer ? (
+          <button
+            onClick={onCloseMobileDrawer}
+            className="p-1.5 rounded-md text-text-muted hover:text-text-main hover:bg-surface-subtle transition-colors"
+            title="Close menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        ) : (
+          setIsCollapsed && (
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="p-1 rounded-md text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors"
+              title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            </button>
+          )
+        )}
       </div>
 
       {/* Port Operational Status Ribbon */}
-      {!isCollapsed && (
-        <div className="px-4 py-2 border-b border-border-subtle bg-surface-subtle/60">
+      {(!isCollapsed || isMobileDrawer) && (
+        <div className="px-4 py-2 border-b border-border-subtle bg-surface-subtle/60 shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span
@@ -159,7 +188,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
       <div className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
         {navSections.map((section, idx) => (
           <div key={idx} className="space-y-0.5">
-            {!isCollapsed && (
+            {(!isCollapsed || isMobileDrawer) && (
               <h3 className="px-3 pb-1 text-[11px] font-medium text-text-caption">
                 {section.label}
               </h3>
@@ -176,20 +205,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
                   <NavLink
                     key={item.path}
                     to={item.path}
-                    title={isCollapsed ? item.name : undefined}
+                    onClick={handleNavClick}
+                    title={isCollapsed && !isMobileDrawer ? item.name : undefined}
                     className={`flex items-center gap-2.5 px-3 py-1.5 rounded-md text-xs transition-colors ${
                       isActive
                         ? 'bg-teal-50 text-teal-900 font-semibold border-l-2 border-brand-teal'
                         : 'text-text-muted hover:text-text-main hover:bg-surface-subtle'
-                    } ${isCollapsed ? 'justify-center px-0' : ''}`}
+                    } ${isCollapsed && !isMobileDrawer ? 'justify-center px-0' : ''}`}
                   >
                     <Icon
                       className={`w-4 h-4 shrink-0 ${
                         isActive ? 'text-brand-teal' : 'text-text-caption'
                       }`}
                     />
-                    {!isCollapsed && <span className="truncate">{item.name}</span>}
-                    {!isCollapsed && item.badge && (
+                    {(!isCollapsed || isMobileDrawer) && <span className="truncate">{item.name}</span>}
+                    {(!isCollapsed || isMobileDrawer) && item.badge && (
                       <span
                         className={`ml-auto px-1.5 py-0.2 rounded-full text-[10px] ${item.badgeColor}`}
                       >
@@ -205,8 +235,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
       </div>
 
       {/* Footer / Demo Reset & Profile */}
-      <div className="p-3 border-t border-border-subtle bg-surface space-y-2">
-        {!isCollapsed ? (
+      <div className="p-3 border-t border-border-subtle bg-surface space-y-2 shrink-0">
+        {!isCollapsed || isMobileDrawer ? (
           <>
             <button
               onClick={resetToDefault}
@@ -217,7 +247,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
               <span>Reset Demo State</span>
             </button>
             <div className="flex items-center gap-2.5 pt-1 px-1">
-              <div className="w-7 h-7 rounded-full bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-semibold text-text-main">
+              <div className="w-7 h-7 rounded-full bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-semibold text-text-main shrink-0">
                 MV
               </div>
               <div className="min-w-0 flex-1">

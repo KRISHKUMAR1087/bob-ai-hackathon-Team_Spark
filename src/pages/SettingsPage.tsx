@@ -40,7 +40,7 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-border-subtle pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-border-subtle pb-3">
         {[
           { id: 'port', label: 'Port Configuration', icon: Sliders },
           { id: 'ml', label: 'Prediction Thresholds', icon: Cpu },

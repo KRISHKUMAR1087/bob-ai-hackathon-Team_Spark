@@ -115,7 +115,7 @@ export const PlannerPage: React.FC = () => {
       </div>
 
       {/* Top Operational Summary Metric Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         <MetricCard
           label="Vessel Movements"
           value="42"
