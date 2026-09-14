@@ -48,7 +48,16 @@ export class ApiClient {
       window.location.reload();
       throw new Error('Unauthorized');
     }
-    const data = await res.json();
+    
+    let data;
+    const contentType = res.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      data = await res.json();
+    } else {
+      const text = await res.text();
+      data = { error: text || res.statusText || 'Unexpected Server Error' };
+    }
+
     if (!res.ok) {
       throw new Error(data.error?.message || data.error || 'API Error');
     }
