@@ -12,6 +12,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { useOperations } from '../../context/OperationsContext';
 import { MusicButton } from '../common/MusicButton';
+import { ThemeToggleButton } from '../common/ThemeToggleButton';
 
 interface ShippingTopbarProps {
   isCollapsed: boolean;
@@ -124,6 +125,9 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
 
         {/* Ambient Background Music Toggle */}
         <MusicButton />
+
+        {/* Day / Night Theme Switcher */}
+        <ThemeToggleButton />
 
         {/* Agent Profile Dropdown Container */}
         <div className="relative" ref={dropdownRef}>
