@@ -29,6 +29,24 @@ export interface Vessel {
   historicalTurnaroundHours: number;
   timelineEvents: VesselTimelineEvent[];
   recommendedAction?: string;
+  // Ship Agent Ownership & Voyage Details
+  ownerId?: string; // 'demo-agent' or other agency user id
+  shippingCompany?: string; // e.g. 'Apex Maritime Lines'
+  callSign?: string;
+  vesselType?: string; // e.g. 'Container Ship (ULCV)', 'Panamax Feeder'
+  voyageNumber?: string;
+  previousPort?: string;
+  nextPort?: string;
+  requestedBerth?: string;
+  requestedArrivalTime?: string;
+  berthDurationHours?: number;
+  requestedCranes?: number;
+  cargoType?: string;
+  cargoQuantity?: string;
+  containersLoaded?: number;
+  containersTotal?: number;
+  dangerousGoods?: boolean;
+  specialNotes?: string;
 }
 
 export type BerthStatus = 'Occupied' | 'Available' | 'Congested' | 'Maintenance';
@@ -220,11 +238,54 @@ export interface OperationalAlert {
   actionLabel: string;
 }
 
+export interface CopilotTableBlock {
+  title?: string;
+  columns: string[];
+  rows: (string | number)[][];
+}
+
+export interface CopilotChartBlock {
+  chartType: 'bar' | 'line' | 'pie';
+  title?: string;
+  data: { name: string; value: number; [key: string]: any }[];
+  dataKey?: string;
+  categoryKey?: string;
+}
+
+export interface CopilotMetricItem {
+  label: string;
+  value: string | number;
+  subtext?: string;
+  isPositive?: boolean;
+}
+
+export interface CopilotStructuredBlock {
+  type: 'table' | 'chart' | 'metrics';
+  title?: string;
+  columns?: string[];
+  rows?: (string | number)[][];
+  chartType?: 'bar' | 'line' | 'pie';
+  data?: { name: string; value: number; [key: string]: any }[];
+  metrics?: CopilotMetricItem[];
+}
+
+export interface CopilotStructuredResponse {
+  message: string;
+  blocks?: CopilotStructuredBlock[];
+  suggestedActions?: {
+    label: string;
+    actionRoute?: string;
+    prompt?: string;
+    requiresConfirmation?: boolean;
+  }[];
+}
+
 export interface CopilotMessage {
   id: string;
   sender: 'user' | 'gemini';
   text: string;
   timestamp: string;
+  structured?: CopilotStructuredResponse;
   toolCalls?: {
     toolName: string;
     parameters?: Record<string, any>;
@@ -236,6 +297,51 @@ export interface CopilotMessage {
     actionType?: string;
     payload?: any;
     prompt?: string;
+    requiresConfirmation?: boolean;
   }[];
   isStreaming?: boolean;
 }
+
+export type BerthRequestStatus = 'Pending' | 'Under Review' | 'Approved' | 'Changed' | 'Rejected';
+
+export interface BerthRequest {
+  id: string;
+  vesselId: string;
+  vesselName: string;
+  imo: string;
+  requestedBerth: string;
+  requestedArrivalTime: string;
+  estimatedDurationHours: number;
+  requestedCranes: number;
+  cargoType: string;
+  status: BerthRequestStatus;
+  submittedAt: string;
+  reviewedAt?: string;
+  assignedBerth?: string;
+  notes?: string;
+  ownerId: string;
+}
+
+export type DocumentType =
+  | 'Bill of Lading'
+  | 'Cargo Manifest'
+  | 'Vessel Declaration'
+  | 'Arrival Notice'
+  | 'Dangerous Goods Declaration'
+  | 'Customs Clearance'
+  | 'Crew List'
+  | 'Other';
+
+export interface ShippingDocument {
+  id: string;
+  name: string;
+  vesselId: string;
+  vesselName: string;
+  type: DocumentType;
+  status: 'Approved' | 'Under Review' | 'Required' | 'Draft';
+  uploadedDate: string;
+  fileSize: string;
+  fileUrl?: string;
+  ownerId: string;
+}
+

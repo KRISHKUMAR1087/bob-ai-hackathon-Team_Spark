@@ -1,0 +1,17 @@
+export type UserRole = 'admin' | 'ship-agent';
+export type AuthProviderType = 'demo' | 'google';
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  photoURL?: string;
+  role: UserRole;
+  authProvider: AuthProviderType;
+}
+
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
