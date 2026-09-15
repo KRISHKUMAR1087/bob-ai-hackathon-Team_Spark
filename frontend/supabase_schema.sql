@@ -13,6 +13,19 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- Mirror Supabase Auth users into the legacy public."User" table used by
+-- operational foreign keys such as "Vessel"."ownerId".
+CREATE TABLE IF NOT EXISTS public."User" (
+    "id" TEXT PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "email" TEXT UNIQUE NOT NULL,
+    "password" TEXT,
+    "photoUrl" TEXT,
+    "role" TEXT NOT NULL DEFAULT 'admin',
+    "authProvider" TEXT NOT NULL DEFAULT 'email',
+    "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- 2. Automatic Profile Creation Trigger on Sign Up
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
@@ -30,6 +43,24 @@ BEGIN
         name = EXCLUDED.name,
         avatar_url = EXCLUDED.avatar_url,
         updated_at = NOW();
+
+    INSERT INTO public."User" ("id", "name", "email", "photoUrl", "role", "authProvider")
+    VALUES (
+        NEW.id::text,
+        COALESCE(NEW.raw_user_meta_data->>'name', NEW.raw_user_meta_data->>'full_name', split_part(NEW.email, '@', 1)),
+        NEW.email,
+        COALESCE(NEW.raw_user_meta_data->>'avatar_url', NEW.raw_user_meta_data->>'picture'),
+        COALESCE(NEW.raw_user_meta_data->>'role', 'admin'),
+        COALESCE(NEW.raw_app_meta_data->>'provider', 'email')
+    )
+    ON CONFLICT ("id") DO UPDATE
+    SET
+        "name" = EXCLUDED."name",
+        "email" = EXCLUDED."email",
+        "photoUrl" = EXCLUDED."photoUrl",
+        "role" = EXCLUDED."role",
+        "authProvider" = EXCLUDED."authProvider";
+
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -67,6 +98,47 @@ CREATE POLICY "Users can update own profile"
     ON public.profiles
     FOR UPDATE
     USING (auth.uid() = id);
+
+ALTER TABLE public."User" ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can view own user row or admin can view all" ON public."User";
+DROP POLICY IF EXISTS "Users can update own user row" ON public."User";
+DROP POLICY IF EXISTS "Users can insert own user row" ON public."User";
+
+CREATE POLICY "Users can view own user row or admin can view all"
+    ON public."User"
+    FOR SELECT
+    USING ("id" = auth.uid()::text OR public.is_admin());
+
+CREATE POLICY "Users can update own user row"
+    ON public."User"
+    FOR UPDATE
+    USING ("id" = auth.uid()::text);
+
+CREATE POLICY "Users can insert own user row"
+    ON public."User"
+    FOR INSERT
+    WITH CHECK ("id" = auth.uid()::text);
+
+-- Backfill mirrored rows for existing auth users before the trigger existed.
+INSERT INTO public."User" ("id", "name", "email", "photoUrl", "role", "authProvider", "createdAt")
+SELECT
+    au.id::text,
+    COALESCE(au.raw_user_meta_data->>'name', au.raw_user_meta_data->>'full_name', split_part(au.email, '@', 1)),
+    au.email,
+    COALESCE(au.raw_user_meta_data->>'avatar_url', au.raw_user_meta_data->>'picture'),
+    COALESCE(au.raw_user_meta_data->>'role', p.role, 'admin'),
+    COALESCE(au.raw_app_meta_data->>'provider', 'email'),
+    au.created_at
+FROM auth.users au
+LEFT JOIN public.profiles p ON p.id = au.id
+ON CONFLICT ("id") DO UPDATE
+SET
+    "name" = EXCLUDED."name",
+    "email" = EXCLUDED."email",
+    "photoUrl" = EXCLUDED."photoUrl",
+    "role" = EXCLUDED."role",
+    "authProvider" = EXCLUDED."authProvider";
 
 -- 4. Row Level Security for Berth Requests
 ALTER TABLE IF EXISTS public."BerthRequest" ENABLE ROW LEVEL SECURITY;

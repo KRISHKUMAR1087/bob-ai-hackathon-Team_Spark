@@ -18,7 +18,7 @@ interface AuthPageProps {
 export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { loginWithGoogleToken, confirmRoleSelection, login, signup } = useAuth();
+  const { loginWithGoogleToken, confirmRoleSelection, login, signup, loginAsDemo } = useAuth();
 
   const isLogin = mode === 'login';
 
@@ -65,9 +65,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
       const result = await loginWithGoogleToken(idToken);
       if (result.needsRoleSelection && result.tempUser) {
         setShowRoleSelector(true);
-      } else {
-        const storedRole = localStorage.getItem('portpulse_user_role') as UserRole || 'admin';
-        navigate(getRedirectPath(storedRole), { replace: true });
+      } else if (result.tempUser) {
+        navigate(getRedirectPath(result.tempUser.role), { replace: true });
       }
     } catch (e: any) {
       console.error('Google sign in error:', e);
@@ -115,6 +114,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
     } catch (err: any) {
       setError(err.message || 'Authentication failed');
     }
+  };
+
+  const handleDemoLogin = async () => {
+    setError('');
+    const demoUser = await loginAsDemo(selectedRole);
+    navigate(getRedirectPath(demoUser.role), { replace: true });
   };
 
   // ─── derived ─────────────────────────────────────────────────────────────
@@ -348,6 +353,15 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
               </div>
 
               <GoogleSignInButton onSuccess={(idToken) => handleGoogleSignIn(idToken)} isLoading={isGoogleLoading} />
+
+              <button
+                type="button"
+                onClick={handleDemoLogin}
+                className="w-full mt-3 py-2.5 px-4 rounded-xl text-xs font-semibold text-text-main bg-surface-subtle hover:bg-surface border border-border-subtle hover:border-slate-300 transition-all flex items-center justify-center gap-2 shadow-xs hover:shadow-sm cursor-pointer active:scale-[0.99]"
+              >
+                {isAdmin ? <Shield className="w-4 h-4" /> : <Anchor className="w-4 h-4" />}
+                <span>Continue with {roleLabel} Demo Data</span>
+              </button>
 
               <p className="text-center text-xs text-text-muted mt-5">
                 {isLogin ? (

@@ -34,6 +34,7 @@ import { geminiCopilotService } from '../services/geminiCopilotService';
 import { useAuth } from './AuthContext';
 import { DocumentService } from '../services/documentService';
 import { NotificationService } from '../services/notificationService';
+import { OperationsDataService } from '../services/operationsDataService';
 
 export interface ToastState {
   id: string;
@@ -117,7 +118,7 @@ interface OperationsContextType {
 const OperationsContext = createContext<OperationsContextType | undefined>(undefined);
 
 export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [vessels, setVessels] = useState<Vessel[]>(initialVessels);
+  const [vessels, setVessels] = useState<Vessel[]>([]);
   const [berths, setBerths] = useState<Berth[]>(initialBerths);
   const [cranes, setCranes] = useState<Crane[]>(initialCranes);
   const [yardBlocks, setYardBlocks] = useState<YardBlock[]>(initialYardBlocks);
@@ -127,26 +128,81 @@ export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [routes] = useState<RouteOption[]>(initialRouteOptions);
   const [shiftPlans, setShiftPlans] = useState<ShiftPlanItem[]>(initialShiftPlans);
   const [alerts, setAlerts] = useState<OperationalAlert[]>(initialAlerts);
-  const [berthRequests, setBerthRequests] = useState<BerthRequest[]>(initialBerthRequests);
-  const [shippingDocuments, setShippingDocuments] = useState<ShippingDocument[]>(initialShippingDocuments);
+  const [berthRequests, setBerthRequests] = useState<BerthRequest[]>([]);
+  const [shippingDocuments, setShippingDocuments] = useState<ShippingDocument[]>([]);
   const { user } = useAuth();
+  const isDemoUser = user?.authProvider === 'demo';
+  const syncVesselIfReal = (vessel: Vessel) => {
+    if (!isDemoUser) {
+      void OperationsDataService.upsertVessel(vessel);
+    }
+  };
+
+  const syncBerthRequestIfReal = (request: BerthRequest) => {
+    if (!isDemoUser) {
+      void OperationsDataService.upsertBerthRequest(request);
+    }
+  };
 
   // Persistent Notification Read State
   const [readNotificationIds, setReadNotificationIds] = useState<Set<string>>(new Set());
+
+  // Hydrate demo data or user-owned operational data from Supabase.
+  useEffect(() => {
+    let isMounted = true;
+
+    const syncOperations = async () => {
+      if (!user) {
+        setVessels([]);
+        setBerthRequests([]);
+        setShippingDocuments([]);
+        return;
+      }
+
+      if (isDemoUser) {
+        setVessels(initialVessels);
+        setBerthRequests(initialBerthRequests);
+        setShippingDocuments(initialShippingDocuments);
+        return;
+      }
+
+      try {
+        const [dbVessels, dbRequests] = await Promise.all([
+          OperationsDataService.fetchVessels(user.id, user.role),
+          OperationsDataService.fetchBerthRequests(user.id, user.role),
+        ]);
+
+        if (isMounted) {
+          setVessels(dbVessels);
+          setBerthRequests(dbRequests);
+          setShippingDocuments([]);
+        }
+      } catch (e) {
+        console.warn('[OperationsContext] Failed to load operations from Supabase:', e);
+        if (isMounted) {
+          setVessels([]);
+          setBerthRequests([]);
+          setShippingDocuments([]);
+        }
+      }
+    };
+
+    syncOperations();
+    return () => {
+      isMounted = false;
+    };
+  }, [user, isDemoUser]);
 
   // Hydrate user documents from Supabase
   useEffect(() => {
     let isMounted = true;
     const syncDocs = async () => {
+      if (isDemoUser) return;
       if (user?.id) {
         try {
           const dbDocs = await DocumentService.fetchDocuments(user.id, user.role);
-          if (isMounted && dbDocs.length > 0) {
-            setShippingDocuments(prev => {
-              const dbIds = new Set(dbDocs.map(d => d.id));
-              const remainingMock = prev.filter(d => !dbIds.has(d.id));
-              return [...dbDocs, ...remainingMock];
-            });
+          if (isMounted) {
+            setShippingDocuments(dbDocs);
           }
         } catch (e) {
           console.warn('[OperationsContext] Failed to load documents from Supabase:', e);
@@ -157,7 +213,7 @@ export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     return () => {
       isMounted = false;
     };
-  }, [user]);
+  }, [user, isDemoUser]);
 
   // Hydrate user notification read receipts from Supabase
   useEffect(() => {
@@ -542,7 +598,7 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
       demurrageRisk: 'Low',
       historicalTurnaroundHours: 20,
       recommendedAction: 'Awaiting port berth assignment and pilot scheduling.',
-      ownerId: vesselData.ownerId || 'demo-agent',
+      ownerId: vesselData.ownerId || user?.id || 'demo-agent',
       shippingCompany: vesselData.shippingCompany || 'Apex Maritime Agency',
       callSign: vesselData.callSign || 'CALL-' + Math.floor(100 + Math.random() * 900),
       vesselType: vesselData.vesselType || 'Container Ship',
@@ -568,6 +624,7 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
     };
 
     setVessels(prev => [newVessel, ...prev]);
+    syncVesselIfReal(newVessel);
 
     // Automatically submit a BerthRequest if requestedBerth was specified
     if (vesselData.requestedBerth) {
@@ -587,6 +644,7 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
         ownerId: newVessel.ownerId || 'demo-agent',
       };
       setBerthRequests(prev => [newReq, ...prev]);
+      syncBerthRequestIfReal(newReq);
     }
 
     showToast('success', 'Vessel Added Successfully', `${newVessel.name} (IMO ${newVessel.imo}) registered in your fleet.`);
@@ -594,22 +652,32 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
   };
 
   const updateVessel = (id: string, updates: Partial<Vessel>) => {
+    let updatedVessel: Vessel | undefined;
     setVessels(prev =>
-      prev.map(v => (v.id === id ? { ...v, ...updates } : v))
+      prev.map(v => {
+        if (v.id !== id) return v;
+        updatedVessel = { ...v, ...updates };
+        return updatedVessel;
+      })
     );
+    if (updatedVessel) syncVesselIfReal(updatedVessel);
     showToast('info', 'Vessel Updated', `Changes saved for vessel.`);
   };
 
   const deleteVessel = (id: string) => {
     setVessels(prev => prev.filter(v => v.id !== id));
+    if (!isDemoUser) {
+      void OperationsDataService.deleteVessel(id);
+    }
     showToast('info', 'Vessel Removed', `Vessel archived from your active fleet.`);
   };
 
   const updateVesselEta = (vesselId: string, newEta: string, reason: string) => {
+    let updatedVessel: Vessel | undefined;
     setVessels(prev =>
       prev.map(v => {
         if (v.id === vesselId) {
-          return {
+          updatedVessel = {
             ...v,
             eta: newEta,
             timelineEvents: v.timelineEvents.map(e =>
@@ -618,10 +686,12 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
                 : e
             ),
           };
+          return updatedVessel;
         }
         return v;
       })
     );
+    if (updatedVessel) syncVesselIfReal(updatedVessel);
 
     const vessel = vessels.find(v => v.id === vesselId);
     const vesselName = vessel ? vessel.name : 'Vessel';
@@ -651,6 +721,7 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
       submittedAt: 'Just now',
     };
     setBerthRequests(prev => [newRequest, ...prev]);
+    syncBerthRequestIfReal(newRequest);
 
     // Dispatch alert for Port Admin
     const newAlert: OperationalAlert = {
@@ -670,19 +741,22 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
   };
 
   const updateBerthRequestStatus = (requestId: string, status: BerthRequestStatus, assignedBerth?: string) => {
+    let updatedRequest: BerthRequest | undefined;
     setBerthRequests(prev =>
       prev.map(r => {
         if (r.id === requestId) {
-          return {
+          updatedRequest = {
             ...r,
             status,
             assignedBerth: assignedBerth || r.assignedBerth || r.requestedBerth,
             reviewedAt: 'Just now',
           };
+          return updatedRequest;
         }
         return r;
       })
     );
+    if (updatedRequest) syncBerthRequestIfReal(updatedRequest);
 
     const req = berthRequests.find(r => r.id === requestId);
     if (req && assignedBerth) {
@@ -695,10 +769,11 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
   };
 
   const updateCargoInfo = (vesselId: string, cargoData: { containersLoaded?: number; containersTotal?: number; cargoQuantity?: string; dangerousGoods?: boolean; specialNotes?: string }) => {
+    let updatedVessel: Vessel | undefined;
     setVessels(prev =>
       prev.map(v => {
         if (v.id === vesselId) {
-          return {
+          updatedVessel = {
             ...v,
             ...(cargoData.containersLoaded !== undefined ? { containersLoaded: cargoData.containersLoaded } : {}),
             ...(cargoData.containersTotal !== undefined ? { containersTotal: cargoData.containersTotal } : {}),
@@ -706,10 +781,12 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
             ...(cargoData.dangerousGoods !== undefined ? { dangerousGoods: cargoData.dangerousGoods } : {}),
             ...(cargoData.specialNotes !== undefined ? { specialNotes: cargoData.specialNotes } : {}),
           };
+          return updatedVessel;
         }
         return v;
       })
     );
+    if (updatedVessel) syncVesselIfReal(updatedVessel);
     showToast('success', 'Cargo Information Updated', 'Manifest details and container handling stats saved.');
   };
 

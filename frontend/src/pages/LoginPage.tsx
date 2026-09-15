@@ -54,9 +54,8 @@ export const LoginPage: React.FC = () => {
       const result = await loginWithGoogleToken(idToken);
       if (result.needsRoleSelection && result.tempUser) {
         setShowRoleSelector(true);
-      } else {
-        const storedRole = localStorage.getItem('portpulse_user_role') as UserRole || 'admin';
-        navigate(getRedirectPath(storedRole), { replace: true });
+      } else if (result.tempUser) {
+        navigate(getRedirectPath(result.tempUser.role), { replace: true });
       }
     } catch (e) {
       console.error('Google sign in error:', e);

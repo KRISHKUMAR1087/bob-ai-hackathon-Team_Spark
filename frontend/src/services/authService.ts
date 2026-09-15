@@ -101,9 +101,6 @@ export class AuthService {
       }
 
       if (sbUser) {
-        // Store access token
-        localStorage.setItem(STORAGE_KEY_TOKEN, accessToken);
-
         // Build, persist, and return user profile
         return await AuthService.getProfileOrFallback(sbUser);
       }
@@ -120,8 +117,7 @@ export class AuthService {
    * Translates a Supabase user object into our application User model
    */
   public static async getProfileOrFallback(sbUser: any): Promise<User> {
-    const storedRole = localStorage.getItem(STORAGE_KEY_ROLE) as UserRole | null;
-    const roleFromMeta = (sbUser.user_metadata?.role as UserRole) || storedRole || 'admin';
+    const roleFromMeta = (sbUser.user_metadata?.role as UserRole) || 'admin';
     const nameFromMeta =
       sbUser.user_metadata?.name ||
       sbUser.user_metadata?.full_name ||
@@ -147,8 +143,6 @@ export class AuthService {
           role: (profile.role as UserRole) || roleFromMeta,
           authProvider: sbUser.app_metadata?.provider === 'google' ? 'google' : 'email',
         };
-        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(user));
-        localStorage.setItem(STORAGE_KEY_ROLE, user.role);
         return user;
       }
     } catch (e) {
@@ -164,8 +158,6 @@ export class AuthService {
       role: roleFromMeta,
       authProvider: sbUser.app_metadata?.provider === 'google' ? 'google' : 'email',
     };
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(user));
-    localStorage.setItem(STORAGE_KEY_ROLE, user.role);
     return user;
   }
 
@@ -189,10 +181,6 @@ export class AuthService {
 
     if (!data.user) {
       throw new Error('No user returned after authentication.');
-    }
-
-    if (data.session?.access_token) {
-      localStorage.setItem(STORAGE_KEY_TOKEN, data.session.access_token);
     }
 
     return await AuthService.getProfileOrFallback(data.user);
@@ -227,10 +215,6 @@ export class AuthService {
 
     if (!data.user) {
       throw new Error('No user profile created. Please try again.');
-    }
-
-    if (data.session?.access_token) {
-      localStorage.setItem(STORAGE_KEY_TOKEN, data.session.access_token);
     }
 
     // Attempt to upsert the profile in Supabase profiles table
@@ -323,6 +307,19 @@ export class AuthService {
         });
       } catch (e) {
         console.warn('[Supabase] Failed to update profiles table', e);
+      }
+
+      try {
+        await supabase.from('User').upsert({
+          id: sbUser.id,
+          email: sbUser.email,
+          name: sbUser.user_metadata?.name || sbUser.user_metadata?.full_name || sbUser.email?.split('@')[0] || 'User',
+          photoUrl: sbUser.user_metadata?.avatar_url || sbUser.user_metadata?.picture || null,
+          role,
+          authProvider: sbUser.app_metadata?.provider === 'google' ? 'google' : 'email',
+        });
+      } catch (e) {
+        console.warn('[Supabase] Failed to update legacy User table', e);
       }
 
       return await AuthService.getProfileOrFallback({

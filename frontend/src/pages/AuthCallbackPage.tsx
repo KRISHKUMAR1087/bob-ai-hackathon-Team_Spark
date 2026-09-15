@@ -98,14 +98,6 @@ export const AuthCallbackPage: React.FC = () => {
         }
       }
 
-      // Check localStorage for previously selected role
-      if (!role) {
-        const storedRole = localStorage.getItem('portpulse_user_role') as UserRole | null;
-        if (storedRole && (storedRole === 'admin' || storedRole === 'ship-agent')) {
-          role = storedRole;
-        }
-      }
-
       if (role && (role === 'admin' || role === 'ship-agent')) {
         // User already has a role assigned -> redirect to their portal
         const target = role === 'admin' ? '/dashboard' : '/shipping/dashboard';
