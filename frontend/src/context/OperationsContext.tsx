@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import {
   Vessel,
   Berth,
@@ -14,6 +14,7 @@ import {
   BerthRequest,
   BerthRequestStatus,
   ShippingDocument,
+  DocumentType,
 } from '../types/operations';
 import {
   initialVessels,
@@ -30,6 +31,9 @@ import {
   initialShippingDocuments,
 } from '../services/mockData';
 import { geminiCopilotService } from '../services/geminiCopilotService';
+import { useAuth } from './AuthContext';
+import { DocumentService } from '../services/documentService';
+import { NotificationService } from '../services/notificationService';
 
 export interface ToastState {
   id: string;
@@ -83,8 +87,23 @@ interface OperationsContextType {
   submitBerthRequest: (request: Omit<BerthRequest, 'id' | 'submittedAt' | 'status'>) => void;
   updateBerthRequestStatus: (requestId: string, status: BerthRequestStatus, assignedBerth?: string) => void;
   updateCargoInfo: (vesselId: string, cargoData: { containersLoaded?: number; containersTotal?: number; cargoQuantity?: string; dangerousGoods?: boolean; specialNotes?: string }) => void;
-  uploadDocument: (doc: Omit<ShippingDocument, 'id' | 'uploadedDate' | 'status'>) => void;
-  deleteDocument: (docId: string) => void;
+  uploadDocument: (doc: {
+    file?: File;
+    name: string;
+    vesselId: string;
+    vesselName: string;
+    type: DocumentType;
+    fileSize?: string;
+    ownerId?: string;
+  }) => Promise<ShippingDocument>;
+  deleteDocument: (docId: string) => Promise<void>;
+
+  // Persistent Notification Read State
+  readNotificationIds: Set<string>;
+  isNotificationRead: (id: string) => boolean;
+  toggleNotificationRead: (id: string) => Promise<void>;
+  markAllNotificationsRead: (ids?: string[]) => Promise<void>;
+  unreadAgentAlertsCount: number;
 
   // Selected Entities
   selectedBerthId: string;
@@ -110,6 +129,108 @@ export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [alerts, setAlerts] = useState<OperationalAlert[]>(initialAlerts);
   const [berthRequests, setBerthRequests] = useState<BerthRequest[]>(initialBerthRequests);
   const [shippingDocuments, setShippingDocuments] = useState<ShippingDocument[]>(initialShippingDocuments);
+  const { user } = useAuth();
+
+  // Persistent Notification Read State
+  const [readNotificationIds, setReadNotificationIds] = useState<Set<string>>(new Set());
+
+  // Hydrate user documents from Supabase
+  useEffect(() => {
+    let isMounted = true;
+    const syncDocs = async () => {
+      if (user?.id) {
+        try {
+          const dbDocs = await DocumentService.fetchDocuments(user.id, user.role);
+          if (isMounted && dbDocs.length > 0) {
+            setShippingDocuments(prev => {
+              const dbIds = new Set(dbDocs.map(d => d.id));
+              const remainingMock = prev.filter(d => !dbIds.has(d.id));
+              return [...dbDocs, ...remainingMock];
+            });
+          }
+        } catch (e) {
+          console.warn('[OperationsContext] Failed to load documents from Supabase:', e);
+        }
+      }
+    };
+    syncDocs();
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
+
+  // Hydrate user notification read receipts from Supabase
+  useEffect(() => {
+    let isMounted = true;
+    const syncReads = async () => {
+      if (user?.id) {
+        try {
+          const reads = await NotificationService.fetchUserReadIds(user.id);
+          if (isMounted) setReadNotificationIds(reads);
+        } catch (e) {
+          console.warn('[OperationsContext] Failed to load notification reads from Supabase:', e);
+        }
+      } else {
+        if (isMounted) setReadNotificationIds(new Set());
+      }
+    };
+    syncReads();
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
+
+  const isNotificationRead = (id: string): boolean => {
+    return readNotificationIds.has(id);
+  };
+
+  const toggleNotificationRead = async (id: string): Promise<void> => {
+    const userId = user?.id || 'demo-agent';
+    const wasRead = readNotificationIds.has(id);
+
+    setReadNotificationIds(prev => {
+      const next = new Set(prev);
+      if (wasRead) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+
+    try {
+      if (wasRead) {
+        await NotificationService.markAsUnread(userId, id);
+      } else {
+        await NotificationService.markAsRead(userId, id);
+      }
+    } catch (e) {
+      console.warn('[OperationsContext] toggleNotificationRead sync warning:', e);
+    }
+  };
+
+  const markAllNotificationsRead = async (ids?: string[]): Promise<void> => {
+    const userId = user?.id || 'demo-agent';
+    const targetIds = ids && ids.length > 0
+      ? ids
+      : ['ALT-AG-01', 'ALT-AG-02', 'ALT-AG-03', 'ALT-AG-04', ...alerts.map(a => a.id)];
+
+    setReadNotificationIds(prev => {
+      const next = new Set(prev);
+      targetIds.forEach(id => next.add(id));
+      return next;
+    });
+
+    try {
+      await NotificationService.markAllAsRead(userId, targetIds);
+      showToast('info', 'Notifications Marked as Read', 'All advisories marked as read.');
+    } catch (e) {
+      console.warn('[OperationsContext] markAllNotificationsRead sync warning:', e);
+    }
+  };
+
+  const agentAlertIds = ['ALT-AG-01', 'ALT-AG-02', 'ALT-AG-03', 'ALT-AG-04'];
+  const unreadAgentAlertsCount = agentAlertIds.filter(id => !readNotificationIds.has(id)).length;
 
   const [isOptimizationApplied, setIsOptimizationApplied] = useState<boolean>(false);
   const [isRecoveryPlanApplied, setIsRecoveryPlanApplied] = useState<boolean>(false);
@@ -383,10 +504,14 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
   };
 
   // Resolve Alert
-  const resolveAlert = (alertId: string) => {
+  const resolveAlert = async (alertId: string) => {
     setAlerts(prev =>
       prev.map(a => (a.id === alertId ? { ...a, isResolved: true } : a))
     );
+    if (user?.id) {
+      await NotificationService.markAsRead(user.id, alertId);
+      setReadNotificationIds(prev => new Set(prev).add(alertId));
+    }
     showToast('info', 'Alert Resolved', 'Incident marked as resolved in system log.');
   };
 
@@ -588,20 +713,63 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
     showToast('success', 'Cargo Information Updated', 'Manifest details and container handling stats saved.');
   };
 
-  const uploadDocument = (doc: Omit<ShippingDocument, 'id' | 'uploadedDate' | 'status'>) => {
+  const uploadDocument = async (doc: {
+    file?: File;
+    name: string;
+    vesselId: string;
+    vesselName: string;
+    type: DocumentType;
+    fileSize?: string;
+    ownerId?: string;
+  }): Promise<ShippingDocument> => {
+    const effectiveOwnerId = doc.ownerId || user?.id || 'demo-agent';
+
+    if (doc.file) {
+      try {
+        const savedDoc = await DocumentService.uploadDocument({
+          file: doc.file,
+          name: doc.name,
+          vesselId: doc.vesselId,
+          vesselName: doc.vesselName,
+          type: doc.type,
+          ownerId: effectiveOwnerId,
+        });
+
+        setShippingDocuments(prev => [savedDoc, ...prev]);
+        showToast('success', 'Document Uploaded Successfully', `${savedDoc.name} verified and submitted for clearance.`);
+        return savedDoc;
+      } catch (err: any) {
+        showToast('error', 'Document Upload Failed', err.message || 'Failed to upload document file.');
+        throw err;
+      }
+    }
+
+    // Fallback if no raw file attached
     const newDoc: ShippingDocument = {
-      ...doc,
       id: `DOC-${String(shippingDocuments.length + 1).padStart(2, '0')}`,
+      name: doc.name,
+      vesselId: doc.vesselId,
+      vesselName: doc.vesselName,
+      type: doc.type,
+      fileSize: doc.fileSize || '1.8 MB',
       status: 'Under Review',
-      uploadedDate: 'Just now',
+      uploadedDate: new Date().toISOString().split('T')[0],
+      ownerId: effectiveOwnerId,
     };
     setShippingDocuments(prev => [newDoc, ...prev]);
     showToast('success', 'Document Uploaded', `${doc.name} submitted for port authority clearance.`);
+    return newDoc;
   };
 
-  const deleteDocument = (docId: string) => {
+  const deleteDocument = async (docId: string): Promise<void> => {
+    const docToDelete = shippingDocuments.find(d => d.id === docId);
     setShippingDocuments(prev => prev.filter(d => d.id !== docId));
-    showToast('info', 'Document Removed', 'Document removed from vessel repository.');
+    try {
+      await DocumentService.deleteDocument(docId, docToDelete?.fileUrl);
+      showToast('info', 'Document Removed', 'Document removed from vessel repository.');
+    } catch (e) {
+      console.warn('[OperationsContext] deleteDocument sync warning', e);
+    }
   };
 
   // Copilot for Port Admin
@@ -716,6 +884,11 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
       updateCargoInfo,
       uploadDocument,
       deleteDocument,
+      readNotificationIds,
+      isNotificationRead,
+      toggleNotificationRead,
+      markAllNotificationsRead,
+      unreadAgentAlertsCount,
       selectedBerthId,
       setSelectedBerthId,
       selectedVesselId,
@@ -736,6 +909,8 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
       alerts,
       berthRequests,
       shippingDocuments,
+      readNotificationIds,
+      unreadAgentAlertsCount,
       isOptimizationApplied,
       isRecoveryPlanApplied,
       isSimulating,

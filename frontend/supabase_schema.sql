@@ -136,3 +136,73 @@ CREATE POLICY "Ship Agents can update their agency vessels"
     ON public."Vessel"
     FOR UPDATE
     USING ("ownerId" = auth.uid()::text);
+
+-- 7. Supabase Storage Buckets & Policies for Vessel Documents
+-- Ensure storage extension and schema are ready
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('documents', 'documents', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('uploads', 'uploads', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+-- Drop existing storage policies if re-running
+DROP POLICY IF EXISTS "Authenticated users can upload vessel documents" ON storage.objects;
+DROP POLICY IF EXISTS "Users can view vessel documents" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete own documents" ON storage.objects;
+
+-- Allow authenticated users (Ship Agents and Admins) to upload files into documents/uploads
+CREATE POLICY "Authenticated users can upload vessel documents"
+    ON storage.objects
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (bucket_id IN ('documents', 'uploads'));
+
+-- Allow authenticated users to view/download vessel documents
+CREATE POLICY "Users can view vessel documents"
+    ON storage.objects
+    FOR SELECT
+    TO authenticated
+    USING (bucket_id IN ('documents', 'uploads'));
+
+-- Allow document owners to delete their files
+CREATE POLICY "Users can delete own documents"
+    ON storage.objects
+    FOR DELETE
+    TO authenticated
+    USING (bucket_id IN ('documents', 'uploads') AND auth.uid()::text = (storage.foldername(name))[1]);
+
+-- 8. Persistent Notification Read State
+CREATE TABLE IF NOT EXISTS public."NotificationRead" (
+    "id" TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    "userId" TEXT NOT NULL,
+    "notificationId" TEXT NOT NULL,
+    "readAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT "NotificationRead_user_notification_key" UNIQUE ("userId", "notificationId")
+);
+
+ALTER TABLE public."NotificationRead" ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can view own notification reads" ON public."NotificationRead";
+DROP POLICY IF EXISTS "Users can insert own notification reads" ON public."NotificationRead";
+DROP POLICY IF EXISTS "Users can delete own notification reads" ON public."NotificationRead";
+
+-- Users can only view their own read markers (Admins can view all)
+CREATE POLICY "Users can view own notification reads"
+    ON public."NotificationRead"
+    FOR SELECT
+    USING ("userId" = auth.uid()::text OR public.is_admin());
+
+-- Users can mark notifications as read for themselves
+CREATE POLICY "Users can insert own notification reads"
+    ON public."NotificationRead"
+    FOR INSERT
+    WITH CHECK ("userId" = auth.uid()::text);
+
+-- Users can unmark / toggle notifications as unread
+CREATE POLICY "Users can delete own notification reads"
+    ON public."NotificationRead"
+    FOR DELETE
+    USING ("userId" = auth.uid()::text);
+

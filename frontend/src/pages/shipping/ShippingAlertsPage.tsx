@@ -26,11 +26,16 @@ interface AgentAlertItem {
 
 export const ShippingAlertsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { isOptimizationApplied } = useOperations();
+  const {
+    isOptimizationApplied,
+    isNotificationRead,
+    toggleNotificationRead,
+    markAllNotificationsRead,
+  } = useOperations();
   const [filter, setFilter] = useState<'ALL' | 'UNREAD' | 'CRITICAL' | 'OPERATIONAL'>('ALL');
 
-  // Dynamic alerts list reflecting live port state
-  const [alertsList, setAlertsList] = useState<AgentAlertItem[]>([
+  // Base alerts reflecting live port state
+  const baseAlerts: Omit<AgentAlertItem, 'isRead'>[] = [
     {
       id: 'ALT-AG-01',
       title: isOptimizationApplied
@@ -45,7 +50,6 @@ export const ShippingAlertsPage: React.FC = () => {
       vesselId: 'VES-01',
       vesselName: 'Ocean Star',
       actionLabel: 'View Ocean Star',
-      isRead: false,
       isResolved: isOptimizationApplied,
     },
     {
@@ -58,7 +62,6 @@ export const ShippingAlertsPage: React.FC = () => {
       vesselId: 'VES-01',
       vesselName: 'Ocean Star',
       actionLabel: 'Inspect Schedule',
-      isRead: false,
       isResolved: true,
     },
     {
@@ -71,7 +74,6 @@ export const ShippingAlertsPage: React.FC = () => {
       vesselId: 'VES-05',
       vesselName: 'Pacific Voyager',
       actionLabel: 'Upload Notice',
-      isRead: false,
       isResolved: false,
     },
     {
@@ -84,19 +86,22 @@ export const ShippingAlertsPage: React.FC = () => {
       vesselId: 'VES-02',
       vesselName: 'MSC Orion',
       actionLabel: 'View Progress',
-      isRead: true,
       isResolved: true,
     },
-  ]);
+  ];
+
+  // Map with real persistent read state from Supabase
+  const alertsList: AgentAlertItem[] = baseAlerts.map(a => ({
+    ...a,
+    isRead: isNotificationRead(a.id),
+  }));
 
   const toggleRead = (id: string) => {
-    setAlertsList(prev =>
-      prev.map(a => (a.id === id ? { ...a, isRead: !a.isRead } : a))
-    );
+    toggleNotificationRead(id);
   };
 
   const markAllRead = () => {
-    setAlertsList(prev => prev.map(a => ({ ...a, isRead: true })));
+    markAllNotificationsRead(baseAlerts.map(a => a.id));
   };
 
   const filtered = alertsList.filter(a => {

@@ -45,7 +45,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { isOptimizationApplied, berthRequests } = useOperations();
+  const { berthRequests, unreadAgentAlertsCount } = useOperations();
 
   const pendingRequestsCount = berthRequests.filter(r => r.status === 'Pending').length;
 
@@ -89,7 +89,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
           name: 'Alerts',
           path: '/shipping/alerts',
           icon: AlertTriangle,
-          badge: isOptimizationApplied ? undefined : '1 High',
+          badge: unreadAgentAlertsCount > 0 ? String(unreadAgentAlertsCount) : undefined,
         },
         { name: 'AI Copilot', path: '/shipping/copilot', icon: Sparkles },
       ],

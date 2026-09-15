@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   FileText,
   PlusCircle,
@@ -15,6 +15,7 @@ import {
 import { useOperations } from '../../context/OperationsContext';
 import { useAuth } from '../../context/AuthContext';
 import { DocumentType, ShippingDocument } from '../../types/operations';
+import { DocumentService } from '../../services/documentService';
 
 export const ShippingDocumentsPage: React.FC = () => {
   const { user } = useAuth();
@@ -31,13 +32,25 @@ export const ShippingDocumentsPage: React.FC = () => {
   const [selectedTypeFilter, setSelectedTypeFilter] = useState('ALL');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // File Upload State
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
   // New Document Form
-  const [newDoc, setNewDoc] = useState({
+  const [newDoc, setNewDoc] = useState<{
+    name: string;
+    vesselId: string;
+    type: DocumentType;
+    fileName: string;
+    fileSize: string;
+  }>({
     name: '',
     vesselId: vessels[0]?.id || 'VES-01',
-    type: 'Bill of Lading' as DocumentType,
-    fileName: 'document.pdf',
-    fileSize: '2.4 MB',
+    type: 'Bill of Lading',
+    fileName: '',
+    fileSize: '',
   });
 
   const agentDocs = shippingDocuments.filter(
@@ -58,33 +71,73 @@ export const ShippingDocumentsPage: React.FC = () => {
     return matchSearch && matchVessel && matchType;
   });
 
-  const handleUploadSubmit = (e: React.FormEvent) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const validation = DocumentService.validateFile(file);
+      if (!validation.isValid) {
+        setUploadError(validation.error || 'Invalid file format or size');
+        setSelectedFile(null);
+        return;
+      }
+      setUploadError(null);
+      setSelectedFile(file);
+      if (!newDoc.name.trim()) {
+        const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
+        setNewDoc(prev => ({ ...prev, name: cleanName }));
+      }
+    }
+  };
+
+  const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newDoc.name.trim()) return;
+    if (!selectedFile) {
+      setUploadError('Please select a document file to attach.');
+      return;
+    }
+    if (!newDoc.name.trim()) {
+      setUploadError('Please enter a document title.');
+      return;
+    }
 
     const targetVessel = vessels.find(v => v.id === newDoc.vesselId) || vessels[0];
 
-    uploadDocument({
-      name: newDoc.name.trim(),
-      vesselId: targetVessel.id,
-      vesselName: targetVessel.name,
-      type: newDoc.type,
-      fileSize: newDoc.fileSize,
-      ownerId: user?.id || 'demo-agent',
-    });
+    try {
+      setIsUploading(true);
+      setUploadError(null);
 
-    setIsModalOpen(false);
-    setNewDoc({
-      name: '',
-      vesselId: vessels[0]?.id || 'VES-01',
-      type: 'Bill of Lading',
-      fileName: 'document.pdf',
-      fileSize: '2.4 MB',
-    });
+      await uploadDocument({
+        file: selectedFile,
+        name: newDoc.name.trim(),
+        vesselId: targetVessel?.id || 'VES-01',
+        vesselName: targetVessel?.name || 'Ocean Star',
+        type: newDoc.type,
+        ownerId: user?.id || 'demo-agent',
+      });
+
+      setIsModalOpen(false);
+      setSelectedFile(null);
+      setNewDoc({
+        name: '',
+        vesselId: vessels[0]?.id || 'VES-01',
+        type: 'Bill of Lading',
+        fileName: '',
+        fileSize: '',
+      });
+    } catch (err: any) {
+      setUploadError(err.message || 'Failed to upload document.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
-  const handleDownload = (docName: string) => {
-    showToast('info', 'Document Downloaded', `Generated secure copy of ${docName}.`);
+  const handleDownload = (doc: ShippingDocument) => {
+    if (doc.fileUrl) {
+      window.open(doc.fileUrl, '_blank', 'noopener,noreferrer');
+      showToast('success', 'Document Opened', `Displaying verified clearance copy of ${doc.name}.`);
+    } else {
+      showToast('info', 'Document Downloaded', `Generated secure copy of ${doc.name}.`);
+    }
   };
 
   const getStatusBadge = (status: ShippingDocument['status']) => {
@@ -254,9 +307,9 @@ export const ShippingDocumentsPage: React.FC = () => {
                     <td className="py-3.5 px-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
-                          onClick={() => handleDownload(doc.name)}
+                          onClick={() => handleDownload(doc)}
                           className="p-1.5 rounded-xl hover:bg-surface-subtle text-text-caption hover:text-text-main transition-colors cursor-pointer"
-                          title="Download Document"
+                          title="Download / View Document"
                         >
                           <Download className="w-3.5 h-3.5" />
                         </button>
@@ -341,29 +394,68 @@ export const ShippingDocumentsPage: React.FC = () => {
                 </select>
               </div>
 
-              {/* Mock File Picker */}
+              {/* Real File Picker */}
               <div>
                 <label className="font-semibold text-text-main">Attachment File</label>
-                <div className="mt-1 border-2 border-dashed border-border-subtle rounded-lg p-4 text-center hover:border-sky-400 transition-colors bg-surface-subtle/50 cursor-pointer">
-                  <Upload className="w-5 h-5 text-sky-600 mx-auto mb-1" />
-                  <span className="text-[11px] text-text-main font-medium">Click to select PDF or image</span>
-                  <p className="text-[10px] text-text-muted mt-0.5">Maximum size: 25 MB (PDF, TIFF, PNG)</p>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept=".pdf,.png,.jpg,.jpeg,.tiff,.tif,.doc,.docx"
+                  className="hidden"
+                />
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`mt-1 border-2 border-dashed rounded-lg p-4 text-center transition-colors cursor-pointer ${
+                    selectedFile
+                      ? 'border-sky-500 bg-sky-50/20'
+                      : 'border-border-subtle hover:border-sky-400 bg-surface-subtle/50'
+                  }`}
+                >
+                  {selectedFile ? (
+                    <div className="flex flex-col items-center gap-1">
+                      <FileText className="w-6 h-6 text-sky-600" />
+                      <span className="text-xs font-semibold text-text-main truncate max-w-xs">
+                        {selectedFile.name}
+                      </span>
+                      <span className="text-[10px] text-text-muted font-mono">
+                        {DocumentService.formatFileSize(selectedFile.size)} • Click to replace
+                      </span>
+                    </div>
+                  ) : (
+                    <div>
+                      <Upload className="w-5 h-5 text-sky-600 mx-auto mb-1" />
+                      <span className="text-[11px] text-text-main font-medium">Click to select PDF or image</span>
+                      <p className="text-[10px] text-text-muted mt-0.5">Maximum size: 25 MB (PDF, TIFF, PNG, DOCX)</p>
+                    </div>
+                  )}
                 </div>
+                {uploadError && (
+                  <div className="mt-1.5 text-[11px] text-rose-600 flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{uploadError}</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-border-subtle">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer"
+                  disabled={isUploading}
+                  className="px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border-subtle text-text-main cursor-pointer disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+                  disabled={isUploading}
+                  className="px-4 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  Upload & File
+                  {isUploading && (
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  )}
+                  <span>{isUploading ? 'Uploading & Filing...' : 'Upload & File'}</span>
                 </button>
               </div>
             </form>

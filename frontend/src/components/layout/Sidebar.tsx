@@ -131,34 +131,63 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className={containerClasses}>
       {/* Brand Header */}
-      <div className="h-16 px-4 flex items-center justify-between border-b border-border-subtle bg-surface/80 backdrop-blur-md shrink-0">
+      <div
+        className={`h-16 border-b border-border-subtle bg-surface/80 backdrop-blur-md shrink-0 flex items-center ${
+          isCollapsed ? 'justify-center px-2' : 'justify-between px-4'
+        }`}
+      >
         {!isCollapsed || isMobileDrawer ? (
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-brand-teal text-white flex items-center justify-center shrink-0 shadow-[0_2px_8px_rgba(20,184,166,0.3)]">
+            <div className="w-8 h-8 min-w-8 shrink-0 rounded-xl bg-brand-teal text-white flex items-center justify-center shadow-[0_2px_8px_rgba(20,184,166,0.3)]">
               <Ship className="w-4 h-4" />
             </div>
+
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <span className="font-semibold text-sm tracking-tight text-text-main">
                   PortPulse
                 </span>
+
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-teal-50 text-teal-800 font-semibold border border-teal-200 shadow-xs">
                   AI
                 </span>
               </div>
+
               <p className="text-[11px] text-text-muted truncate">
                 Operations Platform
               </p>
             </div>
           </div>
         ) : (
-          <div className="w-8 h-8 rounded-xl bg-brand-teal text-white flex items-center justify-center mx-auto shadow-[0_2px_8px_rgba(20,184,166,0.3)]">
-            <Ship className="w-4 h-4" />
+          <div className="relative flex items-center justify-center w-8 h-8 min-w-8 shrink-0">
+            <div className="w-8 h-8 min-w-8 shrink-0 rounded-xl bg-brand-teal text-white flex items-center justify-center shadow-[0_2px_8px_rgba(20,184,166,0.3)]">
+              <Ship className="w-4 h-4" />
+            </div>
           </div>
         )}
 
-        {/* Action button: Close X on mobile, Toggle Chevron on desktop/tablet */}
-        {isMobileDrawer ? (
+        {/* Desktop collapse button */}
+        {!isMobileDrawer && setIsCollapsed && (
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className={`absolute ${
+              isCollapsed
+                ? 'right-[-12px] top-[20px]'
+                : 'right-3 top-[20px]'
+            } w-6 h-6 flex items-center justify-center rounded-full bg-surface border border-border-subtle text-text-caption hover:text-text-main hover:bg-surface-subtle shadow-sm transition-all duration-200 z-40`}
+            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {isCollapsed ? (
+              <ChevronRight className="w-3.5 h-3.5" />
+            ) : (
+              <ChevronLeft className="w-3.5 h-3.5" />
+            )}
+          </button>
+        )}
+
+        {/* Mobile close */}
+        {isMobileDrawer && (
           <button
             onClick={onCloseMobileDrawer}
             className="p-1.5 rounded-full text-text-muted hover:text-text-main hover:bg-surface-subtle transition-colors"
@@ -166,16 +195,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             <X className="w-5 h-5" />
           </button>
-        ) : (
-          setIsCollapsed && (
-            <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="p-1 rounded-full text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors"
-              title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-            </button>
-          )
         )}
       </div>
 

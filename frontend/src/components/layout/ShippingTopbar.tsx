@@ -26,7 +26,7 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { isOptimizationApplied } = useOperations();
+  const { unreadAgentAlertsCount } = useOperations();
   const [timeUtc, setTimeUtc] = useState<string>('');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -115,10 +115,10 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
         <button
           onClick={() => navigate('/shipping/alerts')}
           className="relative p-1.5 sm:p-2 rounded-xl text-text-muted hover:text-text-main hover:bg-surface-subtle border border-transparent hover:border-border-subtle transition-colors shrink-0"
-          title={isOptimizationApplied ? 'All schedules normal' : '1 Active delay advisory'}
+          title={unreadAgentAlertsCount > 0 ? `${unreadAgentAlertsCount} Unread fleet advisories` : 'All schedules normal'}
         >
           <Bell className="w-4 h-4" />
-          {!isOptimizationApplied && (
+          {unreadAgentAlertsCount > 0 && (
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
           )}
         </button>
