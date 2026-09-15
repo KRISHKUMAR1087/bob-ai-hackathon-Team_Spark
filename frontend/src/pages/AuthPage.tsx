@@ -9,6 +9,7 @@ import { GoogleSignInButton } from '../components/auth/GoogleSignInButton';
 import { RoleSelector } from '../components/auth/RoleSelector';
 import { AuthErrorAlert } from '../components/auth/AuthErrorAlert';
 import { ThemeToggleButton } from '../components/common/ThemeToggleButton';
+import { MusicButton } from '../components/common/MusicButton';
 import { UserRole } from '../types/auth';
 import { motion } from 'framer-motion';
 
@@ -161,6 +162,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
           <span className="text-xl font-bold tracking-tight text-text-main group-hover:text-brand-teal transition-colors">PortsPilot</span>
         </Link>
         <div className="flex items-center gap-3">
+          <MusicButton />
           <ThemeToggleButton />
           <Link
             to="/"
@@ -384,7 +386,17 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
                 <span>Continue with {roleLabel} Demo Data</span>
               </button>
 
-              <p className="text-center text-xs text-text-muted mt-5">
+              <div className="mt-4 pt-3 border-t border-border-subtle text-center">
+                <Link
+                  to="/super-admin"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-500 hover:text-amber-600 bg-amber-500/10 hover:bg-amber-500/20 px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  <Shield className="w-3.5 h-3.5" />
+                  Super Admin Portal (super@portspilot.com)
+                </Link>
+              </div>
+
+              <p className="text-center text-xs text-text-muted mt-4">
                 {isLogin ? (
                   <>Don't have an account?{' '}
                     <Link to="/auth/signup" className="text-brand-teal font-semibold hover:underline">Sign up free</Link>

@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Search,
   Bell,
   Sparkles,
   Menu,
-  ChevronRight,
   LogOut,
   Settings as SettingsIcon,
   ShieldCheck,
@@ -23,7 +22,6 @@ interface TopbarProps {
 }
 
 export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen }) => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { alerts, setIsCopilotOpen, isCopilotOpen, searchQuery, setSearchQuery } = useOperations();
@@ -42,28 +40,6 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
   }, []);
 
   const unreadAlerts = alerts.filter(a => !a.isResolved).length;
-
-  const getBreadcrumb = () => {
-    const path = location.pathname;
-    if (path.includes('/dashboard')) return { section: 'Overview', title: 'Command Center' };
-    if (path.includes('/operations/vessels')) return { section: 'Operations', title: 'Vessel Traffic' };
-    if (path.includes('/operations/berths')) return { section: 'Operations', title: 'Berths Utilization' };
-    if (path.includes('/operations/cranes')) return { section: 'Operations', title: 'Cranes Fleet' };
-    if (path.includes('/operations/yard')) return { section: 'Operations', title: 'Yard Capacity' };
-    if (path === '/operations' || path.includes('/operations/board')) return { section: 'Operations', title: 'Operations Board' };
-    if (path.includes('/intelligence/forecast')) return { section: 'Intelligence', title: 'Congestion Forecast' };
-    if (path.includes('/copilot')) return { section: 'Intelligence', title: 'Gemini Copilot' };
-    if (path.includes('/intelligence/routes')) return { section: 'Intelligence', title: 'Route Intelligence' };
-    if (path.includes('/decision/optimizer')) return { section: 'Decision Support', title: 'Optimizer' };
-    if (path.includes('/decision/simulator')) return { section: 'Decision Support', title: 'What-If Simulator' };
-    if (path.includes('/decision/planner')) return { section: 'Decision Support', title: '72-Hour Planner' };
-    if (path.includes('/analytics')) return { section: 'Analytics', title: 'Operations Analytics' };
-    if (path.includes('/alerts')) return { section: 'System', title: 'Operational Alerts' };
-    if (path.includes('/settings')) return { section: 'System', title: 'Settings' };
-    return { section: 'PortsPilot', title: 'Command Center' };
-  };
-
-  const breadcrumb = getBreadcrumb();
 
   const handleLogout = () => {
     setIsProfileMenuOpen(false);
@@ -97,14 +73,6 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
         >
           <Menu className="w-5 h-5" />
         </button>
-
-        <div className="flex items-center gap-1.5 text-xs text-text-muted min-w-0 font-medium">
-          <span className="hidden sm:inline shrink-0">{breadcrumb.section}</span>
-          <ChevronRight className="w-3.5 h-3.5 text-text-caption hidden sm:inline shrink-0" />
-          <span className="text-text-main font-semibold truncate text-xs sm:text-sm">
-            {breadcrumb.title}
-          </span>
-        </div>
       </div>
 
       {/* Right Actions & Utilities */}

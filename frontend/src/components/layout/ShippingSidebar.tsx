@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Ship,
@@ -7,21 +7,22 @@ import {
   User,
   LayoutDashboard,
   LogOut,
-  ChevronLeft,
-  ChevronRight,
   X,
   PlusCircle,
   Clock,
   Layers,
   FileText,
   Sparkles,
+  Pin,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useOperations } from '../../context/OperationsContext';
 
 interface ShippingSidebarProps {
-  isCollapsed: boolean;
+  isCollapsed?: boolean;
   setIsCollapsed?: (collapsed: boolean) => void;
+  isPinned?: boolean;
+  setIsPinned?: (pinned: boolean) => void;
   isMobileDrawer?: boolean;
   onCloseMobileDrawer?: () => void;
 }
@@ -37,8 +38,9 @@ interface NavGroup {
 }
 
 export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
-  isCollapsed,
   setIsCollapsed,
+  isPinned = false,
+  setIsPinned,
   isMobileDrawer = false,
   onCloseMobileDrawer,
 }) => {
@@ -46,6 +48,22 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { berthRequests, unreadAgentAlertsCount } = useOperations();
+
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+
+  // Effective expanded state: mobile drawer open OR pinned OR currently hovered
+  const isExpanded = isMobileDrawer || isPinned || isHovered;
+  const isCollapsed = !isExpanded;
+
+  const togglePin = () => {
+    const nextPinned = !isPinned;
+    if (setIsPinned) {
+      setIsPinned(nextPinned);
+    }
+    if (setIsCollapsed) {
+      setIsCollapsed(!nextPinned);
+    }
+  };
 
   const pendingRequestsCount = berthRequests.filter(r => r.status === 'Pending').length;
 
@@ -115,8 +133,8 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
 
   const containerClasses = isMobileDrawer
     ? 'fixed bottom-0 left-0 right-0 h-16 bg-surface/90 backdrop-blur-xl border-t border-border-subtle flex flex-row items-center justify-around z-50 shadow-modal md:hidden'
-    : `fixed top-0 bottom-0 left-0 z-30 bg-surface/90 backdrop-blur-xl border-r border-border-subtle hidden md:flex flex-col transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-        isCollapsed ? 'w-16' : 'w-64'
+    : `fixed top-0 bottom-0 left-0 z-40 bg-surface/95 backdrop-blur-xl border-r border-border-subtle hidden md:flex flex-col transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+        isExpanded ? 'w-64 shadow-2xl' : 'w-16 shadow-sm'
       }`;
 
   if (isMobileDrawer) {
@@ -142,7 +160,11 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
   }
 
   return (
-    <aside className={containerClasses}>
+    <aside
+      onMouseEnter={() => !isMobileDrawer && setIsHovered(true)}
+      onMouseLeave={() => !isMobileDrawer && setIsHovered(false)}
+      className={containerClasses}
+    >
       {/* Header */}
       <div className="h-[4.5rem] px-4 flex items-center justify-between border-b border-border-subtle bg-surface shrink-0">
         {!isCollapsed || isMobileDrawer ? (
@@ -165,7 +187,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
           </div>
         )}
 
-        {/* Toggle / Close Button */}
+        {/* Toggle / Pin Button */}
         {isMobileDrawer ? (
           <button
             onClick={onCloseMobileDrawer}
@@ -175,15 +197,18 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
             <X className="w-5 h-5" />
           </button>
         ) : (
-          setIsCollapsed && (
-            <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="p-1 rounded-xl text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors hidden md:block"
-              title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-            </button>
-          )
+          <button
+            onClick={togglePin}
+            className={`p-1.5 rounded-lg transition-all duration-200 flex items-center justify-center cursor-pointer ${
+              isPinned
+                ? 'bg-brand-blue text-white shadow-xs'
+                : 'text-text-caption hover:text-text-main hover:bg-surface-subtle'
+            }`}
+            title={isPinned ? 'Unpin sidebar (collapse to hover mode)' : 'Pin sidebar open'}
+            aria-label={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+          >
+            <Pin className={`w-4 h-4 transition-transform duration-200 ${isPinned ? 'rotate-45' : ''}`} />
+          </button>
         )}
       </div>
 
