@@ -133,16 +133,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Brand Header */}
       <div className="h-16 px-4 flex items-center justify-between border-b border-border-subtle bg-surface/80 backdrop-blur-md shrink-0">
         {!isCollapsed || isMobileDrawer ? (
-          <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
             <div className="w-8 h-8 rounded-xl bg-brand-teal text-white flex items-center justify-center shrink-0 shadow-[0_2px_8px_rgba(20,184,166,0.3)]">
-              <Ship className="w-4 h-4" />
+              <Ship className="w-4 h-4 shrink-0" />
             </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-sm tracking-tight text-text-main">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="font-semibold text-sm tracking-tight text-text-main truncate">
                   PortPulse
                 </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-teal-50 text-teal-800 font-semibold border border-teal-200 shadow-xs">
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-teal-50 text-teal-800 font-semibold border border-teal-200 shadow-xs shrink-0">
                   AI
                 </span>
               </div>
@@ -182,19 +182,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Port Operational Status Ribbon */}
       {(!isCollapsed || isMobileDrawer) && (
         <div className="px-4 py-2 border-b border-border-subtle bg-surface-subtle/60 shrink-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <span
-                className={`w-2 h-2 rounded-full ${
+                className={`w-2 h-2 rounded-full shrink-0 ${
                   isOptimizationApplied ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'
                 }`}
               />
-              <span className="text-xs font-medium text-text-main">
+              <span className="text-xs font-medium text-text-main truncate">
                 {isOptimizationApplied ? 'Port: Balanced' : 'Risk Detected'}
               </span>
             </div>
             <span
-              className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${
+              className={`text-[10px] font-medium px-2 py-0.5 rounded-full border shrink-0 ${
                 isOptimizationApplied
                   ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                   : 'bg-amber-50 text-amber-800 border-amber-200'
@@ -229,7 +229,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     to={item.path}
                     onClick={handleNavClick}
                     title={isCollapsed && !isMobileDrawer ? item.name : undefined}
-                    className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ease-out ${
+                    className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ease-out min-w-0 ${
                       isActive
                         ? 'bg-brand-teal/10 text-brand-teal font-semibold'
                         : 'text-text-muted hover:text-text-main hover:bg-surface-subtle'
@@ -240,10 +240,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         isActive ? 'text-brand-teal' : 'text-text-caption'
                       }`}
                     />
-                    {(!isCollapsed || isMobileDrawer) && <span className="truncate">{item.name}</span>}
+                    {(!isCollapsed || isMobileDrawer) && <span className="truncate flex-1">{item.name}</span>}
                     {(!isCollapsed || isMobileDrawer) && item.badge && (
                       <span
-                        className={`ml-auto px-2 py-0.5 rounded-full text-[10px] ${item.badgeColor} shadow-xs`}
+                        className={`ml-auto px-2 py-0.5 rounded-full text-[10px] shrink-0 ${item.badgeColor} shadow-xs`}
                       >
                         {item.badge}
                       </span>
