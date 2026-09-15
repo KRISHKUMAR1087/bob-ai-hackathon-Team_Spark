@@ -133,7 +133,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
 
   const containerClasses = isMobileDrawer
     ? 'fixed bottom-0 left-0 right-0 h-16 bg-surface/90 backdrop-blur-xl border-t border-border-subtle flex flex-row items-center justify-around z-50 shadow-modal md:hidden'
-    : `fixed top-0 bottom-0 left-0 z-40 bg-surface/95 backdrop-blur-xl border-r border-border-subtle hidden md:flex flex-col transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+    : `fixed top-0 bottom-0 left-0 z-[60] bg-surface/95 backdrop-blur-xl border-r border-border-subtle hidden md:flex flex-col transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
         isExpanded ? 'w-64 shadow-2xl' : 'w-16 shadow-sm'
       }`;
 
