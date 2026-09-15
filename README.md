@@ -29,53 +29,37 @@ PortsPilot AI transforms reactive port management into proactive, algorithmic de
 
 ---
 
-## ✨ Key Features
+### 📁 Repository Structure
 
-- **Predictive 72-Hour Congestion Hotspot Engine**: Forecasts berth queuing density across 6h, 12h, 24h, 48h, and 72h horizons with automated root-cause attribution (arrival bunching, crane deficit, yard backpressure).
-- **BAP/CAP Operations Optimizer**: Solves constrained berth and crane allocation matrices, slashing vessel wait hours and quantifying exact demurrage cost savings.
-- **Alternate Route & Port Diversion Intelligence**: Dynamically evaluates diversion candidates (e.g., Rotterdam vs. Antwerp Gateway vs. Zeebrugge) based on nautical miles, bunker fuel consumption, and downstream congestion.
-- **72-Hour Stevedore & Crane Shift Planner**: Automatically schedules workforces across three daily shifts (06:00-14:00, 14:00-22:00, 22:00-06:00) with clash detection and one-click resolution.
-- **Interactive Maritime Copilot (Gemini-Varuna AI)**: Natural-language assistant capable of querying live port telemetry, explaining root causes, and executing supervisor-approved recovery directives.
-
+```text
+bob-ai-hackathon-Team_Spark/
+├── demo/                        # Video link, live URL & UI screenshots
+├── docs/                        # Architecture, setup & problem statement docs
+├── presentation/                # Pitch deck & presentation files
+├── src/
+│   ├── frontend/                # React 18 + Vite 6 + Tailwind CSS App
+│   │   ├── public/              # Media & audio assets
+│   │   ├── src/
+│   │   │   ├── components/      # UI components, 3D viewers & layouts
+│   │   │   ├── context/         # Auth, Operations, Timezone & Theme context
+│   │   │   ├── pages/           # Port Admin, Ship Agent & Super Admin pages
+│   │   │   ├── services/        # Supabase & Gemini AI services
+│   │   │   └── App.tsx
+│   │   ├── package.json
+│   │   └── vite.config.ts
+│   │
+│   └── backend/                 # TypeScript API + Python AI Engine
+│       ├── app/                 # FastAPI congestion predictor & optimizer
+│       ├── prisma/              # Prisma DB schemas & seeders
+│       ├── src/                 # Node.js / Express API gateway & routes
+│       ├── tests/               # Pytest suite
+│       ├── Dockerfile
+│       └── package.json
+│
+├── submission.yaml              # Hackathon submission metadata
+└── README.md                    # Main documentation
 ---
 
-## 🛠️ Tech Stack
-
-| Category | Technologies |
-|---|---|
-| **Languages** | TypeScript, Python, SQL, HTML5, CSS 3 |
-| **Frameworks** | React 18, Vite 6, FastAPI, Hono, EXPRESS JS, Tailwind CSS, Prisma ORM |
-| **IBM Technologies** | IBM Bob, watsonx.ai, IBM Cloud Code Engine |
-| **AI & INTELLIGENCE** | GOOGLE GTEMINI, AI COPILOT ENGINE, HEURISTIC OPTIMISER |
-| **Databases** | PostgreSQL, Supabase, GOOGLE OAuth 2.0 |
-| **Data Visualization & Motion** | Recharts, Three.js, Framer Motion, Lucide React Icons |
-| **Testing & Tooling** | Pytest, TypeScript (`tsc`), Docker, Vite HMR, PostCSS |
-
----
-
-## 📁 Repository Structure
-
-```
-├── submission.yaml          # Structured submission metadata (evaluated first)
-├── README.md                # Project overview and entry point
-├── src/                     # All source code (monorepo structure)
-│   ├── frontend/            # React 18 + Vite command center SPA
-│   ├── backend/             # Node/Hono API gateway + Python FastAPI engine
-│   ├── .env.example         # Template for environment variables
-│   └── README.md            # Source code layout explanation
-├── docs/                    # Complete project documentation
-│   ├── problem-statement.md # In-depth problem analysis and market impact
-│   ├── solution-overview.md # Conceptual solution and workflow details
-│   ├── architecture.md      # Mermaid system diagram and data flow
-│   └── setup-guide.md       # Exact verified steps to run the project
-├── demo/                    # Demo artifacts
-│   ├── demo-video-link.txt  # Link to walkthrough demo video
-│   ├── live-demo-url.txt    # Deployment status
-│   └── screenshots/         # High-resolution screenshots of the running app
-├── presentation/            # Slide deck directory
-└── .github/workflows/
-    └── validate.yml         # Automated submission validator
-```
 
 ---
 
