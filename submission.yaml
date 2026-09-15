@@ -20,7 +20,7 @@ team:
     - name: "Krish Darji"              # Team member 2
       email: "hello.krishkumardarji@gmail.com"
     - name: "Yashvi Thakkar"           # Team member 3
-      email: "24dcs136@charusat.edu.in"
+      email: "yashvicharuat34@gmail.com"
 
 submission:
   title: "PortsPilot AI"                # REQUIRED — Project display name
@@ -40,10 +40,10 @@ submission:
 
   tech_stack:
     languages: ["TypeScript", "Python", "SQL"]
-    frameworks: ["React 18", "Vite 6", "FastAPI", "Hono", "Tailwind CSS", "Prisma ORM"]
+    frameworks: ["React 18", "Vite 6", "FastAPI", "Hono", "Express", "Tailwind CSS", "Prisma ORM"]
     ibm_technologies: ["IBM Bob", "watsonx.ai", "IBM Cloud Code Engine"]
     databases: ["PostgreSQL", "Supabase"]
-    other: ["Docker", "Recharts", "Lucide React", "Three.js", "Pytest"]
+    other: ["Docker", "Recharts", "Lucide React", "Three.js", "Pytest", "Framer Motion", "Zod"]
 
   what_we_are_most_proud_of: >
     The seamless integration between predictive forecasting (6h–72h), algorithmic BAP/CAP optimization with quantifiable demurrage reduction, and an intuitive copilot that empowers port supervisors to simulate disruptions and apply multi-module recovery plans with confidence.
@@ -59,7 +59,7 @@ artifacts:
   source_code: "src/"
   setup_guide: "docs/setup-guide.md"
   architecture_doc: "docs/architecture.md"
-  demo_video: "demo/demo-video-link.txt"   # URL to hosted video (YouTube, Loom, Box)
-  live_demo: "demo/live-demo-url.txt"      # URL to deployed demo (optional)
+  demo_video: "https://drive.google.com/file/d/1YPuxK3lNwau_r-ySanBZ-Uw47uPNth__/view?usp=drivesdk"
+  live_demo: "https://portspilot.pages.dev/"
   screenshots: "demo/screenshots/"
   presentation: "presentation/"
