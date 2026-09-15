@@ -25,7 +25,7 @@ The 2021 Los Angeles & Long Beach port crisis left over 100 container vessels id
 
 ## 💡 Solution
 
-PortPulse AI transforms reactive port management into proactive, algorithmic decision-making. By continuously ingesting vessel AIS telemetry, berth depths, and crane operational status, the platform forecasts quayside bottlenecks 6 to 72 hours in advance, solves the Berth Allocation Problem and Crane Assignment Problem (BAP/CAP), ranks alternate port diversions by fuel and demurrage trade-offs, and automates 72-hour stevedore shift planning through an interactive IBM Bob Copilot.
+PortsPilot AI transforms reactive port management into proactive, algorithmic decision-making. By continuously ingesting vessel AIS telemetry, berth depths, and crane operational status, the platform forecasts quayside bottlenecks 6 to 72 hours in advance, solves the Berth Allocation Problem and Crane Assignment Problem (BAP/CAP), ranks alternate port diversions by fuel and demurrage trade-offs, and automates 72-hour stevedore shift planning through an interactive IBM Bob Copilot.
 
 ---
 
