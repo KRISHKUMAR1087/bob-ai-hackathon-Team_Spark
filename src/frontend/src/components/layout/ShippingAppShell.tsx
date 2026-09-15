@@ -5,27 +5,9 @@ import { ShippingTopbar } from './ShippingTopbar';
 import { ToastNotification } from '../common/ToastNotification';
 
 export const ShippingAppShell: React.FC = () => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
+  const [isPinned, setIsPinned] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const location = useLocation();
-
-  // Responsive sidebar behavior
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 768) {
-        setIsSidebarCollapsed(false);
-      } else if (width < 1200) {
-        setIsSidebarCollapsed(true);
-      } else {
-        setIsSidebarCollapsed(false);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   // Close mobile off-canvas drawer on route change
   useEffect(() => {
@@ -36,8 +18,8 @@ export const ShippingAppShell: React.FC = () => {
     <div className="min-h-screen bg-canvas text-text-main flex flex-col w-full overflow-x-hidden">
       {/* 1. Desktop & Tablet Sticky Sidebar */}
       <ShippingSidebar
-        isCollapsed={isSidebarCollapsed}
-        setIsCollapsed={setIsSidebarCollapsed}
+        isPinned={isPinned}
+        setIsPinned={setIsPinned}
       />
 
       {/* 2. Mobile Off-Canvas Navigation Drawer (< 768px) */}
@@ -50,7 +32,7 @@ export const ShippingAppShell: React.FC = () => {
           />
           <div className="relative z-10 animate-in slide-in-from-left duration-300 h-full">
             <ShippingSidebar
-              isCollapsed={false}
+              isPinned={true}
               isMobileDrawer={true}
               onCloseMobileDrawer={() => setIsMobileMenuOpen(false)}
             />
@@ -60,12 +42,12 @@ export const ShippingAppShell: React.FC = () => {
 
       {/* 3. Main Content Area */}
       <div
-        className={`flex-1 flex flex-col transition-all duration-200 min-w-0 w-full ${
-          isSidebarCollapsed ? 'md:pl-16' : 'md:pl-64'
+        className={`flex-1 flex flex-col transition-all duration-300 min-w-0 w-full ${
+          isPinned ? 'md:pl-64' : 'md:pl-16'
         }`}
       >
         <ShippingTopbar
-          isCollapsed={isSidebarCollapsed}
+          isCollapsed={!isPinned}
           setIsMobileMenuOpen={setIsMobileMenuOpen}
         />
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Activity,
@@ -16,25 +16,27 @@ import {
   BarChart3,
   Bell,
   Settings,
-  ChevronLeft,
-  ChevronRight,
   RotateCcw,
   X,
   LogOut,
+  Pin,
 } from 'lucide-react';
 import { useOperations } from '../../context/OperationsContext';
 import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
-  isCollapsed: boolean;
+  isCollapsed?: boolean;
   setIsCollapsed?: (collapsed: boolean) => void;
+  isPinned?: boolean;
+  setIsPinned?: (pinned: boolean) => void;
   isMobileDrawer?: boolean;
   onCloseMobileDrawer?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
-  isCollapsed,
   setIsCollapsed,
+  isPinned = false,
+  setIsPinned,
   isMobileDrawer = false,
   onCloseMobileDrawer,
 }) => {
@@ -43,6 +45,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const { alerts, isOptimizationApplied, resetToDefault } = useOperations();
   const { user, logout, isDemoUser } = useAuth();
   const unreadAlerts = alerts.filter(a => !a.isResolved).length;
+
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+
+  // Effective expanded state: mobile drawer open OR pinned OR currently hovered
+  const isExpanded = isMobileDrawer || isPinned || isHovered;
+  const isCollapsed = !isExpanded;
+
+  const togglePin = () => {
+    const nextPinned = !isPinned;
+    if (setIsPinned) {
+      setIsPinned(nextPinned);
+    }
+    if (setIsCollapsed) {
+      setIsCollapsed(!nextPinned);
+    }
+  };
 
   const getUserInitials = () => {
     if (!user?.name) return 'MV';
@@ -121,8 +139,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const containerClasses = isMobileDrawer
     ? 'fixed bottom-0 left-0 right-0 h-16 bg-surface/90 backdrop-blur-xl border-t border-border-subtle flex flex-row items-center justify-around z-50 shadow-modal md:hidden'
-    : `fixed top-0 bottom-0 left-0 z-30 bg-surface/90 backdrop-blur-xl border-r border-border-subtle hidden md:flex flex-col transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-        isCollapsed ? 'w-16' : 'w-64'
+    : `fixed top-0 bottom-0 left-0 z-40 bg-surface/95 backdrop-blur-xl border-r border-border-subtle hidden md:flex flex-col transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+        isExpanded ? 'w-64 shadow-2xl' : 'w-16 shadow-sm'
       }`;
 
   if (isMobileDrawer) {
@@ -148,7 +166,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   }
 
   return (
-    <aside className={containerClasses}>
+    <aside
+      onMouseEnter={() => !isMobileDrawer && setIsHovered(true)}
+      onMouseLeave={() => !isMobileDrawer && setIsHovered(false)}
+      className={containerClasses}
+    >
       {/* Brand Header */}
       <div
         className={`h-[4.5rem] border-b border-border-subtle bg-surface/80 backdrop-blur-md shrink-0 flex items-center ${
@@ -175,23 +197,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         )}
 
-        {/* Desktop collapse button */}
-        {!isMobileDrawer && setIsCollapsed && (
+        {/* Desktop pin button */}
+        {!isMobileDrawer && (
           <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className={`absolute ${
-              isCollapsed
-                ? 'right-[-12px] top-[20px]'
-                : 'right-3 top-[20px]'
-            } w-6 h-6 flex items-center justify-center rounded-full bg-surface border border-border-subtle text-text-caption hover:text-text-main hover:bg-surface-subtle shadow-sm transition-all duration-200 z-40`}
-            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            onClick={togglePin}
+            className={`p-1.5 rounded-lg transition-all duration-200 flex items-center justify-center cursor-pointer ${
+              isPinned
+                ? 'bg-brand-teal text-white shadow-xs'
+                : 'text-text-caption hover:text-text-main hover:bg-surface-subtle'
+            }`}
+            title={isPinned ? 'Unpin sidebar (collapse to hover mode)' : 'Pin sidebar open'}
+            aria-label={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
           >
-            {isCollapsed ? (
-              <ChevronRight className="w-3.5 h-3.5" />
-            ) : (
-              <ChevronLeft className="w-3.5 h-3.5" />
-            )}
+            <Pin className={`w-4 h-4 transition-transform duration-200 ${isPinned ? 'rotate-45' : ''}`} />
           </button>
         )}
 

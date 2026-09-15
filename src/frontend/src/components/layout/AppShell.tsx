@@ -6,30 +6,9 @@ import { ToastNotification } from '../common/ToastNotification';
 import { CopilotDrawer } from '../copilot/CopilotDrawer';
 
 export const AppShell: React.FC = () => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
+  const [isPinned, setIsPinned] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const location = useLocation();
-
-  // 1. GLOBAL APP SHELL: Responsive sidebar behavior
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 768) {
-        // Mobile: sidebar is hidden, off-canvas drawer is used
-        setIsSidebarCollapsed(false);
-      } else if (width < 1200) {
-        // Tablet (768px–1199px): collapse into compact navigation (w-16)
-        setIsSidebarCollapsed(true);
-      } else {
-        // Desktop (>= 1200px): expanded sidebar by default (w-64)
-        setIsSidebarCollapsed(false);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   // Automatically close mobile off-canvas drawer on route change
   useEffect(() => {
@@ -40,8 +19,8 @@ export const AppShell: React.FC = () => {
     <div className="min-h-screen bg-canvas text-text-main flex flex-col w-full overflow-x-hidden">
       {/* 1. Desktop & Tablet Static/Sticky Sidebar (hidden on mobile < 768px) */}
       <Sidebar
-        isCollapsed={isSidebarCollapsed}
-        setIsCollapsed={setIsSidebarCollapsed}
+        isPinned={isPinned}
+        setIsPinned={setIsPinned}
       />
 
       {/* 2. Mobile Off-Canvas Navigation Drawer (< 768px) */}
@@ -57,7 +36,7 @@ export const AppShell: React.FC = () => {
           {/* Sliding Drawer Container */}
           <div className="relative z-10 animate-in slide-in-from-left duration-300 h-full">
             <Sidebar
-              isCollapsed={false}
+              isPinned={true}
               isMobileDrawer={true}
               onCloseMobileDrawer={() => setIsMobileMenuOpen(false)}
             />
@@ -67,12 +46,12 @@ export const AppShell: React.FC = () => {
 
       {/* 3. Main Content Area */}
       <div
-        className={`flex-1 flex flex-col transition-all duration-200 min-w-0 w-full ${
-          isSidebarCollapsed ? 'md:pl-16' : 'md:pl-64'
+        className={`flex-1 flex flex-col transition-all duration-300 min-w-0 w-full ${
+          isPinned ? 'md:pl-64' : 'md:pl-16'
         }`}
       >
         <Topbar
-          isCollapsed={isSidebarCollapsed}
+          isCollapsed={!isPinned}
           setIsMobileMenuOpen={setIsMobileMenuOpen}
         />
 
