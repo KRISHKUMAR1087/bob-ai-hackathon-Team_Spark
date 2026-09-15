@@ -58,11 +58,9 @@ bob-ai-hackathon-Team_Spark/
 │
 ├── submission.yaml              # Hackathon submission metadata
 └── README.md                    # Main documentation
----
 
 
----
-
+```
 ## ⚡ How to Run
 
 Follow these exact steps from [`docs/setup-guide.md`](docs/setup-guide.md):
