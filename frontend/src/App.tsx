@@ -49,12 +49,14 @@ const ShippingProfilePage = React.lazy(() => import('./pages/shipping/ShippingPr
  */
 const RootRedirect: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const hasOAuthHash = typeof window !== 'undefined' && 
+    Boolean(window.location.hash && (window.location.hash.includes('access_token=') || window.location.hash.includes('error=')));
 
-  if (isLoading) {
+  if (isLoading || hasOAuthHash) {
     return (
       <div className="min-h-screen bg-canvas flex items-center justify-center">
-        <div className="flex items-center gap-3 text-xs text-text-muted">
-          <div className="w-4 h-4 border-2 border-brand-teal border-t-transparent rounded-full animate-spin" />
+        <div className="flex flex-col items-center gap-3 text-xs text-text-muted">
+          <div className="w-5 h-5 border-2 border-brand-teal border-t-transparent rounded-full animate-spin" />
           <span>Verifying port authorization...</span>
         </div>
       </div>

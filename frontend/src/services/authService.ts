@@ -5,6 +5,27 @@ const STORAGE_KEY_USER = 'portpulse_auth_user';
 const STORAGE_KEY_ROLE = 'portpulse_user_role';
 const STORAGE_KEY_TOKEN = 'portpulse_token';
 
+/**
+ * Decodes a JWT token safely with full Unicode support
+ */
+export function parseJwtPayload(token: string): any {
+  try {
+    const parts = token.split('.');
+    if (parts.length < 2) return null;
+    const base64Url = parts[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch {
+    return null;
+  }
+}
+
 export class AuthService {
   /**
    * Retrieves the currently persisted user from storage
@@ -21,10 +42,86 @@ export class AuthService {
   }
 
   /**
+   * Automatically detects and captures OAuth tokens from URL hash fragment.
+   * Cleans the browser URL bar so sensitive tokens are not persisted in history,
+   * establishes the Supabase session, saves local tokens, and returns the User model.
+   */
+  public static async handleOAuthHashSession(): Promise<User | null> {
+    try {
+      if (typeof window === 'undefined') return null;
+      const hash = window.location.hash;
+      if (!hash || (!hash.includes('access_token=') && !hash.includes('error='))) {
+        return null;
+      }
+
+      const cleanHash = hash.startsWith('#') ? hash.substring(1) : hash;
+      const params = new URLSearchParams(cleanHash);
+
+      const error = params.get('error_description') || params.get('error');
+      if (error) {
+        console.error('[AuthService] OAuth error in URL hash:', error);
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        return null;
+      }
+
+      const accessToken = params.get('access_token');
+      const refreshToken = params.get('refresh_token') || '';
+
+      if (!accessToken) return null;
+
+      let sbUser: any = null;
+
+      // 1. Try to set active session in Supabase client
+      try {
+        const { data, error: sbError } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        if (!sbError && data?.session?.user) {
+          sbUser = data.session.user;
+        }
+      } catch (err) {
+        console.warn('[AuthService] supabase.auth.setSession warning, attempting JWT payload extraction', err);
+      }
+
+      // 2. Direct fallback: parse payload from JWT if Supabase client threw or returned no user
+      if (!sbUser) {
+        const payload = parseJwtPayload(accessToken);
+        if (payload && payload.sub) {
+          sbUser = {
+            id: payload.sub,
+            email: payload.email || '',
+            user_metadata: payload.user_metadata || {},
+            app_metadata: payload.app_metadata || { provider: 'google' },
+          };
+        }
+      }
+
+      if (sbUser) {
+        // Strip sensitive OAuth hash from browser address bar immediately
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+
+        // Store access token
+        localStorage.setItem(STORAGE_KEY_TOKEN, accessToken);
+
+        // Build, persist, and return user profile
+        return await AuthService.getProfileOrFallback(sbUser);
+      }
+    } catch (e) {
+      console.error('[AuthService] handleOAuthHashSession error:', e);
+      if (typeof window !== 'undefined') {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    }
+    return null;
+  }
+
+  /**
    * Translates a Supabase user object into our application User model
    */
   public static async getProfileOrFallback(sbUser: any): Promise<User> {
-    const roleFromMeta = (sbUser.user_metadata?.role as UserRole) || 'admin';
+    const storedRole = localStorage.getItem(STORAGE_KEY_ROLE) as UserRole | null;
+    const roleFromMeta = (sbUser.user_metadata?.role as UserRole) || storedRole || 'admin';
     const nameFromMeta =
       sbUser.user_metadata?.name ||
       sbUser.user_metadata?.full_name ||

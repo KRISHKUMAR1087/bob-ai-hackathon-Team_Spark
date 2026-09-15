@@ -219,7 +219,7 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
 
           {/* Profile Dropdown Menu */}
           {isProfileMenuOpen && (
-            <div className="absolute right-0 mt-3 w-64 rounded-2xl bg-surface/90 backdrop-blur-xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.12)] py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="absolute right-0 mt-3 w-64 rounded-2xl bg-surface backdrop-blur-xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.12)] py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
               {/* User Identity Header */}
               <div className="px-4 py-3 border-b border-border-subtle">
                 <div className="text-sm font-semibold text-text-main truncate">

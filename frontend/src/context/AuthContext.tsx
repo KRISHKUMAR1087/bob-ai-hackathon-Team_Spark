@@ -26,14 +26,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const initAuth = async () => {
       try {
+        // Priority 1: Check for OAuth tokens in URL hash (e.g. Google OAuth redirect)
+        const oAuthUser = await AuthService.handleOAuthHashSession();
+        if (oAuthUser) {
+          if (isMounted) {
+            setUser(oAuthUser);
+            setIsLoading(false);
+          }
+          return;
+        }
+
+        // Priority 2: Check active Supabase session
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
           const profile = await AuthService.getProfileOrFallback(session.user);
           if (isMounted) setUser(profile);
         } else {
-          // Check if a demo session was active
+          // Priority 3: Check demo session or stored user
           const stored = AuthService.getStoredUser();
-          if (stored && stored.authProvider === 'demo') {
+          if (stored) {
             if (isMounted) setUser(stored);
           } else {
             if (isMounted) setUser(null);
