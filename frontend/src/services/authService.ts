@@ -69,6 +69,9 @@ export class AuthService {
 
       if (!accessToken) return null;
 
+      const callbackPath = window.location.pathname + window.location.search;
+      window.history.replaceState(null, '', callbackPath);
+
       let sbUser: any = null;
 
       // 1. Try to set active session in Supabase client
@@ -98,9 +101,6 @@ export class AuthService {
       }
 
       if (sbUser) {
-        // Strip sensitive OAuth hash from browser address bar immediately
-        window.history.replaceState(null, '', window.location.pathname + window.location.search);
-
         // Store access token
         localStorage.setItem(STORAGE_KEY_TOKEN, accessToken);
 
@@ -254,7 +254,8 @@ export class AuthService {
    * Initiates Google OAuth via Supabase
    */
   public static async signInWithGoogle(): Promise<void> {
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    const configuredRedirectUrl = import.meta.env.VITE_AUTH_REDIRECT_URL;
+    const redirectTo = configuredRedirectUrl || `${window.location.origin}/auth/callback`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
