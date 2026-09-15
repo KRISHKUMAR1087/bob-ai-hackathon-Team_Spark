@@ -151,37 +151,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <aside className={containerClasses}>
       {/* Brand Header */}
       <div
-        className={`h-16 border-b border-border-subtle bg-surface/80 backdrop-blur-md shrink-0 flex items-center ${
+        className={`h-[4.5rem] border-b border-border-subtle bg-surface/80 backdrop-blur-md shrink-0 flex items-center ${
           isCollapsed ? 'justify-center px-2' : 'justify-between px-4'
         }`}
       >
         {!isCollapsed || isMobileDrawer ? (
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 min-w-8 shrink-0 rounded-xl bg-brand-teal text-white flex items-center justify-center shadow-[0_2px_8px_rgba(20,184,166,0.3)]">
-              <Ship className="w-4 h-4" />
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="w-9 h-9 rounded-xl bg-brand-teal text-white flex items-center justify-center shrink-0 shadow-subtle">
+              <Ship className="w-5 h-5 shrink-0" />
             </div>
-
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-sm tracking-tight text-text-main">
-                  PortsPilot
-                </span>
-
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-teal-50 text-teal-800 font-semibold border border-teal-200 shadow-xs">
-                  AI
-                </span>
-              </div>
-
-              <p className="text-[11px] text-text-muted truncate">
+            <div className="min-w-0 flex-1 flex flex-col justify-center">
+              <span className="font-bold text-sm tracking-tight text-text-main truncate leading-none mb-1">
+                PortsPilot
+              </span>
+              <span className="text-xs font-medium text-text-muted truncate leading-none">
                 Operations Platform
-              </p>
+              </span>
             </div>
           </div>
         ) : (
-          <div className="relative flex items-center justify-center w-8 h-8 min-w-8 shrink-0">
-            <div className="w-8 h-8 min-w-8 shrink-0 rounded-xl bg-brand-teal text-white flex items-center justify-center shadow-[0_2px_8px_rgba(20,184,166,0.3)]">
-              <Ship className="w-4 h-4" />
-            </div>
+          <div className="w-9 h-9 rounded-xl bg-brand-teal text-white flex items-center justify-center mx-auto shadow-subtle shrink-0">
+            <Ship className="w-5 h-5 shrink-0" />
           </div>
         )}
 

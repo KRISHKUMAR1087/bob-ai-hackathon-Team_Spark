@@ -44,14 +44,9 @@ export const ShippingDashboardPage: React.FC = () => {
       {/* 1. Header with Personalized Greeting */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border-subtle">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-text-main">
-              Good morning, {agentDisplayName}
-            </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-800 border border-sky-200">
-              Agency Operations
-            </span>
-          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-text-main">
+            Good morning, {agentDisplayName}
+          </h1>
           <p className="text-xs text-text-muted mt-1">
             Manage your vessels and stay ahead of port operations.
           </p>

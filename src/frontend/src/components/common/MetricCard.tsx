@@ -46,8 +46,8 @@ export const MetricCard: React.FC<MetricCardProps> = ({
         onClick ? 'cursor-pointer active:scale-[0.98]' : ''
       }`}
     >
-      <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-        <span className="text-xs font-medium text-text-muted truncate">
+      <div className="flex items-start justify-between gap-2 mb-2 min-w-0">
+        <span className="text-xs font-medium text-text-muted leading-tight break-words pr-1">
           {label}
         </span>
         {Icon && <Icon className="w-4 h-4 text-text-caption shrink-0" />}

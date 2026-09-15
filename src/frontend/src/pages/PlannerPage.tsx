@@ -15,6 +15,9 @@ import { MetricCard } from '../components/common/MetricCard';
 
 export const PlannerPage: React.FC = () => {
   const {
+    vessels,
+    berths,
+    cranes,
     shiftPlans,
     isOptimizationApplied,
     isRecoveryPlanApplied,
@@ -118,21 +121,21 @@ export const PlannerPage: React.FC = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         <MetricCard
           label="Vessel Movements"
-          value="42"
+          value={vessels.length}
           unit="movements"
           subtext="Quay arrivals & departures"
           icon={Ship}
         />
         <MetricCard
           label="Berth Assignments"
-          value="18"
+          value={berths.filter(b => b.status === 'Occupied').length}
           unit="windows"
           subtext="Quayside allocations"
           icon={Anchor}
         />
         <MetricCard
           label="Crane Allocations"
-          value="31"
+          value={cranes.filter(c => c.status === 'ACTIVE').length}
           unit="gangs"
           subtext="STS shifts deployed"
           icon={Cpu}

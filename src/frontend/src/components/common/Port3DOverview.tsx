@@ -7,6 +7,7 @@ import {
   Anchor
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { useOperations } from '../../context/OperationsContext';
 
 interface Port3DOverviewProps {
   className?: string;
@@ -19,6 +20,7 @@ export const Port3DOverview: React.FC<Port3DOverviewProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { isDark } = useTheme();
+  const { vessels } = useOperations();
   const [isAutoRotate, setIsAutoRotate] = useState(true);
   const [activeView, setActiveView] = useState<'aerial' | 'ship' | 'cranes' | 'yard' | 'entrance'>('aerial');
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -32,6 +34,7 @@ export const Port3DOverview: React.FC<Port3DOverviewProps> = ({
   const beaconLightRef = useRef<THREE.PointLight | null>(null);
   const trucksRef = useRef<THREE.Group[]>([]);
   const craneSpreaderRef = useRef<THREE.Group | null>(null);
+  const megaShipRef = useRef<THREE.Group | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -287,6 +290,7 @@ export const Port3DOverview: React.FC<Port3DOverviewProps> = ({
     }
     megaShip.add(shipContainersGroup);
     portGroup.add(megaShip);
+    megaShipRef.current = megaShip;
 
     // C. 4 Giant STS (Ship-to-Shore) Quayside Gantry Cranes
     const cranePositionsX = [-18, -2, 14, 30];
@@ -603,6 +607,14 @@ export const Port3DOverview: React.FC<Port3DOverviewProps> = ({
       renderer.dispose();
     };
   }, [isDark]);
+
+  // Toggle ship visibility based on actual operations data
+  useEffect(() => {
+    if (megaShipRef.current) {
+      const hasActiveVessels = vessels.some(v => v.status === 'Berthing' || v.status === 'Loading' || v.status === 'Completed');
+      megaShipRef.current.visible = hasActiveVessels;
+    }
+  }, [vessels]);
 
   // Set Camera Angles
   const setPresetView = (view: 'aerial' | 'ship' | 'cranes' | 'yard' | 'entrance') => {

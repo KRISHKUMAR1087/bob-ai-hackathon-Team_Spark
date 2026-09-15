@@ -109,15 +109,10 @@ How can I assist your shipping operations today?`,
       {/* 1. Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border-subtle">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-text-main flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-sky-600" />
-              Shipping Operational Copilot
-            </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-800 border border-sky-200">
-              Agency AI Assistant
-            </span>
-          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-text-main flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-sky-600" />
+            Shipping Operational Copilot
+          </h1>
           <p className="text-xs text-text-muted mt-1">
             Grounded operational intelligence for your assigned vessels, berthing schedules, and turnaround predictions.
           </p>
@@ -229,12 +224,18 @@ How can I assist your shipping operations today?`,
             </div>
 
             <div className="space-y-2 text-xs">
-              <div className="p-2 rounded bg-surface-subtle border border-border-subtle">
-                <div className="font-semibold text-text-main">{oceanStar.name}</div>
-                <div className="text-[10px] text-text-muted">
-                  Berth {isOptimizationApplied ? 'B02 (Optimized)' : 'B04 (Congested)'} • Wait: {isOptimizationApplied ? '6.8h' : '11.4h'}
+              {oceanStar ? (
+                <div className="p-2 rounded bg-surface-subtle border border-border-subtle">
+                  <div className="font-semibold text-text-main">{oceanStar.name}</div>
+                  <div className="text-[10px] text-text-muted">
+                    Berth {isOptimizationApplied ? 'B02 (Optimized)' : 'B04 (Congested)'} • Wait: {isOptimizationApplied ? '6.8h' : '11.4h'}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="p-2 text-[10px] text-text-muted italic">
+                  No active fleet data available.
+                </div>
+              )}
 
               {pacificVoyager && (
                 <div className="p-2 rounded bg-surface-subtle border border-border-subtle">

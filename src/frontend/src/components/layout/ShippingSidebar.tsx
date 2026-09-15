@@ -144,29 +144,24 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
   return (
     <aside className={containerClasses}>
       {/* Header */}
-      <div className="h-16 px-4 flex items-center justify-between border-b border-border-subtle bg-surface shrink-0">
+      <div className="h-[4.5rem] px-4 flex items-center justify-between border-b border-border-subtle bg-surface shrink-0">
         {!isCollapsed || isMobileDrawer ? (
-          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-            <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center shrink-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-              <Anchor className="w-4 h-4 shrink-0" />
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="w-9 h-9 rounded-xl bg-brand-blue text-white flex items-center justify-center shrink-0 shadow-subtle">
+              <Anchor className="w-5 h-5 shrink-0" />
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <span className="font-semibold text-sm tracking-tight text-text-main truncate">
-                  PortsPilot
-                </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 font-semibold border border-sky-200 shrink-0">
-                  AGENT
-                </span>
-              </div>
-              <p className="text-[11px] text-text-muted truncate">
+            <div className="min-w-0 flex-1 flex flex-col justify-center">
+              <span className="font-bold text-sm tracking-tight text-text-main truncate leading-none mb-1">
+                PortsPilot
+              </span>
+              <span className="text-xs font-medium text-text-muted truncate leading-none">
                 Shipping Operations
-              </p>
+              </span>
             </div>
           </div>
         ) : (
-          <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <Anchor className="w-4 h-4" />
+          <div className="w-9 h-9 rounded-xl bg-brand-blue text-white flex items-center justify-center mx-auto shadow-subtle">
+            <Anchor className="w-5 h-5 shrink-0" />
           </div>
         )}
 
@@ -191,18 +186,6 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
           )
         )}
       </div>
-
-      {/* Agency Identity Ribbon */}
-      {(!isCollapsed || isMobileDrawer) && (
-        <div className="px-4 py-2 border-b border-border-subtle bg-surface-subtle/60 shrink-0">
-          <div className="flex items-center justify-between text-xs gap-2 min-w-0">
-            <span className="text-text-muted truncate flex-1 min-w-0">Apex Maritime Agency</span>
-            <span className="font-medium text-sky-800 bg-sky-50 px-2 py-0.5 rounded border border-sky-200 text-[10px] shrink-0">
-              Ship Agent
-            </span>
-          </div>
-        </div>
-      )}
 
       {/* Navigation Group Sections */}
       <div className="flex-1 overflow-y-auto py-2 px-2 space-y-3">

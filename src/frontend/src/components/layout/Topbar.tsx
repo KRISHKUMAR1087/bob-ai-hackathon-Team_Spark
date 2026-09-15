@@ -4,7 +4,6 @@ import {
   Search,
   Bell,
   Sparkles,
-  Clock,
   Menu,
   ChevronRight,
   LogOut,
@@ -16,6 +15,7 @@ import { useOperations } from '../../context/OperationsContext';
 import { useAuth } from '../../context/AuthContext';
 import { MusicButton } from '../common/MusicButton';
 import { ThemeToggleButton } from '../common/ThemeToggleButton';
+import { TimezoneClock } from '../common/TimezoneClock';
 
 interface TopbarProps {
   isCollapsed: boolean;
@@ -27,19 +27,8 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { alerts, setIsCopilotOpen, isCopilotOpen, searchQuery, setSearchQuery } = useOperations();
-  const [timeUtc, setTimeUtc] = useState<string>('');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setTimeUtc(now.toISOString().slice(11, 19) + ' UTC');
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -142,11 +131,8 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
           </div>
         </div>
 
-        {/* Live Port UTC Clock: hidden on mobile < 640px */}
-        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-subtle border border-border-subtle text-text-muted text-xs shrink-0 shadow-xs">
-          <Clock className="w-3.5 h-3.5 text-text-caption shrink-0" />
-          <span className="font-mono text-[11px] font-medium">{timeUtc || '00:00:00 UTC'}</span>
-        </div>
+        {/* Live Port Clock with Timezone Switcher */}
+        <TimezoneClock className="hidden sm:block" />
 
         {/* AIS Status: hidden below 1280px */}
         <div className="hidden 2xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-subtle border border-border-subtle text-xs shrink-0 shadow-xs">
@@ -176,15 +162,15 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
         {/* Copilot Trigger Button */}
         <button
           onClick={() => setIsCopilotOpen(!isCopilotOpen)}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 border shrink-0 cursor-pointer shadow-xs ${
+          className={`p-2 rounded-full text-xs font-semibold transition-all duration-200 border shrink-0 cursor-pointer shadow-xs ${
             isCopilotOpen
               ? 'bg-brand-teal text-white border-brand-teal shadow-[0_4px_12px_rgba(20,184,166,0.3)]'
-              : 'bg-surface text-text-main border-border-subtle hover:bg-teal-50/30 hover:border-brand-teal/50 hover:text-brand-teal shadow-[0_2px_8px_rgba(0,0,0,0.04)]'
+              : 'bg-surface text-brand-teal border-border-subtle hover:bg-teal-50/30 hover:border-brand-teal/50 shadow-[0_2px_8px_rgba(0,0,0,0.04)]'
           }`}
           title="Open Gemini Operational Copilot"
+          aria-label="Open Gemini Operational Copilot"
         >
-          <Sparkles className={`w-3.5 h-3.5 ${isCopilotOpen ? 'text-white' : 'text-brand-teal'} shrink-0`} />
-          <span className="hidden sm:inline">Copilot</span>
+          <Sparkles className="w-4 h-4 shrink-0" />
         </button>
 
         {/* Supervisor Profile Dropdown */}

@@ -105,13 +105,6 @@ export const DashboardPage: React.FC = () => {
             <Clock className="w-3.5 h-3.5 text-text-muted" />
             <span>72h Plan</span>
           </button>
-          <button
-            onClick={handleAskGeminiWhy}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-brand-teal bg-teal-50/60 hover:bg-teal-100/60 border border-teal-200/70 transition-colors shadow-xs"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-brand-teal" />
-            <span>Ask Gemini</span>
-          </button>
         </div>
       </div>
 
