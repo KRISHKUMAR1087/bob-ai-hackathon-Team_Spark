@@ -22,8 +22,7 @@ import { Port3DOverview } from '../components/common/Port3DOverview';
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const isDemoUser = user?.authProvider === 'demo';
+  const { isDemoUser } = useAuth();
   const {
     vessels,
     berths,

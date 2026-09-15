@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase';
 interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
+  isDemoUser: boolean;
   isLoading: boolean;
   loginAsDemo: (role: UserRole) => Promise<User>;
   signInWithGoogle: () => Promise<void>;
@@ -184,11 +185,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
+  const isDemoUser = user?.authProvider === 'demo' || user?.email?.toLowerCase() === 'portspilot.admin@gmail.com';
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthenticated: !!user,
+        isDemoUser,
         isLoading,
         loginAsDemo,
         signInWithGoogle,

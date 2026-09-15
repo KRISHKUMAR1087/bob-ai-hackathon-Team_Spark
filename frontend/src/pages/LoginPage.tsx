@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   Ship, Anchor, ArrowRight, Shield, BarChart3, CloudCog,
   CheckCircle2, Zap, Globe, Brain, Users, Lock, TrendingUp,
@@ -632,23 +632,49 @@ export const LoginPage: React.FC = () => {
             {[
               {
                 heading: 'Platform',
-                links: ['Dashboard', 'Berth Optimizer', 'Forecast', 'Simulator', 'AI Copilot', 'Analytics'],
+                links: [
+                  { label: 'Dashboard', href: '#' },
+                  { label: 'Berth Optimizer', href: '#' },
+                  { label: 'Forecast', href: '#' },
+                  { label: 'Simulator', href: '#' },
+                  { label: 'AI Copilot', href: '#' },
+                  { label: 'Analytics', href: '#' },
+                ],
               },
               {
                 heading: 'Company',
-                links: ['About Us', 'Careers', 'Blog', 'Press', 'Partners'],
+                links: [
+                  { label: 'About Us', href: '#' },
+                  { label: 'Careers', href: '#' },
+                  { label: 'Blog', href: '#' },
+                  { label: 'Press', href: '#' },
+                  { label: 'Partners', href: '#' },
+                ],
               },
               {
-                heading: 'Legal',
-                links: ['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'Security'],
+                heading: 'Administration',
+                links: [
+                  { label: 'Super Admin Portal', href: '/super-admin' },
+                  { label: 'Privacy Policy', href: '#' },
+                  { label: 'Terms of Service', href: '#' },
+                  { label: 'Security', href: '#' },
+                ],
               },
             ].map(({ heading, links }) => (
               <div key={heading}>
                 <h5 className="text-xs font-bold uppercase tracking-widest text-text-caption mb-4">{heading}</h5>
                 <ul className="space-y-2">
                   {links.map(link => (
-                    <li key={link}>
-                      <a href="#" className="text-sm text-text-muted hover:text-brand-teal transition-colors font-medium">{link}</a>
+                    <li key={link.label}>
+                      {link.href.startsWith('/') ? (
+                        <Link to={link.href} className="text-sm text-text-muted hover:text-brand-teal transition-colors font-medium">
+                          {link.label}
+                        </Link>
+                      ) : (
+                        <a href={link.href} className="text-sm text-text-muted hover:text-brand-teal transition-colors font-medium">
+                          {link.label}
+                        </a>
+                      )}
                     </li>
                   ))}
                 </ul>

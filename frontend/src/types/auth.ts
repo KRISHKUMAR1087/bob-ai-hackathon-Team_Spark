@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'ship-agent';
+export type UserRole = 'admin' | 'ship-agent' | 'super-admin';
 export type AuthProviderType = 'demo' | 'google' | 'email';
 
 export interface User {

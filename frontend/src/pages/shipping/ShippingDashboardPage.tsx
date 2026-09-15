@@ -20,7 +20,7 @@ import { RiskBadge } from '../../components/common/RiskBadge';
 
 export const ShippingDashboardPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isDemoUser } = useAuth();
   const { vessels, isOptimizationApplied, berthRequests } = useOperations();
 
   // Filter vessels belonging to agent (or all demo fleet)
@@ -143,7 +143,7 @@ export const ShippingDashboardPage: React.FC = () => {
           Action Required & Key Notifications
         </h2>
 
-        {agentVessels.length === 0 && user?.authProvider !== 'demo' ? (
+        {agentVessels.length === 0 && !isDemoUser ? (
           <div className="p-4 rounded-xl bg-surface border border-border-subtle flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-sky-50 text-sky-600">

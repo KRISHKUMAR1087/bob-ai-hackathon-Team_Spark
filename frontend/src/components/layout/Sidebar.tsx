@@ -41,7 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const location = useLocation();
   const navigate = useNavigate();
   const { alerts, isOptimizationApplied, resetToDefault } = useOperations();
-  const { user, logout } = useAuth();
+  const { user, logout, isDemoUser } = useAuth();
   const unreadAlerts = alerts.filter(a => !a.isResolved).length;
 
   const getUserInitials = () => {
@@ -298,14 +298,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-4 border-t border-border-subtle bg-surface/80 backdrop-blur-md space-y-3 shrink-0">
         {!isCollapsed || isMobileDrawer ? (
           <>
-            <button
-              onClick={resetToDefault}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04)] active:scale-95"
-              title="Reset simulation to initial state"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset Demo State</span>
-            </button>
+            {isDemoUser && (
+              <button
+                onClick={resetToDefault}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-text-main bg-surface hover:bg-surface-subtle border border-border-subtle transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04)] active:scale-95"
+                title="Reset simulation to initial state"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset Demo State</span>
+              </button>
+            )}
             <div className="flex items-center gap-3 pt-2 px-1">
               {user?.photoURL ? (
                 <img src={user.photoURL} alt={user.name} className="w-8 h-8 rounded-full object-cover shrink-0 border border-border-subtle shadow-xs" />
@@ -330,13 +332,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </>
         ) : (
           <div className="space-y-3 flex flex-col items-center">
-            <button
-              onClick={resetToDefault}
-              className="w-full flex items-center justify-center p-2 rounded-xl text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors shadow-xs active:scale-95"
-              title="Reset Demo State"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
+            {isDemoUser && (
+              <button
+                onClick={resetToDefault}
+                className="w-full flex items-center justify-center p-2 rounded-xl text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors shadow-xs active:scale-95"
+                title="Reset Demo State"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            )}
             <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center p-2 rounded-xl text-rose-600 hover:text-rose-700 hover:bg-rose-50 transition-colors shadow-xs active:scale-95"

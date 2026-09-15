@@ -30,6 +30,7 @@ const AnalyticsPage = React.lazy(() => import('./pages/AnalyticsPage').then(m =>
 const AlertsPage = React.lazy(() => import('./pages/AlertsPage').then(m => ({ default: m.AlertsPage })));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
 const PortAdminSetupPage = React.lazy(() => import('./pages/PortAdminSetupPage').then(m => ({ default: m.PortAdminSetupPage })));
+const SuperAdminPortalPage = React.lazy(() => import('./pages/SuperAdminPortalPage').then(m => ({ default: m.SuperAdminPortalPage })));
 
 // Shipping Agency Pages
 const ShippingDashboardPage = React.lazy(() => import('./pages/shipping/ShippingDashboardPage').then(m => ({ default: m.ShippingDashboardPage })));
@@ -119,6 +120,9 @@ export const App: React.FC = () => {
                 <Route element={<RoleProtectedRoute allowedRoles={['admin']} />}>
                   <Route path="/onboarding" element={<PortAdminSetupPage />} />
                 </Route>
+                
+                {/* Super Admin Portal */}
+                <Route path="/super-admin" element={<SuperAdminPortalPage />} />
 
                 {/* Root Portal Router */}
                 <Route path="/" element={<RootRedirect />} />

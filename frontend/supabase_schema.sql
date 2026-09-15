@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     email TEXT UNIQUE NOT NULL,
     name TEXT,
     avatar_url TEXT,
-    role TEXT NOT NULL DEFAULT 'admin' CHECK (role IN ('admin', 'ship-agent')),
+    role TEXT NOT NULL DEFAULT 'admin' CHECK (role IN ('admin', 'ship-agent', 'super-admin')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

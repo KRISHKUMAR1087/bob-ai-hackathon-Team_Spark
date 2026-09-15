@@ -27,8 +27,7 @@ interface AgentAlertItem {
 
 export const ShippingAlertsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const isDemoUser = user?.authProvider === 'demo';
+  const { isDemoUser } = useAuth();
   const {
     alerts,
     isOptimizationApplied,

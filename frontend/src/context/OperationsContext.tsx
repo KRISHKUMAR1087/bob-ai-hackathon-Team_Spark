@@ -164,8 +164,7 @@ export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [shippingDocuments, setShippingDocuments] = useState<
     ShippingDocument[]
   >([]);
-  const { user } = useAuth();
-  const isDemoUser = user?.authProvider === "demo";
+  const { user, isDemoUser } = useAuth();
 
   const syncVesselIfReal = (vessel: Vessel) => {
     if (!isDemoUser) {
@@ -1183,24 +1182,37 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
   };
 
   const resetToDefault = () => {
-    setVessels(initialVessels);
-    setBerths(initialBerths);
-    setCranes(initialCranes);
-    setYardBlocks(initialYardBlocks);
-    setForecast(initialForecastData);
-    setOptimization(initialOptimizationResult);
-    setSimulation(initialSimulationResult);
-    setShiftPlans(initialShiftPlans);
-    setAlerts(initialAlerts);
-    setBerthRequests(initialBerthRequests);
-    setShippingDocuments(initialShippingDocuments);
-    setIsOptimizationApplied(false);
-    setIsRecoveryPlanApplied(false);
-    showToast(
-      "info",
-      "State Reset",
-      "Port operations reset to baseline demo state.",
-    );
+    if (isDemoUser) {
+      setVessels(initialVessels);
+      setBerths(initialBerths);
+      setCranes(initialCranes);
+      setYardBlocks(initialYardBlocks);
+      setForecast(initialForecastData);
+      setOptimization(initialOptimizationResult);
+      setSimulation(initialSimulationResult);
+      setShiftPlans(initialShiftPlans);
+      setAlerts(initialAlerts);
+      setBerthRequests(initialBerthRequests);
+      setShippingDocuments(initialShippingDocuments);
+      setIsOptimizationApplied(false);
+      setIsRecoveryPlanApplied(false);
+      showToast(
+        "info",
+        "State Reset",
+        "Port operations reset to baseline demo state.",
+      );
+    } else {
+      setForecast(null);
+      setOptimization(null);
+      setSimulation(null);
+      setIsOptimizationApplied(false);
+      setIsRecoveryPlanApplied(false);
+      showToast(
+        "info",
+        "Data Refreshed",
+        "Port operations baseline restored.",
+      );
+    }
   };
 
   const contextValue = useMemo(
