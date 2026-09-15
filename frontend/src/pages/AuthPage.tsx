@@ -108,7 +108,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
         const user = await login(loginEmail, loginPassword);
         navigate(getRedirectPath(user.role), { replace: true });
       } else {
-        const user = await signup(signupName, signupEmail, signupPassword);
+        const user = await signup(signupName, signupEmail, signupPassword, selectedRole);
         navigate(getRedirectPath(user.role), { replace: true });
       }
     } catch (err: any) {

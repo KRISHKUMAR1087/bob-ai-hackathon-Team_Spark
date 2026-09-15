@@ -28,8 +28,8 @@ export class AuthService {
     return response.user;
   }
 
-  public static async signup(name: string, email: string, password: string): Promise<User> {
-    const response = await apiClient.post('/auth/signup', { name, email, password });
+  public static async signup(name: string, email: string, password: string, role: UserRole): Promise<User> {
+    const response = await apiClient.post('/auth/signup', { name, email, password, role });
     localStorage.setItem(STORAGE_KEY_TOKEN, response.token);
     localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
     localStorage.setItem(STORAGE_KEY_ROLE, response.user.role);

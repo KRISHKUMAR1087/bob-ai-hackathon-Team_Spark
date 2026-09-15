@@ -10,7 +10,7 @@ interface AuthContextValue {
   loginWithGoogleToken: (idToken: string) => Promise<{ needsRoleSelection: boolean; tempUser: User | null }>;
   confirmRoleSelection: (role: UserRole) => Promise<User>;
   login: (email: string, password: string) => Promise<User>;
-  signup: (name: string, email: string, password: string) => Promise<User>;
+  signup: (name: string, email: string, password: string, role: UserRole) => Promise<User>;
   logout: () => void;
 }
 
@@ -99,10 +99,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signup = async (name: string, email: string, password: string): Promise<User> => {
+  const signup = async (name: string, email: string, password: string, role: UserRole): Promise<User> => {
     setIsLoading(true);
     try {
-      const newUser = await AuthService.signup(name, email, password);
+      const newUser = await AuthService.signup(name, email, password, role);
       setUser(newUser);
       return newUser;
     } finally {

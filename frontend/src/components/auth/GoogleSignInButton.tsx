@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 declare global {
   interface Window {
@@ -12,33 +12,67 @@ interface GoogleSignInButtonProps {
   isLoading?: boolean;
 }
 
-let isGoogleInitialized = false;
+let initializedClientId: string | null = null;
 
 export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSuccess, onError, isLoading }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const onSuccessRef = useRef(onSuccess);
+  const onErrorRef = useRef(onError);
+  const [buttonWidth, setButtonWidth] = useState(360);
 
   useEffect(() => {
-    // We only want to initialize once globally.
+    onSuccessRef.current = onSuccess;
+    onErrorRef.current = onError;
+  }, [onSuccess, onError]);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const updateWidth = () => {
+      if (!containerRef.current) return;
+      const nextWidth = Math.floor(containerRef.current.getBoundingClientRect().width);
+      if (nextWidth > 0) {
+        setButtonWidth(Math.min(nextWidth, 400));
+      }
+    };
+
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(containerRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
     const initializeGoogle = () => {
-      if (!isGoogleInitialized && window.google) {
+      if (!clientId) {
+        console.error('VITE_GOOGLE_CLIENT_ID is not set. Google Sign-In cannot be initialized.');
+        onErrorRef.current?.();
+        return;
+      }
+
+      if (initializedClientId !== clientId && window.google) {
         window.google.accounts.id.initialize({
-          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || '',
+          client_id: clientId,
           callback: (response: any) => {
             if (response.credential) {
-              onSuccess(response.credential);
-            } else if (onError) {
-              onError();
+              onSuccessRef.current(response.credential);
+            } else {
+              onErrorRef.current?.();
             }
           }
         });
-        isGoogleInitialized = true;
+        initializedClientId = clientId;
       }
       
       if (containerRef.current && window.google) {
+        containerRef.current.innerHTML = '';
         window.google.accounts.id.renderButton(containerRef.current, {
           theme: 'outline',
           size: 'large',
-          width: '100%',
+          width: buttonWidth,
           text: 'continue_with'
         });
       }
@@ -63,7 +97,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
         }
       }
     }
-  }, []); // Empty dependency array as requested
+  }, [buttonWidth]);
 
   if (isLoading) {
     return (
