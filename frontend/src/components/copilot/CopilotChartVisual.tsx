@@ -13,6 +13,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
+import { useTheme } from '../../context/ThemeContext';
 
 interface ChartDataItem {
   name: string;
@@ -33,6 +34,7 @@ export const CopilotChartVisual: React.FC<CopilotChartVisualProps> = ({
   title,
   data,
 }) => {
+  const { isDark } = useTheme();
   if (!data || data.length === 0) return null;
 
   // Decide orientation for BarChart: If category names are long, horizontal layout works best
@@ -60,19 +62,20 @@ export const CopilotChartVisual: React.FC<CopilotChartVisualProps> = ({
                 layout="vertical"
                 margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#F1F5F9" />
-                <XAxis type="number" tick={{ fontSize: 10, fill: '#64748B' }} />
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={isDark ? '#1D4655' : '#F1F5F9'} />
+                <XAxis type="number" tick={{ fontSize: 10, fill: isDark ? '#9FB5BF' : '#64748B' }} />
                 <YAxis
                   dataKey="name"
                   type="category"
                   width={110}
-                  tick={{ fontSize: 10, fill: '#334155' }}
+                  tick={{ fontSize: 10, fill: isDark ? '#F4F8FA' : '#334155' }}
                 />
                 <Tooltip
                   formatter={(val: any) => [`${val}%`, 'Value']}
                   contentStyle={{
-                    backgroundColor: '#FFFFFF',
-                    borderColor: '#E2E8F0',
+                    backgroundColor: isDark ? '#102F3D' : '#FFFFFF',
+                    borderColor: isDark ? '#1D4655' : '#E2E8F0',
+                    color: isDark ? '#F4F8FA' : '#17232D',
                     borderRadius: 6,
                     fontSize: 11,
                   }}
@@ -84,13 +87,14 @@ export const CopilotChartVisual: React.FC<CopilotChartVisualProps> = ({
                 data={data}
                 margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748B' }} />
-                <YAxis tick={{ fontSize: 10, fill: '#64748B' }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1D4655' : '#F1F5F9'} />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: isDark ? '#9FB5BF' : '#64748B' }} />
+                <YAxis tick={{ fontSize: 10, fill: isDark ? '#9FB5BF' : '#64748B' }} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#FFFFFF',
-                    borderColor: '#E2E8F0',
+                    backgroundColor: isDark ? '#102F3D' : '#FFFFFF',
+                    borderColor: isDark ? '#1D4655' : '#E2E8F0',
+                    color: isDark ? '#F4F8FA' : '#17232D',
                     borderRadius: 6,
                     fontSize: 11,
                   }}
@@ -103,13 +107,14 @@ export const CopilotChartVisual: React.FC<CopilotChartVisualProps> = ({
               data={data}
               margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
-              <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748B' }} />
-              <YAxis tick={{ fontSize: 10, fill: '#64748B' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#1D4655' : '#F1F5F9'} />
+              <XAxis dataKey="name" tick={{ fontSize: 10, fill: isDark ? '#9FB5BF' : '#64748B' }} />
+              <YAxis tick={{ fontSize: 10, fill: isDark ? '#9FB5BF' : '#64748B' }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#FFFFFF',
-                  borderColor: '#E2E8F0',
+                  backgroundColor: isDark ? '#102F3D' : '#FFFFFF',
+                  borderColor: isDark ? '#1D4655' : '#E2E8F0',
+                  color: isDark ? '#F4F8FA' : '#17232D',
                   borderRadius: 6,
                   fontSize: 11,
                 }}
@@ -140,8 +145,9 @@ export const CopilotChartVisual: React.FC<CopilotChartVisualProps> = ({
               </Pie>
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#FFFFFF',
-                  borderColor: '#E2E8F0',
+                  backgroundColor: isDark ? '#102F3D' : '#FFFFFF',
+                  borderColor: isDark ? '#1D4655' : '#E2E8F0',
+                  color: isDark ? '#F4F8FA' : '#17232D',
                   borderRadius: 6,
                   fontSize: 11,
                 }}

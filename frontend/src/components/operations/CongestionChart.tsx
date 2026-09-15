@@ -10,6 +10,7 @@ import {
   ComposedChart,
 } from 'recharts';
 import { useOperations } from '../../context/OperationsContext';
+import { useTheme } from '../../context/ThemeContext';
 
 interface CongestionChartProps {
   selectedBerth?: string;
@@ -23,6 +24,7 @@ export const CongestionChart: React.FC<CongestionChartProps> = ({
   height = 300,
 }) => {
   const { forecast } = useOperations();
+  const { isDark } = useTheme();
   const [horizon, setHorizon] = useState<'6h' | '12h' | '24h' | '48h' | '72h'>('24h');
 
   const getHorizonPoints = () => {
@@ -110,17 +112,17 @@ export const CongestionChart: React.FC<CongestionChartProps> = ({
         <div style={{ width: '100%', height }}>
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={chartData} margin={{ top: 15, right: 15, left: -15, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#1D4655' : '#F1F5F9'} vertical={false} />
               <XAxis
                 dataKey="hour"
-                stroke="#94A3B8"
+                stroke={isDark ? '#607C87' : '#94A3B8'}
                 fontSize={12}
                 tickLine={false}
-                axisLine={{ stroke: '#E2E8F0' }}
+                axisLine={{ stroke: isDark ? '#1D4655' : '#E2E8F0' }}
               />
               <YAxis
                 domain={[40, 100]}
-                stroke="#94A3B8"
+                stroke={isDark ? '#607C87' : '#94A3B8'}
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}

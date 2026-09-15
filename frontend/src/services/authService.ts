@@ -1,5 +1,5 @@
 import { User, UserRole } from '../types/auth';
-import { apiClient } from './apiClient';
+import { supabase } from '../lib/supabase';
 
 const STORAGE_KEY_USER = 'portpulse_auth_user';
 const STORAGE_KEY_ROLE = 'portpulse_user_role';
@@ -20,94 +20,284 @@ export class AuthService {
     }
   }
 
-  public static async login(email: string, password: string): Promise<User> {
-    const response = await apiClient.post('/auth/login', { email, password });
-    localStorage.setItem(STORAGE_KEY_TOKEN, response.token);
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
-    localStorage.setItem(STORAGE_KEY_ROLE, response.user.role);
-    return response.user;
-  }
-
-  public static async signup(name: string, email: string, password: string): Promise<User> {
-    const response = await apiClient.post('/auth/signup', { name, email, password });
-    localStorage.setItem(STORAGE_KEY_TOKEN, response.token);
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
-    localStorage.setItem(STORAGE_KEY_ROLE, response.user.role);
-    return response.user;
-  }
-
   /**
-   * Logs in as one of the pre-configured demo roles using the real backend API.
+   * Translates a Supabase user object into our application User model
    */
-  public static async loginDemo(role: UserRole): Promise<User> {
-    const response = await apiClient.post('/auth/login-demo', { role });
-    
-    // Save token and user
-    localStorage.setItem(STORAGE_KEY_TOKEN, response.token);
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
-    localStorage.setItem(STORAGE_KEY_ROLE, response.user.role);
-    
-    return response.user;
+  public static async getProfileOrFallback(sbUser: any): Promise<User> {
+    const roleFromMeta = (sbUser.user_metadata?.role as UserRole) || 'admin';
+    const nameFromMeta =
+      sbUser.user_metadata?.name ||
+      sbUser.user_metadata?.full_name ||
+      sbUser.email?.split('@')[0] ||
+      'Authorized Operator';
+    const photoFromMeta =
+      sbUser.user_metadata?.avatar_url || sbUser.user_metadata?.picture;
+
+    // Check database profiles table if available
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', sbUser.id)
+        .maybeSingle();
+
+      if (profile && !error) {
+        const user: User = {
+          id: profile.id,
+          name: profile.name || nameFromMeta,
+          email: profile.email || sbUser.email || '',
+          photoURL: profile.avatar_url || photoFromMeta,
+          role: (profile.role as UserRole) || roleFromMeta,
+          authProvider: sbUser.app_metadata?.provider === 'google' ? 'google' : 'email',
+        };
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(user));
+        localStorage.setItem(STORAGE_KEY_ROLE, user.role);
+        return user;
+      }
+    } catch (e) {
+      console.warn('[Supabase] profiles lookup skipped or failed, using metadata', e);
+    }
+
+    // Fallback: construct user from Supabase session metadata
+    const user: User = {
+      id: sbUser.id,
+      name: nameFromMeta,
+      email: sbUser.email || '',
+      photoURL: photoFromMeta,
+      role: roleFromMeta,
+      authProvider: sbUser.app_metadata?.provider === 'google' ? 'google' : 'email',
+    };
+    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(user));
+    localStorage.setItem(STORAGE_KEY_ROLE, user.role);
+    return user;
   }
 
   /**
-   * Completes Google Sign-In with the backend using the idToken.
+   * Email + Password Login using real Supabase Auth
+   */
+  public static async login(email: string, password: string): Promise<User> {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+
+    if (error) {
+      if (error.message.includes('Invalid login credentials')) {
+        throw new Error('Invalid email or password. Please verify your credentials and try again.');
+      } else if (error.message.includes('Email not confirmed')) {
+        throw new Error('Please confirm your email address before signing in.');
+      }
+      throw new Error(error.message || 'Authentication failed. Please try again.');
+    }
+
+    if (!data.user) {
+      throw new Error('No user returned after authentication.');
+    }
+
+    if (data.session?.access_token) {
+      localStorage.setItem(STORAGE_KEY_TOKEN, data.session.access_token);
+    }
+
+    return await AuthService.getProfileOrFallback(data.user);
+  }
+
+  /**
+   * Email + Password Signup using real Supabase Auth
+   */
+  public static async signup(
+    name: string,
+    email: string,
+    password: string,
+    role: UserRole = 'admin'
+  ): Promise<User> {
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: {
+        data: {
+          name: name.trim(),
+          role: role,
+        },
+      },
+    });
+
+    if (error) {
+      if (error.message.includes('User already registered')) {
+        throw new Error('An account with this email address already exists. Please log in.');
+      }
+      throw new Error(error.message || 'Failed to create account.');
+    }
+
+    if (!data.user) {
+      throw new Error('No user profile created. Please try again.');
+    }
+
+    if (data.session?.access_token) {
+      localStorage.setItem(STORAGE_KEY_TOKEN, data.session.access_token);
+    }
+
+    // Attempt to upsert the profile in Supabase profiles table
+    try {
+      await supabase.from('profiles').upsert({
+        id: data.user.id,
+        email: data.user.email,
+        name: name.trim(),
+        role: role,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.warn('[Supabase] Initial profile insert error', e);
+    }
+
+    return await AuthService.getProfileOrFallback(data.user);
+  }
+
+  /**
+   * Initiates Google OAuth via Supabase
+   */
+  public static async signInWithGoogle(): Promise<void> {
+    const redirectTo = `${window.location.origin}/auth/callback`;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    });
+
+    if (error) {
+      throw new Error(error.message || 'Failed to initiate Google sign-in.');
+    }
+  }
+
+  /**
+   * Handles Google ID Token authentication (for compat with existing Google button)
    */
   public static async signInWithGoogleToken(idToken: string): Promise<{ user: User | null; needsRoleSelection: boolean }> {
-    const response = await apiClient.post('/auth/google', { idToken });
-    
-    if (response.requiresRoleSelection) {
-      // User is new and needs to select a role. The token returned is a temporary token 
-      // with a placeholder role, so we just return the temp user.
-      localStorage.setItem(STORAGE_KEY_TOKEN, response.token);
-      return { user: response.user, needsRoleSelection: true };
-    } else {
-      // User already existed and has a role.
-      localStorage.setItem(STORAGE_KEY_TOKEN, response.token);
-      localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
-      localStorage.setItem(STORAGE_KEY_ROLE, response.user.role);
-      return { user: response.user, needsRoleSelection: false };
+    try {
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: idToken,
+      });
+
+      if (error) {
+        // Fallback to OAuth redirect
+        await AuthService.signInWithGoogle();
+        return { user: null, needsRoleSelection: false };
+      }
+
+      if (data.user) {
+        const user = await AuthService.getProfileOrFallback(data.user);
+        const hasRole = data.user.user_metadata?.role;
+        return { user, needsRoleSelection: !hasRole };
+      }
+    } catch (e) {
+      console.warn('[Supabase] signInWithIdToken fallback to OAuth redirect', e);
+      await AuthService.signInWithGoogle();
     }
+    return { user: null, needsRoleSelection: false };
   }
 
   /**
-   * Assigns and persists the selected role for a newly authenticated user.
+   * Assigns and persists the selected role for an authenticated user
    */
   public static async setUserRole(role: UserRole): Promise<User> {
-    // The backend should use the existing JWT token from signInWithGoogleToken to authenticate this request.
-    const response = await apiClient.post('/auth/role', { role });
-    
-    localStorage.setItem(STORAGE_KEY_TOKEN, response.token);
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
-    localStorage.setItem(STORAGE_KEY_ROLE, response.user.role);
-    
-    return response.user;
+    const { data: { user: sbUser } } = await supabase.auth.getUser();
+
+    if (sbUser) {
+      // Update metadata on auth.users
+      await supabase.auth.updateUser({
+        data: { role },
+      });
+
+      // Update profiles table
+      try {
+        await supabase.from('profiles').upsert({
+          id: sbUser.id,
+          email: sbUser.email,
+          name: sbUser.user_metadata?.name || sbUser.email?.split('@')[0] || 'User',
+          role: role,
+          updated_at: new Date().toISOString(),
+        });
+      } catch (e) {
+        console.warn('[Supabase] Failed to update profiles table', e);
+      }
+
+      return await AuthService.getProfileOrFallback({
+        ...sbUser,
+        user_metadata: { ...sbUser.user_metadata, role },
+      });
+    }
+
+    // If demo session, update locally
+    const stored = AuthService.getStoredUser();
+    const updated: User = {
+      id: stored?.id || 'demo-user',
+      name: stored?.name || 'Operator',
+      email: stored?.email || 'operator@portpulse.demo',
+      role: role,
+      authProvider: stored?.authProvider || 'demo',
+    };
+    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(updated));
+    localStorage.setItem(STORAGE_KEY_ROLE, role);
+    return updated;
   }
 
   /**
-   * Hydrates the user session securely by checking with the backend.
+   * Logs in as one of the pre-configured demo roles
+   */
+  public static async loginDemo(role: UserRole): Promise<User> {
+    const user: User = {
+      id: role === 'admin' ? 'demo-admin-id' : 'demo-agent-id',
+      name: role === 'admin' ? 'Capt. M. Vance' : 'James Harrington',
+      email: role === 'admin' ? 'admin@portpulse.demo' : 'agent@portpulse.demo',
+      role: role,
+      authProvider: 'demo',
+    };
+    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(user));
+    localStorage.setItem(STORAGE_KEY_ROLE, user.role);
+    localStorage.setItem(STORAGE_KEY_TOKEN, 'demo-token-' + role);
+    return user;
+  }
+
+  /**
+   * Hydrates the user session securely using Supabase
    */
   public static async fetchMe(): Promise<User | null> {
-    const token = localStorage.getItem(STORAGE_KEY_TOKEN);
-    if (!token) return null;
-    
     try {
-      const response = await apiClient.get('/auth/me');
-      localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
-      return response.user;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        return await AuthService.getProfileOrFallback(session.user);
+      }
     } catch (e) {
-      if (import.meta.env.DEV) console.error('Failed to fetch user', e);
-      this.logout();
-      return null;
+      if (import.meta.env.DEV) console.warn('[Supabase] Failed to fetch active session:', e);
     }
+
+    // Fallback check for demo user
+    const stored = AuthService.getStoredUser();
+    if (stored && stored.authProvider === 'demo') {
+      return stored;
+    }
+
+    return null;
   }
 
   /**
-   * Logs out
+   * Signs out of Supabase and clears local storage
    */
-  public static logout(): void {
+  public static async logout(): Promise<void> {
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.warn('[Supabase] Error during signOut', e);
+    }
     localStorage.removeItem(STORAGE_KEY_USER);
     localStorage.removeItem(STORAGE_KEY_ROLE);
     localStorage.removeItem(STORAGE_KEY_TOKEN);
   }
 }
+

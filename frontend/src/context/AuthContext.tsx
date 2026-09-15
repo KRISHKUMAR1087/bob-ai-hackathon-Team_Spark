@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '../types/auth';
 import { AuthService } from '../services/authService';
+import { supabase } from '../lib/supabase';
 
 interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   loginAsDemo: (role: UserRole) => Promise<User>;
+  signInWithGoogle: () => Promise<void>;
   loginWithGoogleToken: (idToken: string) => Promise<{ needsRoleSelection: boolean; tempUser: User | null }>;
   confirmRoleSelection: (role: UserRole) => Promise<User>;
   logout: () => void;
@@ -18,36 +20,62 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Hydrate authenticated user session on mount
+  // Hydrate authenticated user session and subscribe to Supabase auth events
   useEffect(() => {
-    const hydrate = async () => {
+    let isMounted = true;
+
+    const initAuth = async () => {
       try {
-        // First optimistic check from local storage
-        const stored = AuthService.getStoredUser();
-        if (stored) {
-          setUser(stored);
-        }
-        
-        // Then verify with backend
-        const fetched = await AuthService.fetchMe();
-        if (fetched) {
-          setUser(fetched);
-        } else if (stored) {
-          // Token was invalid
-          setUser(null);
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const profile = await AuthService.getProfileOrFallback(session.user);
+          if (isMounted) setUser(profile);
+        } else {
+          // Check if a demo session was active
+          const stored = AuthService.getStoredUser();
+          if (stored && stored.authProvider === 'demo') {
+            if (isMounted) setUser(stored);
+          } else {
+            if (isMounted) setUser(null);
+          }
         }
       } catch (e) {
-        console.error('Auth hydration failed:', e);
-        // If backend is unreachable, still use stored user if available
+        console.error('Auth hydration error:', e);
         const stored = AuthService.getStoredUser();
-        if (stored) {
-          setUser(stored);
-        }
+        if (stored && isMounted) setUser(stored);
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     };
-    hydrate();
+
+    initAuth();
+
+    // Supabase auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (!isMounted) return;
+
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+          if (session?.user) {
+            const profile = await AuthService.getProfileOrFallback(session.user);
+            if (isMounted) {
+              setUser(profile);
+              setIsLoading(false);
+            }
+          }
+        } else if (event === 'SIGNED_OUT') {
+          if (isMounted) {
+            setUser(null);
+            setIsLoading(false);
+          }
+        }
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const loginAsDemo = async (role: UserRole): Promise<User> => {
@@ -59,6 +87,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const signInWithGoogle = async (): Promise<void> => {
+    await AuthService.signInWithGoogle();
   };
 
   const loginWithGoogleToken = async (idToken: string): Promise<{ needsRoleSelection: boolean; tempUser: User | null }> => {
@@ -98,6 +130,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: !!user,
         isLoading,
         loginAsDemo,
+        signInWithGoogle,
         loginWithGoogleToken,
         confirmRoleSelection,
         logout,
@@ -115,3 +148,4 @@ export const useAuth = (): AuthContextValue => {
   }
   return context;
 };
+

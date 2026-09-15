@@ -1,5 +1,5 @@
 export type UserRole = 'admin' | 'ship-agent';
-export type AuthProviderType = 'demo' | 'google';
+export type AuthProviderType = 'demo' | 'google' | 'email';
 
 export interface User {
   id: string;

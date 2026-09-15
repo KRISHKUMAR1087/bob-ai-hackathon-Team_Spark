@@ -8,6 +8,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { GoogleSignInButton } from '../components/auth/GoogleSignInButton';
 import { RoleSelector } from '../components/auth/RoleSelector';
+import { ThemeToggleButton } from '../components/common/ThemeToggleButton';
 import { UserRole } from '../types/auth';
 import { motion } from 'framer-motion';
 
@@ -109,7 +110,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
         const user = await AuthService.login(loginEmail, loginPassword);
         navigate(getRedirectPath(user.role), { replace: true });
       } else {
-        const user = await AuthService.signup(signupName, signupEmail, signupPassword);
+        const user = await AuthService.signup(signupName, signupEmail, signupPassword, selectedRole);
         navigate(getRedirectPath(user.role), { replace: true });
       }
     } catch (err: any) {
@@ -139,12 +140,15 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
           </div>
           <span className="text-xl font-bold tracking-tight text-text-main group-hover:text-brand-teal transition-colors">PortPulse</span>
         </Link>
-        <Link
-          to="/"
-          className="flex items-center gap-1.5 text-sm font-semibold text-text-muted hover:text-brand-teal transition-colors px-3 py-1.5 rounded-lg hover:bg-surface-subtle"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to Home
-        </Link>
+        <div className="flex items-center gap-3">
+          <ThemeToggleButton />
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 text-sm font-semibold text-text-muted hover:text-brand-teal transition-colors px-3 py-1.5 rounded-lg hover:bg-surface-subtle"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to Home
+          </Link>
+        </div>
       </header>
 
       {/* Body */}
@@ -156,13 +160,13 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
           className="w-full max-w-md"
         >
           {/* ── Log In / Sign Up toggle — outside the card ── */}
-          <div className="flex bg-slate-100/90 rounded-2xl p-1.5 mb-5 border border-slate-200/80 shadow-xs">
+          <div className="flex bg-surface-subtle rounded-2xl p-1.5 mb-5 border border-border-subtle shadow-xs">
             <Link
               to="/auth/login"
               className={`flex-1 py-2.5 text-sm font-bold text-center rounded-xl transition-all duration-200 ${
                 isLogin
-                  ? 'bg-white shadow-sm text-brand-teal'
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'bg-surface shadow-sm text-brand-teal'
+                  : 'text-text-muted hover:text-text-main'
               }`}
             >
               Log In
@@ -171,8 +175,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
               to="/auth/signup"
               className={`flex-1 py-2.5 text-sm font-bold text-center rounded-xl transition-all duration-200 ${
                 !isLogin
-                  ? 'bg-white shadow-sm text-brand-teal'
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'bg-surface shadow-sm text-brand-teal'
+                  : 'text-text-muted hover:text-text-main'
               }`}
             >
               Sign Up
@@ -180,17 +184,17 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
           </div>
 
           {/* ── Card ── */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-modal overflow-hidden">
+          <div className="bg-surface rounded-2xl border border-border-subtle shadow-modal overflow-hidden">
 
             {/* ── Port Admin / Ship Agent tabs ── */}
-            <div className="flex border-b border-border-subtle bg-slate-50/50">
+            <div className="flex border-b border-border-subtle bg-surface-subtle/50">
               <button
                 type="button"
                 onClick={() => setSelectedRole('admin')}
                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-bold transition-all duration-200 border-b-2 -mb-px cursor-pointer ${
                   isAdmin
-                    ? 'border-brand-teal text-brand-teal bg-white shadow-xs'
-                    : 'border-transparent text-slate-400 hover:text-slate-700 bg-slate-50/70 hover:bg-slate-100/60'
+                    ? 'border-brand-teal text-brand-teal bg-surface shadow-xs'
+                    : 'border-transparent text-text-muted hover:text-text-main bg-surface-subtle/70 hover:bg-surface-subtle'
                 }`}
               >
                 <Shield className="w-4 h-4" />
@@ -201,8 +205,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
                 onClick={() => setSelectedRole('ship-agent')}
                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-bold transition-all duration-200 border-b-2 -mb-px cursor-pointer ${
                   !isAdmin
-                    ? 'border-brand-blue text-brand-blue bg-white shadow-xs'
-                    : 'border-transparent text-slate-400 hover:text-slate-700 bg-slate-50/70 hover:bg-slate-100/60'
+                    ? 'border-brand-blue text-brand-blue bg-surface shadow-xs'
+                    : 'border-transparent text-text-muted hover:text-text-main bg-surface-subtle/70 hover:bg-surface-subtle'
                 }`}
               >
                 <Anchor className="w-4 h-4" />
@@ -232,14 +236,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
                   <div>
                     <label className="block text-xs font-semibold text-text-main mb-1.5">Full Name</label>
                     <div className="relative">
-                      <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                      <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-caption pointer-events-none" />
                       <input
                         type="text"
                         autoComplete="name"
                         placeholder="e.g. James Harrington"
                         value={signupName}
                         onChange={e => setSignupName(e.target.value)}
-                        className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm placeholder-slate-400 bg-white focus:outline-none focus:ring-2 ${accentRing} transition ${
+                        className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm placeholder:text-text-caption bg-surface-subtle text-text-main focus:outline-none focus:ring-2 ${accentRing} transition ${
                           errors.name ? 'border-op-red' : 'border-border-subtle hover:border-border-hover'
                         }`}
                       />
@@ -252,14 +256,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
                 <div>
                   <label className="block text-xs font-semibold text-text-main mb-1.5">Email Address</label>
                   <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-caption pointer-events-none" />
                     <input
                       type="email"
                       autoComplete="email"
                       placeholder="you@company.com"
                       value={isLogin ? loginEmail : signupEmail}
                       onChange={e => isLogin ? setLoginEmail(e.target.value) : setSignupEmail(e.target.value)}
-                      className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm placeholder-slate-400 bg-white focus:outline-none focus:ring-2 ${accentRing} transition ${
+                      className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm placeholder:text-text-caption bg-surface-subtle text-text-main focus:outline-none focus:ring-2 ${accentRing} transition ${
                         errors.email ? 'border-op-red' : 'border-border-subtle hover:border-border-hover'
                       }`}
                     />
@@ -278,21 +282,21 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
                     )}
                   </div>
                   <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-caption pointer-events-none" />
                     <input
                       type={isLogin ? (showLoginPw ? 'text' : 'password') : (showSignupPw ? 'text' : 'password')}
                       autoComplete={isLogin ? 'current-password' : 'new-password'}
                       placeholder={isLogin ? 'Your password' : 'Min. 8 characters'}
                       value={isLogin ? loginPassword : signupPassword}
                       onChange={e => isLogin ? setLoginPassword(e.target.value) : setSignupPassword(e.target.value)}
-                      className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-sm placeholder-slate-400 bg-white focus:outline-none focus:ring-2 ${accentRing} transition ${
+                      className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-sm placeholder:text-text-caption bg-surface-subtle text-text-main focus:outline-none focus:ring-2 ${accentRing} transition ${
                         errors.password ? 'border-op-red' : 'border-border-subtle hover:border-border-hover'
                       }`}
                     />
                     <button
                       type="button"
                       onClick={() => isLogin ? setShowLoginPw(v => !v) : setShowSignupPw(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-text-caption hover:text-text-main transition-colors"
                     >
                       {(isLogin ? showLoginPw : showSignupPw) ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -305,21 +309,21 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
                   <div>
                     <label className="block text-xs font-semibold text-text-main mb-1.5">Confirm Password</label>
                     <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-caption pointer-events-none" />
                       <input
                         type={showConfirmPw ? 'text' : 'password'}
                         autoComplete="new-password"
                         placeholder="Re-enter your password"
                         value={signupConfirm}
                         onChange={e => setSignupConfirm(e.target.value)}
-                        className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-sm placeholder-slate-400 bg-white focus:outline-none focus:ring-2 ${accentRing} transition ${
+                        className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-sm placeholder:text-text-caption bg-surface-subtle text-text-main focus:outline-none focus:ring-2 ${accentRing} transition ${
                           errors.confirm ? 'border-op-red' : 'border-border-subtle hover:border-border-hover'
                         }`}
                       />
                       <button
                         type="button"
                         onClick={() => setShowConfirmPw(v => !v)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-text-caption hover:text-text-main transition-colors"
                       >
                         {showConfirmPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
