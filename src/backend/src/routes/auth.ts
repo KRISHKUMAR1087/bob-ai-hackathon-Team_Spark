@@ -59,7 +59,7 @@ router.post('/login-demo', async (c) => {
   const parse = LoginDemoSchema.safeParse(body);
   if (!parse.success) { return c.json({ error: 'Invalid body', details: parse.error.issues }, 400); }
 
-  const email = parse.data.role === 'admin' ? 'admin@portpulse.demo' : 'agent@portpulse.demo';
+  const email = parse.data.role === 'admin' ? 'admin@portspilot.demo' : 'agent@portspilot.demo';
   try {
     const user = await c.var.prisma.user.findUnique({ where: { email } });
     if (!user) { return c.json({ error: 'Demo user not found — run db:seed first' }, 404); }

@@ -559,7 +559,7 @@ PORT=3001
 NODE_ENV=development
 
 # Database
-DATABASE_URL=postgresql://user:password@localhost:5432/portpulse
+DATABASE_URL=postgresql://user:password@localhost:5432/portspilot
 
 # Auth
 JWT_SECRET=<strong-random-secret>
