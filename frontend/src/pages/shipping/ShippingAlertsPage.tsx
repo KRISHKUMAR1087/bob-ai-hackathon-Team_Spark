@@ -138,14 +138,9 @@ export const ShippingAlertsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border-subtle">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-text-main">
-              Fleet Alerts & Advisories
-            </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-800 border border-sky-200">
-              Agency Notifications
-            </span>
-          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-text-main">
+            Fleet Alerts & Advisories
+          </h1>
           <p className="text-xs text-text-muted mt-1">
             Real-time advisories regarding arrival adjustments, berth reallocations, and documentation deadlines.
           </p>

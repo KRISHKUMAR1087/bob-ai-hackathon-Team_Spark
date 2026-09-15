@@ -17,25 +17,41 @@ import {
   Tooltip,
 } from 'recharts';
 import { useTheme } from '../context/ThemeContext';
+import { useOperations } from '../context/OperationsContext';
 
 export const AnalyticsPage: React.FC = () => {
   const { isDark } = useTheme();
+  const { vessels } = useOperations();
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d'>('30d');
 
-  const trendData = [
+  // If there are no vessels, return 0 values
+  const hasData = vessels.length > 0;
+
+  const trendData = hasData ? [
     { day: 'W1', baselineWait: 14.8, aiWait: 9.2 },
     { day: 'W2', baselineWait: 16.2, aiWait: 10.4 },
     { day: 'W3', baselineWait: 15.0, aiWait: 8.9 },
     { day: 'W4', baselineWait: 13.9, aiWait: 7.6 },
+  ] : [
+    { day: 'W1', baselineWait: 0, aiWait: 0 },
+    { day: 'W2', baselineWait: 0, aiWait: 0 },
+    { day: 'W3', baselineWait: 0, aiWait: 0 },
+    { day: 'W4', baselineWait: 0, aiWait: 0 },
   ];
 
-  const berthSavingsData = [
+
+  const berthSavingsData = hasData ? [
     { berth: 'B01', standardTurnaround: 22.4, optimizedTurnaround: 18.2 },
     { berth: 'B02', standardTurnaround: 24.1, optimizedTurnaround: 17.5 },
     { berth: 'B03', standardTurnaround: 19.8, optimizedTurnaround: 16.4 },
     { berth: 'B04', standardTurnaround: 28.5, optimizedTurnaround: 19.2 },
     { berth: 'B05', standardTurnaround: 16.0, optimizedTurnaround: 13.8 },
     { berth: 'B06', standardTurnaround: 18.2, optimizedTurnaround: 15.1 },
+  ] : [
+    { berth: 'B01', standardTurnaround: 0, optimizedTurnaround: 0 },
+    { berth: 'B02', standardTurnaround: 0, optimizedTurnaround: 0 },
+    { berth: 'B03', standardTurnaround: 0, optimizedTurnaround: 0 },
+    { berth: 'B04', standardTurnaround: 0, optimizedTurnaround: 0 },
   ];
 
   return (
@@ -85,8 +101,8 @@ export const AnalyticsPage: React.FC = () => {
           <div className="bg-surface-subtle p-4 rounded-lg border border-border-subtle flex items-center justify-between">
             <div>
               <span className="text-xs text-text-muted">Average Vessel Wait</span>
-              <div className="text-2xl font-bold text-emerald-700 mt-1">-23%</div>
-              <span className="text-[11px] text-text-caption">Reduced from 15.2h to 11.7h</span>
+              <div className="text-2xl font-bold text-emerald-700 mt-1">{hasData ? '-23%' : '0%'}</div>
+              <span className="text-[11px] text-text-caption">{hasData ? 'Reduced from 15.2h to 11.7h' : 'No data available'}</span>
             </div>
             <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
               <TrendingDown className="w-5 h-5" />
@@ -96,8 +112,8 @@ export const AnalyticsPage: React.FC = () => {
           <div className="bg-surface-subtle p-4 rounded-lg border border-border-subtle flex items-center justify-between">
             <div>
               <span className="text-xs text-text-muted">Unplanned Congestion</span>
-              <div className="text-2xl font-bold text-emerald-700 mt-1">-31%</div>
-              <span className="text-[11px] text-text-caption">Fewer quayside delays</span>
+              <div className="text-2xl font-bold text-emerald-700 mt-1">{hasData ? '-31%' : '0%'}</div>
+              <span className="text-[11px] text-text-caption">{hasData ? 'Fewer quayside delays' : 'No data available'}</span>
             </div>
             <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
               <ArrowDownRight className="w-5 h-5" />
@@ -107,8 +123,8 @@ export const AnalyticsPage: React.FC = () => {
           <div className="bg-surface-subtle p-4 rounded-lg border border-border-subtle flex items-center justify-between">
             <div>
               <span className="text-xs text-text-muted">Berth Utilization</span>
-              <div className="text-2xl font-bold text-text-main mt-1">+12%</div>
-              <span className="text-[11px] text-text-caption">Balanced quay load</span>
+              <div className="text-2xl font-bold text-text-main mt-1">{hasData ? '+12%' : '0%'}</div>
+              <span className="text-[11px] text-text-caption">{hasData ? 'Balanced quay load' : 'No data available'}</span>
             </div>
             <div className="w-8 h-8 rounded-lg bg-teal-50 text-brand-teal flex items-center justify-center">
               <TrendingUp className="w-5 h-5" />

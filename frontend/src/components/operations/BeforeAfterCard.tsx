@@ -120,10 +120,10 @@ export const BeforeAfterCard: React.FC<BeforeAfterCardProps> = ({
         {metrics.map((m, idx) => (
           <div key={idx} className="bg-surface-subtle p-3.5 rounded-lg border border-border-subtle">
             <div className="text-xs text-text-muted">{m.label}</div>
-            <div className="flex items-baseline gap-2 mt-1.5">
-              <span className="text-xs text-text-caption line-through">{m.before}</span>
+            <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+              <span className="text-xs text-text-caption line-through whitespace-nowrap">{m.before}</span>
               <ArrowRight className="w-3 h-3 text-text-caption shrink-0" />
-              <span className="text-sm lg:text-base font-bold text-text-main">
+              <span className="text-sm lg:text-base font-bold text-text-main whitespace-nowrap">
                 {m.after}
               </span>
             </div>

@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Bell,
-  Clock,
   Menu,
-  ChevronRight,
   LogOut,
   User as UserIcon,
   Ship,
@@ -13,6 +11,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useOperations } from '../../context/OperationsContext';
 import { MusicButton } from '../common/MusicButton';
 import { ThemeToggleButton } from '../common/ThemeToggleButton';
+import { TimezoneClock } from '../common/TimezoneClock';
 
 interface ShippingTopbarProps {
   isCollapsed: boolean;
@@ -23,23 +22,11 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
   isCollapsed,
   setIsMobileMenuOpen,
 }) => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { unreadAgentAlertsCount } = useOperations();
-  const [timeUtc, setTimeUtc] = useState<string>('');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setTimeUtc(now.toISOString().slice(11, 19) + ' UTC');
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -52,17 +39,7 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const getBreadcrumb = () => {
-    const path = location.pathname;
-    if (path.includes('/shipping/dashboard')) return { section: 'Shipping Portal', title: 'Agency Overview' };
-    if (path.includes('/shipping/vessels/')) return { section: 'Vessel Tracking', title: 'Turnaround Details' };
-    if (path.includes('/shipping/vessels')) return { section: 'Shipping Portal', title: 'Assigned Fleet' };
-    if (path.includes('/shipping/alerts')) return { section: 'Shipping Portal', title: 'Port Advisories' };
-    if (path.includes('/shipping/profile')) return { section: 'Shipping Portal', title: 'Agency Profile' };
-    return { section: 'Shipping Portal', title: 'Overview' };
-  };
 
-  const breadcrumb = getBreadcrumb();
 
   const handleLogout = () => {
     setIsProfileMenuOpen(false);
@@ -88,28 +65,15 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-1.5 text-xs text-text-muted min-w-0">
-          <span className="hidden sm:inline shrink-0">{breadcrumb.section}</span>
-          <ChevronRight className="w-3.5 h-3.5 text-text-caption hidden sm:inline shrink-0" />
-          <span className="text-text-main font-semibold truncate text-xs sm:text-sm">
-            {breadcrumb.title}
-          </span>
+        <div className="flex items-center text-text-main font-bold truncate text-sm sm:text-base">
+          Apex Maritime Agency
         </div>
       </div>
 
       {/* Right Actions & Utilities */}
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-        {/* Live Port UTC Clock */}
-        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-surface-subtle border border-border-subtle text-text-muted text-xs shrink-0">
-          <Clock className="w-3.5 h-3.5 text-text-caption shrink-0" />
-          <span className="font-mono text-[11px]">{timeUtc || '00:00:00 UTC'}</span>
-        </div>
-
-        {/* Port Link / Status Badge */}
-        <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-sky-50 border border-sky-200 text-sky-800 text-xs shrink-0">
-          <span className="w-2 h-2 rounded-full bg-sky-500 shrink-0" />
-          <span className="font-medium text-[11px]">Port Authority Link Active</span>
-        </div>
+        {/* Live Port Clock with Timezone Switcher */}
+        <TimezoneClock className="hidden sm:block" />
 
         {/* Shipping Advisories Bell */}
         <button
@@ -185,14 +149,7 @@ export const ShippingTopbar: React.FC<ShippingTopbarProps> = ({
                   <UserIcon className="w-3.5 h-3.5 text-text-caption" />
                   <span>Agency Profile & Settings</span>
                 </Link>
-                <Link
-                  to="/shipping/vessels"
-                  onClick={() => setIsProfileMenuOpen(false)}
-                  className="flex items-center gap-2 px-4 py-2 text-xs text-text-main hover:bg-surface-subtle transition-colors"
-                >
-                  <Ship className="w-3.5 h-3.5 text-text-caption" />
-                  <span>Assigned Fleet (4)</span>
-                </Link>
+
               </div>
 
               {/* Sign Out Divider & Button */}

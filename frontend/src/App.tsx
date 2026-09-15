@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { OperationsProvider } from './context/OperationsContext';
 import { MusicProvider } from './context/MusicContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { TimezoneProvider } from './context/TimezoneContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AppShell } from './components/layout/AppShell';
 import { ShippingAppShell } from './components/layout/ShippingAppShell';
@@ -80,6 +81,29 @@ const RootRedirect: React.FC = () => {
   return <Navigate to="/dashboard" replace />;
 };
 
+const SuperAdminGuard: React.FC = () => {
+  const { user, loginAsDemo, isLoading } = useAuth();
+
+  React.useEffect(() => {
+    if (!isLoading && (!user || user.role !== 'super-admin')) {
+      void loginAsDemo('super-admin');
+    }
+  }, [user, isLoading, loginAsDemo]);
+
+  if (isLoading || !user || user.role !== 'super-admin') {
+    return (
+      <div className="min-h-screen bg-canvas flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3 text-xs text-text-muted">
+          <div className="w-5 h-5 border-2 border-brand-teal border-t-transparent rounded-full animate-spin" />
+          <span>Opening Global Super Admin Portal...</span>
+        </div>
+      </div>
+    );
+  }
+
+  return <SuperAdminPortalPage />;
+};
+
 /**
  * Catch-all fallback for undefined routes
  */
@@ -105,6 +129,7 @@ export const App: React.FC = () => {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
       <ThemeProvider>
+      <TimezoneProvider>
       <AuthProvider>
       <OperationsProvider>
         <MusicProvider>
@@ -130,9 +155,7 @@ export const App: React.FC = () => {
                 </Route>
                 
                 {/* Super Admin Portal */}
-                <Route element={<RoleProtectedRoute allowedRoles={['super-admin']} />}>
-                  <Route path="/super-admin" element={<SuperAdminPortalPage />} />
-                </Route>
+                <Route path="/super-admin" element={<SuperAdminGuard />} />
 
                 {/* Root Portal Router */}
                 <Route path="/" element={<RootRedirect />} />
@@ -212,6 +235,7 @@ export const App: React.FC = () => {
         </MusicProvider>
       </OperationsProvider>
     </AuthProvider>
+    </TimezoneProvider>
     </ThemeProvider>
     </GoogleOAuthProvider>
   );

@@ -360,9 +360,9 @@ export class AuthService {
    */
   public static async loginDemo(role: UserRole): Promise<User> {
     const user: User = {
-      id: role === 'admin' ? 'demo-admin-id' : 'demo-agent-id',
-      name: role === 'admin' ? 'Capt. M. Vance' : 'James Harrington',
-      email: role === 'admin' ? 'admin@portspilot.demo' : 'agent@portspilot.demo',
+      id: role === 'super-admin' ? 'mock-super-admin-id' : role === 'admin' ? 'demo-admin-id' : 'demo-agent-id',
+      name: role === 'super-admin' ? 'Global Administrator' : role === 'admin' ? 'Capt. M. Vance' : 'James Harrington',
+      email: role === 'super-admin' ? 'super@portspilot.com' : role === 'admin' ? 'admin@portspilot.demo' : 'agent@portspilot.demo',
       role: role,
       authProvider: 'demo',
     };
