@@ -12,6 +12,7 @@ import { RoleProtectedRoute } from './components/auth/RoleProtectedRoute';
 // Port Operations / Admin Pages
 const LoginPage = React.lazy(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })));
 const AuthPage = React.lazy(() => import('./pages/AuthPage').then(m => ({ default: m.AuthPage })));
+const AuthCallbackPage = React.lazy(() => import('./pages/AuthCallbackPage').then(m => ({ default: m.AuthCallbackPage })));
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage').then(m => ({ default: m.DashboardPage })));
 const VesselsPage = React.lazy(() => import('./pages/VesselsPage').then(m => ({ default: m.VesselsPage })));
 const VesselDetailPage = React.lazy(() => import('./pages/VesselDetailPage').then(m => ({ default: m.VesselDetailPage })));
@@ -109,6 +110,7 @@ export const App: React.FC = () => {
                 <Route path="/login" element={<Navigate to="/" replace />} />
                 <Route path="/auth/login" element={<AuthPage mode="login" />} />
                 <Route path="/auth/signup" element={<AuthPage mode="signup" />} />
+                <Route path="/auth/callback" element={<AuthCallbackPage />} />
 
                 {/* Root Portal Router */}
                 <Route path="/" element={<RootRedirect />} />

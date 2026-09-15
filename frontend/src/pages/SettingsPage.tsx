@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Save, ShieldCheck, Cpu, Sliders, User } from 'lucide-react';
+import { Save, ShieldCheck, Cpu, Sliders, User, Palette, Sun, Moon, Laptop, Check } from 'lucide-react';
 import { useOperations } from '../context/OperationsContext';
+import { useTheme } from '../context/ThemeContext';
 
 export const SettingsPage: React.FC = () => {
   const { showToast } = useOperations();
-  const [activeTab, setActiveTab] = useState<'profile' | 'port' | 'ml' | 'ai'>('port');
+  const { theme, setTheme } = useTheme();
+  const [activeTab, setActiveTab] = useState<'profile' | 'port' | 'ml' | 'ai' | 'appearance'>('port');
 
   const [portName, setPortName] = useState('Port of Euro-Transshipment Gateway');
   const [berthCount, setBerthCount] = useState(6);
@@ -41,10 +43,11 @@ export const SettingsPage: React.FC = () => {
 
       {/* Tabs */}
       <div className="flex flex-wrap items-center gap-2 border-b border-border-subtle pb-3">
-        {([] as { id: 'profile' | 'port' | 'ml' | 'ai'; label: string; icon: any }[]).concat([
+        {([] as { id: 'profile' | 'port' | 'ml' | 'ai' | 'appearance'; label: string; icon: any }[]).concat([
           { id: 'port', label: 'Port Configuration', icon: Sliders },
           { id: 'ml', label: 'Prediction Thresholds', icon: Cpu },
           { id: 'ai', label: 'Copilot Settings', icon: ShieldCheck },
+          { id: 'appearance', label: 'Appearance', icon: Palette },
           { id: 'profile', label: 'Supervisor Profile', icon: User },
         ]).map(tab => {
           const Icon = tab.icon;
@@ -64,6 +67,7 @@ export const SettingsPage: React.FC = () => {
           );
         })}
       </div>
+
 
       {/* Tab Contents */}
       <div className="bg-surface rounded-3xl border border-border-subtle shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 space-y-6 text-xs">
@@ -177,6 +181,114 @@ export const SettingsPage: React.FC = () => {
                 <option value="gemini-1.5-pro">Gemini 1.5 Pro (Deep Maritime Reasoning & Multi-tool)</option>
                 <option value="gemini-1.5-flash">Gemini 1.5 Flash (Ultra Low-latency)</option>
               </select>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'appearance' && (
+          <div className="space-y-6 max-w-2xl">
+            <div>
+              <h3 className="text-sm font-semibold text-text-main mb-1">
+                Interface Theme
+              </h3>
+              <p className="text-text-muted text-xs">
+                Select your preferred interface color mode across all PortPulse portals and operational views.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* Light Mode */}
+              <button
+                type="button"
+                onClick={() => {
+                  setTheme('light');
+                  showToast('info', 'Theme Updated', 'Switched to Light mode.');
+                }}
+                className={`relative p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+                  theme === 'light'
+                    ? 'border-brand-teal bg-teal-50/20 ring-2 ring-brand-teal/20 shadow-sm'
+                    : 'border-border-subtle bg-surface-subtle hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                    theme === 'light' ? 'bg-brand-teal text-white' : 'bg-surface text-amber-500 border border-border-subtle'
+                  }`}>
+                    <Sun className="w-4 h-4" />
+                  </div>
+                  {theme === 'light' && (
+                    <span className="w-5 h-5 rounded-full bg-brand-teal text-white flex items-center justify-center">
+                      <Check className="w-3 h-3" />
+                    </span>
+                  )}
+                </div>
+                <div className="font-bold text-sm text-text-main">Light</div>
+                <div className="text-[11px] text-text-muted mt-1 leading-relaxed">
+                  Clean, high-contrast daylight theme for daytime terminal operations.
+                </div>
+              </button>
+
+              {/* Dark Mode */}
+              <button
+                type="button"
+                onClick={() => {
+                  setTheme('dark');
+                  showToast('info', 'Theme Updated', 'Switched to Deep Ocean Dark mode.');
+                }}
+                className={`relative p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+                  theme === 'dark'
+                    ? 'border-brand-teal bg-teal-50/20 ring-2 ring-brand-teal/20 shadow-sm'
+                    : 'border-border-subtle bg-surface-subtle hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                    theme === 'dark' ? 'bg-brand-teal text-white' : 'bg-surface text-sky-400 border border-border-subtle'
+                  }`}>
+                    <Moon className="w-4 h-4" />
+                  </div>
+                  {theme === 'dark' && (
+                    <span className="w-5 h-5 rounded-full bg-brand-teal text-white flex items-center justify-center">
+                      <Check className="w-3 h-3" />
+                    </span>
+                  )}
+                </div>
+                <div className="font-bold text-sm text-text-main">Dark</div>
+                <div className="text-[11px] text-text-muted mt-1 leading-relaxed">
+                  Deep Ocean night theme designed for low-glare control center monitoring.
+                </div>
+              </button>
+
+              {/* System Mode */}
+              <button
+                type="button"
+                onClick={() => {
+                  setTheme('system');
+                  showToast('info', 'Theme Updated', 'Theme is now synchronized with system preference.');
+                }}
+                className={`relative p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+                  theme === 'system'
+                    ? 'border-brand-teal bg-teal-50/20 ring-2 ring-brand-teal/20 shadow-sm'
+                    : 'border-border-subtle bg-surface-subtle hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                    theme === 'system' ? 'bg-brand-teal text-white' : 'bg-surface text-slate-500 border border-border-subtle'
+                  }`}>
+                    <Laptop className="w-4 h-4" />
+                  </div>
+                  {theme === 'system' && (
+                    <span className="w-5 h-5 rounded-full bg-brand-teal text-white flex items-center justify-center">
+                      <Check className="w-3 h-3" />
+                    </span>
+                  )}
+                </div>
+                <div className="font-bold text-sm text-text-main">System</div>
+                <div className="text-[11px] text-text-muted mt-1 leading-relaxed">
+                  Automatically sync with your operating system color scheme.
+                </div>
+              </button>
             </div>
           </div>
         )}

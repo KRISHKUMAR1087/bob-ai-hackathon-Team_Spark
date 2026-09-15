@@ -16,8 +16,10 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
+import { useTheme } from '../context/ThemeContext';
 
 export const AnalyticsPage: React.FC = () => {
+  const { isDark } = useTheme();
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d'>('30d');
 
   const trendData = [
@@ -129,24 +131,25 @@ export const AnalyticsPage: React.FC = () => {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={trendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                <XAxis dataKey="day" stroke="#94A3B8" fontSize={12} />
-                <YAxis stroke="#94A3B8" fontSize={12} unit="h" />
+                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#1D4655' : '#F1F5F9'} vertical={false} />
+                <XAxis dataKey="day" stroke={isDark ? '#607C87' : '#94A3B8'} fontSize={12} />
+                <YAxis stroke={isDark ? '#607C87' : '#94A3B8'} fontSize={12} unit="h" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#FFFFFF',
-                    borderColor: '#E2E8F0',
+                    backgroundColor: isDark ? '#102F3D' : '#FFFFFF',
+                    borderColor: isDark ? '#1D4655' : '#E2E8F0',
+                    color: isDark ? '#F4F8FA' : '#17232D',
                     fontSize: '12px',
                     borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
                   }}
                 />
                 <Area
                   type="monotone"
                   dataKey="baselineWait"
                   name="Standard Operations"
-                  stroke="#94A3B8"
-                  fill="#F1F5F9"
+                  stroke={isDark ? '#475569' : '#94A3B8'}
+                  fill={isDark ? '#0B2532' : '#F1F5F9'}
                   fillOpacity={0.8}
                 />
                 <Area
@@ -154,8 +157,8 @@ export const AnalyticsPage: React.FC = () => {
                   dataKey="aiWait"
                   name="PortPulse AI"
                   stroke="#0EA5A8"
-                  fill="#CCFBF1"
-                  fillOpacity={0.4}
+                  fill="#0EA5A8"
+                  fillOpacity={0.25}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -174,19 +177,20 @@ export const AnalyticsPage: React.FC = () => {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={berthSavingsData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                <XAxis dataKey="berth" stroke="#94A3B8" fontSize={12} />
-                <YAxis stroke="#94A3B8" fontSize={12} unit="h" />
+                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#1D4655' : '#F1F5F9'} vertical={false} />
+                <XAxis dataKey="berth" stroke={isDark ? '#607C87' : '#94A3B8'} fontSize={12} />
+                <YAxis stroke={isDark ? '#607C87' : '#94A3B8'} fontSize={12} unit="h" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#FFFFFF',
-                    borderColor: '#E2E8F0',
+                    backgroundColor: isDark ? '#102F3D' : '#FFFFFF',
+                    borderColor: isDark ? '#1D4655' : '#E2E8F0',
+                    color: isDark ? '#F4F8FA' : '#17232D',
                     fontSize: '12px',
                     borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
                   }}
                 />
-                <Bar dataKey="standardTurnaround" name="Standard" fill="#CBD5E1" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="standardTurnaround" name="Standard" fill={isDark ? '#1D4655' : '#CBD5E1'} radius={[3, 3, 0, 0]} />
                 <Bar dataKey="optimizedTurnaround" name="PortPulse AI" fill="#0EA5A8" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>

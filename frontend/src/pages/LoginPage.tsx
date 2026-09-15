@@ -9,6 +9,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { GoogleSignInButton } from '../components/auth/GoogleSignInButton';
 import { RoleSelector } from '../components/auth/RoleSelector';
+import { ThemeToggleButton } from '../components/common/ThemeToggleButton';
 import { UserRole } from '../types/auth';
 import { motion } from 'framer-motion';
 const backgroundVideo = '/generate_a_video_for_a_port_ma.mp4';
@@ -78,13 +79,16 @@ export const LoginPage: React.FC = () => {
         {/* Background Video */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <video
-            autoPlay loop muted playsInline
-            className="absolute inset-0 w-full h-full object-cover object-center scale-[1.35]"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover object-center scale-[1.35] opacity-80"
             src={backgroundVideo}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-black/70" />
-        </div>
 
+          <div className="absolute inset-0 bg-black/80" />
+        </div>
         {/* Header Nav */}
         <div className="w-full max-w-7xl mx-auto px-6 z-20 flex flex-col min-h-screen">
           <header className="flex items-center justify-between py-6">
@@ -100,12 +104,15 @@ export const LoginPage: React.FC = () => {
               <a href="#roles" className="hover:text-white transition-colors">Portals</a>
               <a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a>
             </nav>
-            <a
-              href="/auth/signup"
-              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-teal text-white text-sm font-semibold hover:bg-teal-600 transition-colors shadow"
-            >
-              Get Access <ArrowRight className="w-4 h-4" />
-            </a>
+            <div className="flex items-center gap-3">
+              <ThemeToggleButton className="bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white" />
+              <a
+                href="/auth/signup"
+                className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-teal text-white text-sm font-semibold hover:bg-teal-600 transition-colors shadow"
+              >
+                Get Access <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
           </header>
 
           {/* Hero Content */}
