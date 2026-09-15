@@ -20,25 +20,6 @@ export class AuthService {
     }
   }
 
-<<<<<<< HEAD
-  public static async login(email: string, password: string): Promise<User> {
-    const response = await apiClient.post('/auth/login', { email, password });
-    localStorage.setItem(STORAGE_KEY_TOKEN, response.token);
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
-    localStorage.setItem(STORAGE_KEY_ROLE, response.user.role);
-    return response.user;
-  }
-
-  public static async signup(name: string, email: string, password: string, role: UserRole): Promise<User> {
-    const response = await apiClient.post('/auth/signup', { name, email, password, role });
-    localStorage.setItem(STORAGE_KEY_TOKEN, response.token);
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(response.user));
-    localStorage.setItem(STORAGE_KEY_ROLE, response.user.role);
-    return response.user;
-  }
-
-=======
->>>>>>> edd8ccee175e778cf1874174be88f9a68d842889
   /**
    * Translates a Supabase user object into our application User model
    */

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { AuthChangeEvent, Session, User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { RoleSelector } from '../components/auth/RoleSelector';
@@ -27,7 +28,7 @@ export const AuthCallbackPage: React.FC = () => {
 
         if (!session || !session.user) {
           // Wait briefly for onAuthStateChange in case session is being processed
-          const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+          const { data: authListener } = supabase.auth.onAuthStateChange(async (_event: AuthChangeEvent, newSession: Session | null) => {
             if (newSession?.user && isMounted) {
               authListener.subscription.unsubscribe();
               await checkUserRole(newSession.user);
@@ -54,7 +55,7 @@ export const AuthCallbackPage: React.FC = () => {
       }
     };
 
-    const checkUserRole = async (user: any) => {
+    const checkUserRole = async (user: SupabaseUser) => {
       const name = user.user_metadata?.name || user.user_metadata?.full_name || user.email?.split('@')[0] || '';
       setUserName(name);
 
