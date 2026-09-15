@@ -146,16 +146,16 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
       {/* Header */}
       <div className="h-16 px-4 flex items-center justify-between border-b border-border-subtle bg-surface shrink-0">
         {!isCollapsed || isMobileDrawer ? (
-          <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
             <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center shrink-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-              <Anchor className="w-4 h-4" />
+              <Anchor className="w-4 h-4 shrink-0" />
             </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-sm tracking-tight text-text-main">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="font-semibold text-sm tracking-tight text-text-main truncate">
                   PortPulse
                 </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 font-semibold border border-sky-200">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 font-semibold border border-sky-200 shrink-0">
                   AGENT
                 </span>
               </div>
@@ -195,8 +195,8 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
       {/* Agency Identity Ribbon */}
       {(!isCollapsed || isMobileDrawer) && (
         <div className="px-4 py-2 border-b border-border-subtle bg-surface-subtle/60 shrink-0">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-text-muted truncate">Apex Maritime Agency</span>
+          <div className="flex items-center justify-between text-xs gap-2 min-w-0">
+            <span className="text-text-muted truncate flex-1 min-w-0">Apex Maritime Agency</span>
             <span className="font-medium text-sky-800 bg-sky-50 px-2 py-0.5 rounded border border-sky-200 text-[10px] shrink-0">
               Ship Agent
             </span>
@@ -228,7 +228,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
                   to={item.path}
                   onClick={handleNavClick}
                   title={isCollapsed && !isMobileDrawer ? item.name : undefined}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200 active:scale-[0.98] ${
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200 active:scale-[0.98] min-w-0 ${
                     isActive
                       ? 'bg-sky-600 text-white shadow-md shadow-sky-600/20'
                       : 'text-text-muted hover:text-text-main hover:bg-surface-subtle'
@@ -240,10 +240,10 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
                     }`}
                   />
                   {(!isCollapsed || isMobileDrawer) && (
-                    <span className="truncate">{item.name}</span>
+                    <span className="truncate flex-1 min-w-0">{item.name}</span>
                   )}
                   {(!isCollapsed || isMobileDrawer) && item.badge && (
-                    <span className={`ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-semibold border ${
+                    <span className={`ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-semibold border shrink-0 ${
                       isActive ? 'bg-white/20 text-white border-transparent' : 'bg-sky-100 text-sky-800 border-sky-200'
                     }`}>
                       {item.badge}

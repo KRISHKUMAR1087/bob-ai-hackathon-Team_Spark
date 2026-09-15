@@ -43,12 +43,6 @@ export class ApiClient {
   }
 
   private async handleResponse(res: Response) {
-    if (res.status === 401) {
-      localStorage.removeItem('portpulse_token');
-      window.location.reload();
-      throw new Error('Unauthorized');
-    }
-    
     let data;
     const contentType = res.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
@@ -59,6 +53,11 @@ export class ApiClient {
     }
 
     if (!res.ok) {
+      if (res.status === 401) {
+        localStorage.removeItem('portpulse_token');
+        localStorage.removeItem('portpulse_auth_user');
+        localStorage.removeItem('portpulse_user_role');
+      }
       throw new Error(data.error?.message || data.error || 'API Error');
     }
     return data;

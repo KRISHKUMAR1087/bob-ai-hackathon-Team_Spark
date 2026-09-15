@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { AuthService } from '../services/authService';
 import {
   Ship, Shield, Anchor, ArrowLeft,
   Eye, EyeOff, Mail, Lock, User as UserIcon
@@ -19,7 +18,7 @@ interface AuthPageProps {
 export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { loginWithGoogleToken, confirmRoleSelection } = useAuth();
+  const { loginWithGoogleToken, confirmRoleSelection, login, signup } = useAuth();
 
   const isLogin = mode === 'login';
 
@@ -107,10 +106,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
     
     try {
       if (isLogin) {
-        const user = await AuthService.login(loginEmail, loginPassword);
+        const user = await login(loginEmail, loginPassword);
         navigate(getRedirectPath(user.role), { replace: true });
       } else {
-        const user = await AuthService.signup(signupName, signupEmail, signupPassword, selectedRole);
+        const user = await signup(signupName, signupEmail, signupPassword, selectedRole);
         navigate(getRedirectPath(user.role), { replace: true });
       }
     } catch (err: any) {
@@ -159,59 +158,59 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
           transition={{ duration: 0.4, ease: 'easeOut' }}
           className="w-full max-w-md"
         >
-          {/* ── Log In / Sign Up toggle — outside the card ── */}
+          {/* ── Role toggle — outside the card ── */}
           <div className="flex bg-surface-subtle rounded-2xl p-1.5 mb-5 border border-border-subtle shadow-xs">
-            <Link
-              to="/auth/login"
-              className={`flex-1 py-2.5 text-sm font-bold text-center rounded-xl transition-all duration-200 ${
-                isLogin
+            <button
+              type="button"
+              onClick={() => setSelectedRole('admin')}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-bold text-center rounded-xl transition-all duration-200 cursor-pointer ${
+                isAdmin
                   ? 'bg-surface shadow-sm text-brand-teal'
                   : 'text-text-muted hover:text-text-main'
               }`}
             >
-              Log In
-            </Link>
-            <Link
-              to="/auth/signup"
-              className={`flex-1 py-2.5 text-sm font-bold text-center rounded-xl transition-all duration-200 ${
-                !isLogin
-                  ? 'bg-surface shadow-sm text-brand-teal'
+              <Shield className="w-4 h-4" />
+              Port Admin
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedRole('ship-agent')}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-bold text-center rounded-xl transition-all duration-200 cursor-pointer ${
+                !isAdmin
+                  ? 'bg-surface shadow-sm text-brand-blue'
                   : 'text-text-muted hover:text-text-main'
               }`}
             >
-              Sign Up
-            </Link>
+              <Anchor className="w-4 h-4" />
+              Ship Agent
+            </button>
           </div>
 
           {/* ── Card ── */}
           <div className="bg-surface rounded-2xl border border-border-subtle shadow-modal overflow-hidden">
 
-            {/* ── Port Admin / Ship Agent tabs ── */}
+            {/* ── Log In / Sign Up tabs ── */}
             <div className="flex border-b border-border-subtle bg-surface-subtle/50">
-              <button
-                type="button"
-                onClick={() => setSelectedRole('admin')}
+              <Link
+                to="/auth/login"
                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-bold transition-all duration-200 border-b-2 -mb-px cursor-pointer ${
-                  isAdmin
-                    ? 'border-brand-teal text-brand-teal bg-surface shadow-xs'
+                  isLogin
+                    ? (isAdmin ? 'border-brand-teal text-brand-teal bg-surface shadow-xs' : 'border-brand-blue text-brand-blue bg-surface shadow-xs')
                     : 'border-transparent text-text-muted hover:text-text-main bg-surface-subtle/70 hover:bg-surface-subtle'
                 }`}
               >
-                <Shield className="w-4 h-4" />
-                Port Admin
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedRole('ship-agent')}
+                Log In
+              </Link>
+              <Link
+                to="/auth/signup"
                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-bold transition-all duration-200 border-b-2 -mb-px cursor-pointer ${
-                  !isAdmin
-                    ? 'border-brand-blue text-brand-blue bg-surface shadow-xs'
+                  !isLogin
+                    ? (isAdmin ? 'border-brand-teal text-brand-teal bg-surface shadow-xs' : 'border-brand-blue text-brand-blue bg-surface shadow-xs')
                     : 'border-transparent text-text-muted hover:text-text-main bg-surface-subtle/70 hover:bg-surface-subtle'
                 }`}
               >
-                <Anchor className="w-4 h-4" />
-                Ship Agent
-              </button>
+                Sign Up
+              </Link>
             </div>
 
             {/* ── Form ── */}

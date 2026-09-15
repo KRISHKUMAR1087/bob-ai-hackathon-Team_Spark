@@ -61,11 +61,11 @@ export const MetricCard: React.FC<MetricCardProps> = ({
       </div>
 
       {(trend || subtext) && (
-        <div className="mt-2 flex items-center justify-between text-xs">
-          {subtext && <span className="text-text-muted text-[11px] truncate">{subtext}</span>}
+        <div className="mt-2 flex items-center justify-between gap-2 min-w-0 text-xs">
+          {subtext && <span className="text-text-muted text-[11px] truncate flex-1 min-w-0">{subtext}</span>}
           {trend && (
             <span
-              className={`text-[11px] font-medium px-1.5 py-0.5 rounded ${
+              className={`text-[11px] font-medium px-1.5 py-0.5 rounded shrink-0 ${
                 trend.isNeutral
                   ? 'text-slate-600 bg-slate-100'
                   : trend.isPositive

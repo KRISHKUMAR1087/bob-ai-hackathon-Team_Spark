@@ -21,7 +21,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
     } catch (err: any) {
       console.error('Google OAuth launch error:', err);
       setInternalLoading(false);
-      if (onError) onError(err);
+      onError?.(err);
     }
   };
 
@@ -58,4 +58,3 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
     </button>
   );
 };
-

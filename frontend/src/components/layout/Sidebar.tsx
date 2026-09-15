@@ -201,19 +201,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Port Operational Status Ribbon */}
       {(!isCollapsed || isMobileDrawer) && (
         <div className="px-4 py-2 border-b border-border-subtle bg-surface-subtle/60 shrink-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <span
-                className={`w-2 h-2 rounded-full ${
+                className={`w-2 h-2 rounded-full shrink-0 ${
                   isOptimizationApplied ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'
                 }`}
               />
-              <span className="text-xs font-medium text-text-main">
+              <span className="text-xs font-medium text-text-main truncate">
                 {isOptimizationApplied ? 'Port: Balanced' : 'Risk Detected'}
               </span>
             </div>
             <span
-              className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${
+              className={`text-[10px] font-medium px-2 py-0.5 rounded-full border shrink-0 ${
                 isOptimizationApplied
                   ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                   : 'bg-amber-50 text-amber-800 border-amber-200'
@@ -248,7 +248,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     to={item.path}
                     onClick={handleNavClick}
                     title={isCollapsed && !isMobileDrawer ? item.name : undefined}
-                    className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ease-out ${
+                    className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ease-out min-w-0 ${
                       isActive
                         ? 'bg-brand-teal/10 text-brand-teal font-semibold'
                         : 'text-text-muted hover:text-text-main hover:bg-surface-subtle'
@@ -259,10 +259,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         isActive ? 'text-brand-teal' : 'text-text-caption'
                       }`}
                     />
-                    {(!isCollapsed || isMobileDrawer) && <span className="truncate">{item.name}</span>}
+                    {(!isCollapsed || isMobileDrawer) && <span className="truncate flex-1">{item.name}</span>}
                     {(!isCollapsed || isMobileDrawer) && item.badge && (
                       <span
-                        className={`ml-auto px-2 py-0.5 rounded-full text-[10px] ${item.badgeColor} shadow-xs`}
+                        className={`ml-auto px-2 py-0.5 rounded-full text-[10px] shrink-0 ${item.badgeColor} shadow-xs`}
                       >
                         {item.badge}
                       </span>

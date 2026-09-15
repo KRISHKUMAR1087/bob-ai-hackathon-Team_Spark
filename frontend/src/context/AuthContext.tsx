@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { User, UserRole } from '../types/auth';
 import { AuthService } from '../services/authService';
 import { supabase } from '../lib/supabase';
@@ -11,6 +12,8 @@ interface AuthContextValue {
   signInWithGoogle: () => Promise<void>;
   loginWithGoogleToken: (idToken: string) => Promise<{ needsRoleSelection: boolean; tempUser: User | null }>;
   confirmRoleSelection: (role: UserRole) => Promise<User>;
+  login: (email: string, password: string) => Promise<User>;
+  signup: (name: string, email: string, password: string, role: UserRole) => Promise<User>;
   logout: () => void;
 }
 
@@ -63,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Supabase auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (event: AuthChangeEvent, session: Session | null) => {
         if (!isMounted) return;
 
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
@@ -129,6 +132,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const login = async (email: string, password: string): Promise<User> => {
+    setIsLoading(true);
+    try {
+      const loggedInUser = await AuthService.login(email, password);
+      setUser(loggedInUser);
+      return loggedInUser;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const signup = async (name: string, email: string, password: string, role: UserRole): Promise<User> => {
+    setIsLoading(true);
+    try {
+      const newUser = await AuthService.signup(name, email, password, role);
+      setUser(newUser);
+      return newUser;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const logout = () => {
     AuthService.logout();
     setUser(null);
@@ -144,6 +169,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signInWithGoogle,
         loginWithGoogleToken,
         confirmRoleSelection,
+        login,
+        signup,
         logout,
       }}
     >
