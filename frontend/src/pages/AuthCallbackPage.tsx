@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { AuthChangeEvent, Session, User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { RoleSelector } from '../components/auth/RoleSelector';
