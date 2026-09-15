@@ -11,6 +11,7 @@ import { GoogleSignInButton } from '../components/auth/GoogleSignInButton';
 import { RoleSelector } from '../components/auth/RoleSelector';
 import { AuthErrorAlert } from '../components/auth/AuthErrorAlert';
 import { ThemeToggleButton } from '../components/common/ThemeToggleButton';
+import { MusicButton } from '../components/common/MusicButton';
 import { UserRole } from '../types/auth';
 import { motion } from 'framer-motion';
 
@@ -115,6 +116,7 @@ export const LoginPage: React.FC = () => {
               <a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a>
             </nav>
             <div className="flex items-center gap-3">
+              <MusicButton className="bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white" />
               <ThemeToggleButton className="bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white" />
               <a
                 href="/auth/signup"
