@@ -93,7 +93,7 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
 
   return (
     <header
-      className={`fixed top-0 right-0 z-20 h-16 bg-surface/80 backdrop-blur-md border-b border-border-subtle transition-all duration-200 flex items-center justify-between px-3 sm:px-4 lg:px-6 left-0 ${
+      className={`fixed top-0 right-0 z-50 h-16 bg-surface/80 backdrop-blur-md border-b border-border-subtle transition-all duration-200 flex items-center justify-between px-3 sm:px-4 lg:px-6 left-0 ${
         isCollapsed ? 'md:left-16' : 'md:left-64'
       }`}
     >

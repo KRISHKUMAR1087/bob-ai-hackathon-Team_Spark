@@ -34,7 +34,7 @@ export const ToastNotification: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 max-w-sm animate-in slide-in-from-bottom-5 duration-300">
+    <div className="fixed bottom-6 right-6 z-[100] max-w-sm animate-in slide-in-from-bottom-5 duration-300">
       <div
         className={`bg-surface border ${getBorder()} p-4 rounded-xl shadow-modal flex items-start gap-3`}
       >

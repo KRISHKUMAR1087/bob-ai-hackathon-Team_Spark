@@ -143,104 +143,124 @@ export const ShippingDashboardPage: React.FC = () => {
           Action Required & Key Notifications
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {/* Action 1: Ocean Star Reassignment / Demurrage */}
-          {isOptimizationApplied ? (
-            <div className="p-3.5 rounded-lg bg-emerald-50/70 border border-emerald-200 flex flex-col justify-between">
-              <div className="flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                <div>
-                  <div className="text-xs font-semibold text-emerald-900">
-                    Berth Reassignment Confirmed
+        {agentVessels.length === 0 && user?.authProvider !== 'demo' ? (
+          <div className="p-4 rounded-xl bg-surface border border-border-subtle flex items-center justify-between shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-sky-50 text-sky-600">
+                <Ship className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-text-main">No Active Fleet Registered</div>
+                <p className="text-[11px] text-text-muted">Register your first vessel to request berths and track arrival telemetry in real time.</p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/shipping/vessels/add')}
+              className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-colors shrink-0 cursor-pointer"
+            >
+              Add Vessel
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {/* Action 1: Reassignment / Demurrage */}
+            {isOptimizationApplied ? (
+              <div className="p-3.5 rounded-lg bg-emerald-50/70 border border-emerald-200 flex flex-col justify-between">
+                <div className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div>
+                    <div className="text-xs font-semibold text-emerald-900">
+                      Berth Reassignment Confirmed
+                    </div>
+                    <p className="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
+                      <strong>{agentVessels[0]?.name || 'Ocean Star'}</strong> reallocated to <strong>Berth B02</strong> with 4 cranes. Waiting time cut from 11.4h to <strong>6.8h</strong>.
+                    </p>
                   </div>
-                  <p className="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
-                    <strong>Ocean Star</strong> reallocated to <strong>Berth B02</strong> with 4 cranes. Waiting time cut from 11.4h to <strong>6.8h</strong>.
+                </div>
+                <div className="mt-3 pt-2 border-t border-emerald-200/60 flex items-center justify-between">
+                  <span className="text-[10px] text-emerald-700 font-medium">B02 Ready</span>
+                  <button
+                    onClick={() => navigate(`/shipping/vessels/${agentVessels[0]?.id || 'VES-01'}`)}
+                    className="text-xs font-semibold text-emerald-800 hover:text-emerald-900 flex items-center gap-1 cursor-pointer"
+                  >
+                    View Details <ChevronRight className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="p-3.5 rounded-lg bg-amber-50/70 border border-amber-200 flex flex-col justify-between">
+                <div className="flex items-start gap-2.5">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <div className="text-xs font-semibold text-amber-900">
+                      High Congestion Expected at B04
+                    </div>
+                    <p className="text-[11px] text-amber-800 mt-0.5 leading-relaxed">
+                      <strong>{agentVessels[0]?.name || 'Ocean Star'}</strong> faces projected 11.4h turnaround delay. Port authority optimization is pending.
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-3 pt-2 border-t border-amber-200/60 flex items-center justify-between">
+                  <span className="text-[10px] text-amber-700 font-medium">11.4h Wait Risk</span>
+                  <button
+                    onClick={() => navigate('/shipping/berth-requests')}
+                    className="text-xs font-semibold text-amber-800 hover:text-amber-900 flex items-center gap-1 cursor-pointer"
+                  >
+                    Check Request <ChevronRight className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Action 2: Document Missing */}
+            <div className="p-3.5 rounded-lg bg-surface border border-border-subtle flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+              <div className="flex items-start gap-2.5">
+                <FileText className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-xs font-semibold text-text-main">
+                    Advance Arrival Notice Required
+                  </div>
+                  <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
+                    <strong>{agentVessels[1]?.name || 'Pacific Voyager'}</strong> requires customs 72h advance notice filing prior to outer anchorage entry.
                   </p>
                 </div>
               </div>
-              <div className="mt-3 pt-2 border-t border-emerald-200/60 flex items-center justify-between">
-                <span className="text-[10px] text-emerald-700 font-medium">B02 Ready</span>
+              <div className="mt-3 pt-2 border-t border-border-subtle flex items-center justify-between">
+                <span className="text-[10px] text-rose-600 font-medium">Filing Overdue</span>
                 <button
-                  onClick={() => navigate('/shipping/vessels/VES-01')}
-                  className="text-xs font-semibold text-emerald-800 hover:text-emerald-900 flex items-center gap-1 cursor-pointer"
+                  onClick={() => navigate('/shipping/documents')}
+                  className="text-xs font-semibold text-sky-600 hover:text-sky-700 flex items-center gap-1 cursor-pointer"
                 >
-                  View Details <ChevronRight className="w-3 h-3" />
+                  Upload Notice <ChevronRight className="w-3 h-3" />
                 </button>
               </div>
             </div>
-          ) : (
-            <div className="p-3.5 rounded-lg bg-amber-50/70 border border-amber-200 flex flex-col justify-between">
+
+            {/* Action 3: ETA Confirmation */}
+            <div className="p-3.5 rounded-lg bg-surface border border-border-subtle flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               <div className="flex items-start gap-2.5">
-                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <Clock className="w-4 h-4 text-violet-600 shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-xs font-semibold text-amber-900">
-                    High Congestion Expected at B04
+                  <div className="text-xs font-semibold text-text-main">
+                    ETA Confirmation Needed
                   </div>
-                  <p className="text-[11px] text-amber-800 mt-0.5 leading-relaxed">
-                    <strong>Ocean Star</strong> faces projected 11.4h turnaround delay. Port authority optimization is pending.
+                  <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
+                    Weather squalls reported in eastern fairway. Review updated passage speed for incoming fleet.
                   </p>
                 </div>
               </div>
-              <div className="mt-3 pt-2 border-t border-amber-200/60 flex items-center justify-between">
-                <span className="text-[10px] text-amber-700 font-medium">11.4h Wait Risk</span>
+              <div className="mt-3 pt-2 border-t border-border-subtle flex items-center justify-between">
+                <span className="text-[10px] text-text-muted font-medium">Channel Monitoring</span>
                 <button
-                  onClick={() => navigate('/shipping/berth-requests')}
-                  className="text-xs font-semibold text-amber-800 hover:text-amber-900 flex items-center gap-1 cursor-pointer"
+                  onClick={() => navigate('/shipping/schedules')}
+                  className="text-xs font-semibold text-sky-600 hover:text-sky-700 flex items-center gap-1 cursor-pointer"
                 >
-                  Check Request <ChevronRight className="w-3 h-3" />
+                  Review Schedules <ChevronRight className="w-3 h-3" />
                 </button>
               </div>
             </div>
-          )}
-
-          {/* Action 2: Document Missing */}
-          <div className="p-3.5 rounded-lg bg-surface border border-border-subtle flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <div className="flex items-start gap-2.5">
-              <FileText className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
-              <div>
-                <div className="text-xs font-semibold text-text-main">
-                  Advance Arrival Notice Required
-                </div>
-                <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
-                  <strong>Pacific Voyager</strong> requires customs 72h advance notice filing prior to outer anchorage entry.
-                </p>
-              </div>
-            </div>
-            <div className="mt-3 pt-2 border-t border-border-subtle flex items-center justify-between">
-              <span className="text-[10px] text-rose-600 font-medium">Filing Overdue</span>
-              <button
-                onClick={() => navigate('/shipping/documents')}
-                className="text-xs font-semibold text-sky-600 hover:text-sky-700 flex items-center gap-1 cursor-pointer"
-              >
-                Upload Notice <ChevronRight className="w-3 h-3" />
-              </button>
-            </div>
           </div>
-
-          {/* Action 3: ETA Confirmation */}
-          <div className="p-3.5 rounded-lg bg-surface border border-border-subtle flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <div className="flex items-start gap-2.5">
-              <Clock className="w-4 h-4 text-violet-600 shrink-0 mt-0.5" />
-              <div>
-                <div className="text-xs font-semibold text-text-main">
-                  ETA Confirmation Needed
-                </div>
-                <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
-                  Weather squalls reported in eastern fairway. Review updated passage speed for incoming fleet.
-                </p>
-              </div>
-            </div>
-            <div className="mt-3 pt-2 border-t border-border-subtle flex items-center justify-between">
-              <span className="text-[10px] text-text-muted font-medium">Channel Monitoring</span>
-              <button
-                onClick={() => navigate('/shipping/schedules')}
-                className="text-xs font-semibold text-sky-600 hover:text-sky-700 flex items-center gap-1 cursor-pointer"
-              >
-                Review Schedules <ChevronRight className="w-3 h-3" />
-              </button>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* 4. Upcoming Arrivals Table */}
@@ -275,7 +295,14 @@ export const ShippingDashboardPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-border-subtle text-text-main">
-              {agentVessels.map(v => {
+              {agentVessels.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="py-8 text-center text-xs text-text-muted">
+                    No active vessels registered yet. Click <strong className="text-sky-600 font-semibold cursor-pointer" onClick={() => navigate('/shipping/vessels/add')}>Add Vessel</strong> to add your first vessel to the fleet.
+                  </td>
+                </tr>
+              ) : (
+                agentVessels.map(v => {
                 const isOceanStar = v.id === 'VES-01';
                 const waitTime = isOceanStar && isOptimizationApplied ? 6.8 : v.predictedWaitHours;
                 const berthDisplay = isOceanStar && isOptimizationApplied ? 'B02' : (v.assignedBerth || v.requestedBerth || 'TBD');
@@ -342,7 +369,8 @@ export const ShippingDashboardPage: React.FC = () => {
                     </td>
                   </tr>
                 );
-              })}
+              })
+              )}
             </tbody>
           </table>
         </div>

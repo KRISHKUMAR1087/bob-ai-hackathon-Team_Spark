@@ -9,6 +9,7 @@ import {
   Filter,
 } from 'lucide-react';
 import { useOperations } from '../../context/OperationsContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface AgentAlertItem {
   id: string;
@@ -26,7 +27,10 @@ interface AgentAlertItem {
 
 export const ShippingAlertsPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isDemoUser = user?.authProvider === 'demo';
   const {
+    alerts,
     isOptimizationApplied,
     isNotificationRead,
     toggleNotificationRead,
@@ -34,8 +38,8 @@ export const ShippingAlertsPage: React.FC = () => {
   } = useOperations();
   const [filter, setFilter] = useState<'ALL' | 'UNREAD' | 'CRITICAL' | 'OPERATIONAL'>('ALL');
 
-  // Base alerts reflecting live port state
-  const baseAlerts: Omit<AgentAlertItem, 'isRead'>[] = [
+  // Base alerts reflecting live port state (for demo user)
+  const demoAlerts: Omit<AgentAlertItem, 'isRead'>[] = [
     {
       id: 'ALT-AG-01',
       title: isOptimizationApplied
@@ -89,6 +93,24 @@ export const ShippingAlertsPage: React.FC = () => {
       isResolved: true,
     },
   ];
+
+  // For real accounts, convert operational alerts from Context or show dynamic list
+  const baseAlerts: Omit<AgentAlertItem, 'isRead'>[] = isDemoUser
+    ? demoAlerts
+    : alerts.length > 0
+    ? alerts.map(a => ({
+        id: a.id,
+        title: a.title,
+        severity: a.severity === 'CRITICAL' || a.severity === 'HIGH' ? 'CRITICAL' : 'OPERATIONAL',
+        category: a.relatedEntity?.type ? a.relatedEntity.type.toUpperCase() : 'Operations',
+        timestamp: a.timestamp || 'Just now',
+        description: a.description,
+        vesselId: a.relatedEntity?.type === 'vessel' ? a.relatedEntity.id : '',
+        vesselName: a.relatedEntity?.name || 'Port Asset',
+        actionLabel: a.actionLabel || 'View Details',
+        isResolved: a.isResolved,
+      }))
+    : [];
 
   // Map with real persistent read state from Supabase
   const alertsList: AgentAlertItem[] = baseAlerts.map(a => ({
@@ -174,7 +196,14 @@ export const ShippingAlertsPage: React.FC = () => {
 
       {/* Alerts Feed */}
       <div className="space-y-3">
-        {filtered.map(alert => (
+        {filtered.length === 0 ? (
+          <div className="p-8 rounded-lg border border-border-subtle bg-surface text-center space-y-2 shadow-xs">
+            <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
+            <h3 className="text-sm font-semibold text-text-main">No Operational Alerts</h3>
+            <p className="text-xs text-text-muted">All clear! There are no active operational alerts or notifications for your account.</p>
+          </div>
+        ) : (
+          filtered.map(alert => (
           <div
             key={alert.id}
             className={`p-5 rounded-lg border shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all bg-surface ${
@@ -246,7 +275,8 @@ export const ShippingAlertsPage: React.FC = () => {
               </div>
             </div>
           </div>
-        ))}
+        ))
+        )}
       </div>
     </div>
   );

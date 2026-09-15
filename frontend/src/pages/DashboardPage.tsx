@@ -15,12 +15,15 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useOperations } from '../context/OperationsContext';
+import { useAuth } from '../context/AuthContext';
 import { RiskBadge } from '../components/common/RiskBadge';
 import { CongestionChart } from '../components/operations/CongestionChart';
 import { Port3DOverview } from '../components/common/Port3DOverview';
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isDemoUser = user?.authProvider === 'demo';
   const {
     vessels,
     berths,
@@ -37,16 +40,17 @@ export const DashboardPage: React.FC = () => {
   // Aggregated Operational Figures for Snapshot
   const vesselsInPort = vessels.filter(v => ['Berthing', 'Loading'].includes(v.status)).length;
   const arrivingVessels = vessels.filter(v => v.status === 'Arriving');
-  const avgBerthUtil = Math.round(
-    berths.reduce((acc, b) => acc + b.currentUtilization, 0) / berths.length
-  );
+  const avgBerthUtil = berths.length > 0
+    ? Math.round(berths.reduce((acc, b) => acc + b.currentUtilization, 0) / berths.length)
+    : 0;
   const activeCranes = cranes.filter(c => c.status === 'ACTIVE').length;
   const totalOccupiedYard = yardBlocks.reduce((acc, y) => acc + y.occupiedTeu, 0);
   const totalYardCap = yardBlocks.reduce((acc, y) => acc + y.totalTeu, 0);
-  const yardUtil = Math.round((totalOccupiedYard / totalYardCap) * 100);
+  const yardUtil = totalYardCap > 0 ? Math.round((totalOccupiedYard / totalYardCap) * 100) : 0;
   const activeAlertsList = alerts.filter(a => !a.isResolved);
 
   const b04 = berths.find(b => b.id === 'B04');
+  const hasActiveIncident = isDemoUser || (forecast !== null && !!forecast.riskBottleneckBerth) || activeAlertsList.length > 0;
 
   const handleAskGeminiWhy = async () => {
     setIsCopilotOpen(true);
@@ -64,17 +68,21 @@ export const DashboardPage: React.FC = () => {
             </h1>
             <span
               className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                isOptimizationApplied
+                !hasActiveIncident || isOptimizationApplied
                   ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                   : 'bg-rose-50 text-rose-800 border-rose-200'
               }`}
             >
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
-                  isOptimizationApplied ? 'bg-emerald-600' : 'bg-rose-600 animate-pulse'
+                  !hasActiveIncident || isOptimizationApplied ? 'bg-emerald-600' : 'bg-rose-600 animate-pulse'
                 }`}
               />
-              {isOptimizationApplied ? 'Operational Flow Optimized' : 'Attention Required: B04 Saturation'}
+              {!hasActiveIncident
+                ? 'Port Operations Normal'
+                : isOptimizationApplied
+                ? 'Operational Flow Optimized'
+                : 'Attention Required: Berth Bottleneck'}
             </span>
           </div>
           <p className="text-xs text-text-muted mt-1">
@@ -109,7 +117,90 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* 2. PRIMARY OPERATIONAL EVENT (Dominant Incident Briefing Panel) */}
-      {!isOptimizationApplied ? (
+      {!hasActiveIncident ? (
+        <div className="bg-surface rounded-3xl border border-emerald-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 transition-all">
+          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+            <div className="space-y-4 max-w-3xl">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-xs">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <h2 className="text-lg font-bold text-text-main">
+                      Port Operations Normal — All Systems Nominal
+                    </h2>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      Optimal
+                    </span>
+                  </div>
+                  <p className="text-xs text-text-muted mt-0.5">
+                    Real-time Telemetry Active • No bottleneck risks detected across port sectors
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-sm text-text-main leading-relaxed">
+                All vessel operations, quay berths, and container yard channels are running smoothly. Predictive AI models continuously monitor traffic flow and berth allocation to maintain peak efficiency.
+              </p>
+
+              <div className="flex items-center gap-4 text-xs pt-2">
+                <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded border border-emerald-100">
+                  ✓ System Baseline Nominal
+                </span>
+                <span className="inline-flex items-center gap-1 text-text-muted">
+                  ✓ Active Vessels: {vessels.length}
+                </span>
+                <span className="inline-flex items-center gap-1 text-text-muted">
+                  ✓ Active Alerts: {activeAlertsList.length}
+                </span>
+              </div>
+            </div>
+
+            <div className="lg:w-80 flex flex-col justify-between bg-surface-subtle/50 p-5 rounded-2xl border border-border-subtle space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-[11px] font-medium text-text-muted">Avg Berth Util</div>
+                  <div className="text-2xl font-bold text-text-main mt-0.5">
+                    {isNaN(avgBerthUtil) ? 0 : avgBerthUtil}%
+                  </div>
+                  <div className="text-[10px] text-text-caption">Operating baseline</div>
+                </div>
+                <div>
+                  <div className="text-[11px] font-medium text-text-muted">Yard Util</div>
+                  <div className="text-2xl font-bold text-emerald-600 mt-0.5">
+                    {isNaN(yardUtil) ? 0 : yardUtil}%
+                  </div>
+                  <div className="text-[10px] text-emerald-600 font-medium">Nominal</div>
+                </div>
+                <div>
+                  <div className="text-[11px] font-medium text-text-muted">In-Port Vessels</div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-bold text-text-main">{vesselsInPort}</span>
+                    <span className="text-sm font-semibold text-text-main">vessels</span>
+                  </div>
+                  <div className="text-[10px] text-text-caption">At berths</div>
+                </div>
+                <div>
+                  <div className="text-[11px] font-medium text-text-muted">Active Cranes</div>
+                  <div className="text-2xl font-bold text-emerald-600 mt-0.5">{activeCranes}</div>
+                  <div className="text-[10px] text-text-caption">Available</div>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-border-subtle">
+                <button
+                  onClick={() => navigate('/operations/berths')}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-xs font-semibold text-white bg-brand-teal hover:bg-teal-700 transition-all shadow-[0_4px_12px_rgba(20,184,166,0.3)]"
+                >
+                  <Anchor className="w-4 h-4" />
+                  <span>Manage Berths</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : !isOptimizationApplied ? (
         <div className="bg-surface rounded-3xl border-2 border-rose-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] p-6 transition-all">
           <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
             <div className="space-y-4 max-w-3xl">
