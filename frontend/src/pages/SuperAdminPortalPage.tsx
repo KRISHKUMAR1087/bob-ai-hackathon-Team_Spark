@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShieldAlert, Globe, Server, Users, Activity, BarChart3, Settings, LogOut, ExternalLink, RefreshCw } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 // Demo Data for the Super Admin
 const DEMO_PORTS = [
@@ -12,7 +13,13 @@ const DEMO_PORTS = [
 
 export const SuperAdminPortalPage: React.FC = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -39,9 +46,9 @@ export const SuperAdminPortalPage: React.FC = () => {
               <RefreshCw className="w-4 h-4 text-white" />
             </button>
             <div className="h-6 w-px bg-white/20 mx-1"></div>
-            <Link to="/" className="flex items-center gap-2 text-sm font-medium hover:text-teal-100 transition-colors">
+            <button onClick={handleLogout} className="flex items-center gap-2 text-sm font-medium hover:text-teal-100 transition-colors">
               <LogOut className="w-4 h-4" /> Exit Portal
-            </Link>
+            </button>
           </div>
         </div>
       </header>
