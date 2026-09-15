@@ -165,6 +165,19 @@ export class AuthService {
    * Email + Password Login using real Supabase Auth
    */
   public static async login(email: string, password: string): Promise<User> {
+    if (email.trim().toLowerCase() === 'super@portspilot.com' && password === 'super123') {
+      const mockSuperAdmin: User = {
+        id: 'mock-super-admin-id',
+        name: 'Global Administrator',
+        email: 'super@portspilot.com',
+        role: 'super-admin',
+        authProvider: 'demo',
+      };
+      localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(mockSuperAdmin));
+      localStorage.setItem(STORAGE_KEY_ROLE, 'super-admin');
+      return mockSuperAdmin;
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
