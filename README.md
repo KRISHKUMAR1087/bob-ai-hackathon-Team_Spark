@@ -13,7 +13,7 @@ An enterprise-grade maritime decision-support platform for port operations super
 | **Team Name** | Team Spark |
 | **Track** | AI - L1 : CONTAINER CONGESTION PREDICTOR AND PORT OPERATIONS OPTIMISER |
 | **Team Lead** | Nandan Vakani — nandanvakani@gmail.com (24dit074@charusat.edu.in) |
-| **Members** | Pari Chudasama — chudasamapari1109@gmail.com (d25dit079@charusat.edu.in)<br>Krish Darji — hello.krishkumardarji@gmail.com (24dce027@charusat.edu.in)<br>Yashvi Thakkar — yashvicharu8034@gmail.com (24dcs136@charusat.edu.in) |
+| **Members** | Pari Chudasama — chudasamapari1109@gmail.com (d25dit079@charusat.edu.in)<br>Krish Darji — hello.krishkumardarji@gmail.com (24dce027@charusat.edu.in)<br>Yashvi Thakkar — yashvicharuat34@gmail.com (24dcs136@charusat.edu.in) |
 
 ---
 
