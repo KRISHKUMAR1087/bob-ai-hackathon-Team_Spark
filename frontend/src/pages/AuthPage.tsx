@@ -18,7 +18,7 @@ interface AuthPageProps {
 export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { loginWithGoogleToken, confirmRoleSelection } = useAuth();
+  const { loginWithGoogleToken, confirmRoleSelection, login, signup } = useAuth();
 
   const isLogin = mode === 'login';
 
@@ -106,10 +106,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
     
     try {
       if (isLogin) {
-        const user = await AuthService.login(loginEmail, loginPassword);
+        const user = await login(loginEmail, loginPassword);
         navigate(getRedirectPath(user.role), { replace: true });
       } else {
-        const user = await AuthService.signup(signupName, signupEmail, signupPassword);
+        const user = await signup(signupName, signupEmail, signupPassword);
         navigate(getRedirectPath(user.role), { replace: true });
       }
     } catch (err: any) {
