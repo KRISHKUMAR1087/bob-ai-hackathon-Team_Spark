@@ -1,8 +1,8 @@
-# System Architecture: PortPulse AI
+# System Architecture: PortsPilot AI
 
 ## System Architecture
 
-PortPulse AI employs a decoupled, modular architecture built for real-time responsiveness, algorithmic optimization, and enterprise resilience.
+PortsPilot AI employs a decoupled, modular architecture built for real-time responsiveness, algorithmic optimization, and enterprise resilience.
 
 ```mermaid
 graph TD

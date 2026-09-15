@@ -1,5 +1,5 @@
 -- ==============================================================================
--- PortPulse AI — Supabase Optional Seed Script (Sample Infrastructure & Data)
+-- PortsPilot AI — Supabase Optional Seed Script (Sample Infrastructure & Data)
 -- ==============================================================================
 
 -- 1. Insert Initial Port Infrastructure (Berths B01–B06)

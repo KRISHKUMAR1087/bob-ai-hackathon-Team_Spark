@@ -152,4 +152,4 @@ def resolve_alert(alert_id: str):
 def reset_system_state():
     """Resets all simulation and optimization states back to initial baseline data."""
     data_store.reset()
-    return {"success": True, "message": "PortPulse operational data reset to baseline."}
+    return {"success": True, "message": "PortsPilot operational data reset to baseline."}

@@ -1,5 +1,5 @@
 -- ==============================================================================
--- PortPulse AI — Supabase Step A Migration Script: Tables & RLS Policies
+-- PortsPilot AI — Supabase Step A Migration Script: Tables & RLS Policies
 -- ==============================================================================
 
 -- 1. Infrastructure (Port-Wide) Tables

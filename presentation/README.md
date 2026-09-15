@@ -1,4 +1,4 @@
-# Presentation — PortPulse AI
+# Presentation — PortsPilot AI
 
 Place your final presentation slide deck in this directory.
 
@@ -14,17 +14,17 @@ slides.pptx     ← Alternative format
 
 ---
 
-## Recommended Slide Structure (Team Spark — PortPulse AI)
+## Recommended Slide Structure (Team Spark — PortsPilot AI)
 
 - **Slide 1: Title & Team**
-  - Project: PortPulse AI (Port Operations Command Center)
+  - Project: PortsPilot AI (Port Operations Command Center)
   - Team: Team Spark (Track: AI)
   - Lead: Nandan Vakani | Members: Pari Chudasama, Krish Darji, Yashvi Thakkar
 - **Slide 2: The Problem**
   - The 2021 LA/Long Beach backlog crisis: 100+ ships idling offshore, $10B+ supply chain costs.
   - Core challenge: Port operators allocate berths, cranes, and yard space reactively using manual spreadsheets.
 - **Slide 3: The Solution**
-  - PortPulse AI: Predictive bottleneck forecasting (6h–72h), BAP/CAP berth and crane optimization, alternate port routing, 72-hour shift planning.
+  - PortsPilot AI: Predictive bottleneck forecasting (6h–72h), BAP/CAP berth and crane optimization, alternate port routing, 72-hour shift planning.
 - **Slide 4: System Architecture**
   - Dual-engine architecture: React 18 frontend, Hono API gateway, Python FastAPI optimization engine, PostgreSQL persistence, and IBM Bob Copilot.
 - **Slide 5: Live Demo & Key Capabilities**

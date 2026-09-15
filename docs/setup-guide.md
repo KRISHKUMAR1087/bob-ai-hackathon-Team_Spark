@@ -1,4 +1,4 @@
-# Setup Guide: PortPulse AI
+# Setup Guide: PortsPilot AI
 
 > **This file is read by the automated evaluation pipeline and judges. Every step has been verified end-to-end.**
 

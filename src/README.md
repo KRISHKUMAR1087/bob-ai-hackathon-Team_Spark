@@ -1,6 +1,6 @@
-# PortPulse AI — Source Code Directory
+# PortsPilot AI — Source Code Directory
 
-This directory contains the complete source code for **PortPulse AI** (Port Operations Command Center), organized as a unified monorepo.
+This directory contains the complete source code for **PortsPilot AI** (Port Operations Command Center), organized as a unified monorepo.
 
 ---
 

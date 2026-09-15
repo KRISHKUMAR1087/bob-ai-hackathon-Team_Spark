@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// PortPulse — Prisma Seed Script
+// PortsPilot — Prisma Seed Script
 // Sub-Task 3: Database Seeding
 //
 // Run with:  npx ts-node prisma/seed.ts
@@ -25,7 +25,7 @@ async function main(): Promise<void> {
     create: {
       id: 'demo-admin',
       name: 'Port Operations Admin',
-      email: 'admin@portpulse.demo',
+      email: 'admin@portspilot.demo',
       password: adminPasswordHash,
       role: 'admin',
       authProvider: 'demo',
@@ -38,7 +38,7 @@ async function main(): Promise<void> {
     create: {
       id: 'demo-agent',
       name: 'Global Shipping Agent',
-      email: 'agent@portpulse.demo',
+      email: 'agent@portspilot.demo',
       password: agentPasswordHash,
       role: 'ship_agent',
       authProvider: 'demo',

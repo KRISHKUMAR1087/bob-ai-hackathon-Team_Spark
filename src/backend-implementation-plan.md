@@ -1,8 +1,8 @@
-# PortPulse — Backend Implementation Plan
+# PortsPilot — Backend Implementation Plan
 
 ## Top-Level Overview
 
-**Goal**: Build a production-ready REST API backend for the PortPulse application that replaces the existing frontend-only mock data layer (`mockData.ts`, `portOperationsService.ts`) with a real server, persistent database, and authenticated endpoints.
+**Goal**: Build a production-ready REST API backend for the PortsPilot application that replaces the existing frontend-only mock data layer (`mockData.ts`, `portOperationsService.ts`) with a real server, persistent database, and authenticated endpoints.
 
 **Scope**:
 - Node.js + Express (TypeScript) REST API server

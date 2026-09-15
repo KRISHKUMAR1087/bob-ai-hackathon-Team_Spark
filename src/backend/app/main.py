@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import router as api_router
 
 app = FastAPI(
-    title="PortPulse AI - Port Operations Backend Engine",
+    title="PortsPilot AI - Port Operations Backend Engine",
     description=(
         "Competition-grade backend for the Logistics & Ports Container Congestion "
         "Predictor and Port Operations Optimiser. Features 72h queuing congestion prediction, "
@@ -29,7 +29,7 @@ app.include_router(api_router)
 @app.get("/")
 def root():
     return {
-        "service": "PortPulse AI Operations Engine",
+        "service": "PortsPilot AI Operations Engine",
         "status": "online",
         "version": "1.0.0",
         "docs": "/docs",
@@ -49,4 +49,4 @@ def root():
 @app.get("/healthz")
 def health_check():
     """Health check endpoint for Docker container and Kubernetes/IBM Cloud Code Engine liveness probes."""
-    return {"status": "healthy", "service": "portpulse-backend"}
+    return {"status": "healthy", "service": "portspilot-backend"}

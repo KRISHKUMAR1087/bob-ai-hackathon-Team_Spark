@@ -1,4 +1,4 @@
-# PortPulse AI - Backend Operations Engine
+# PortsPilot AI - Backend Operations Engine
 
 Competition-grade backend for the **Logistics & Ports L1 Container Congestion Predictor & Port Operations Optimiser**.
 
@@ -34,6 +34,6 @@ pytest
 ## Docker Containerization
 
 ```bash
-docker build -t portpulse-backend .
-docker run -p 8000:8000 portpulse-backend
+docker build -t portspilot-backend .
+docker run -p 8000:8000 portspilot-backend
 ```

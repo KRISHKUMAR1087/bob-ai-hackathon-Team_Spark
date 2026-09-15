@@ -1,10 +1,10 @@
-# Solution Overview: PortPulse AI
+# Solution Overview: PortsPilot AI
 
 ## What We Built
 
-**PortPulse AI** is an intelligent, competition-grade maritime operations command center designed for port terminal planners, harbor masters, and shift supervisors. It transforms reactive port management into proactive, algorithmic decision-making. 
+**PortsPilot AI** is an intelligent, competition-grade maritime operations command center designed for port terminal planners, harbor masters, and shift supervisors. It transforms reactive port management into proactive, algorithmic decision-making. 
 
-PortPulse AI continuously ingests vessel AIS schedules, berth hydrographic specifications, crane operational telemetry, and yard occupancy metrics. It predicts quayside bottlenecks 6 to 72 hours in advance, solves the NP-hard Berth Allocation Problem and Crane Assignment Problem (BAP/CAP) in real time, evaluates alternate port diversions, automates 72-hour stevedore shift planning, and equips supervisors with an interactive IBM Bob AI Copilot.
+PortsPilot AI continuously ingests vessel AIS schedules, berth hydrographic specifications, crane operational telemetry, and yard occupancy metrics. It predicts quayside bottlenecks 6 to 72 hours in advance, solves the NP-hard Berth Allocation Problem and Crane Assignment Problem (BAP/CAP) in real time, evaluates alternate port diversions, automates 72-hour stevedore shift planning, and equips supervisors with an interactive IBM Bob AI Copilot.
 
 ---
 
@@ -59,7 +59,7 @@ $$\text{INGEST} \longrightarrow \text{PREDICT (6h–72h)} \longrightarrow \text{
 
 | Decision | Rationale |
 |---|---|
-| **Human-in-the-Loop Autonomy** | Port decisions carry safety and maritime liability. PortPulse AI recommends optimal allocations and explains trade-offs, but the human shift supervisor always maintains final approval. |
+| **Human-in-the-Loop Autonomy** | Port decisions carry safety and maritime liability. PortsPilot AI recommends optimal allocations and explains trade-offs, but the human shift supervisor always maintains final approval. |
 | **Dual-Engine Backend** | Combines the high-concurrency event-handling and real-time WebSockets of Node.js/Hono with the mathematical modeling and optimization packages (NumPy, Pytest) of Python. |
 | **Interpretable Root-Cause Scoring** | Avoids opaque "black-box" predictions; decomposes congestion into quantifiable drivers (arrival bunching, crane deficit, yard backpressure) so supervisors understand *why* risk is increasing. |
 | **Comprehensive Domain Modeling** | Enforces real-world maritime constraints: vessel draft vs. berth water depth, vessel LOA vs. berth length, crane reach and minimum/maximum crane density limits. |
