@@ -117,7 +117,7 @@ python -m pytest
 | Artifact | Link |
 |---|---|
 | 📹 **Demo Video** | https://drive.google.com/file/d/1YPuxK3lNwau_r-ySanBZ-Uw47uPNth__/view?usp=drivesdk |
-| 🌐 **Live Demo** | https://portspilot.pages.dev/ |
+| 🌐 **Live Demo** | https://portspilot.pages.dev |
 | 🖼️ **Screenshots** | [See demo/screenshots/](demo/screenshots/) |
 | 📊 **Presentation** | [See presentation/](presentation/) |
 
