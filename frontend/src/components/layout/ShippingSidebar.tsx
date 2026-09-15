@@ -153,7 +153,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5 min-w-0">
                 <span className="font-semibold text-sm tracking-tight text-text-main truncate">
-                  PortPulse
+                  PortsPilot
                 </span>
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 font-semibold border border-sky-200 shrink-0">
                   AGENT
@@ -269,7 +269,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-sky-100 border border-sky-200 text-sky-800 flex items-center justify-center font-bold text-xs shrink-0">
-                  SA
+                  {user?.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'SA'}
                 </div>
               )}
               <div className="min-w-0 flex-1">
@@ -277,7 +277,7 @@ export const ShippingSidebar: React.FC<ShippingSidebarProps> = ({
                   {user?.name || 'Shipping Agent'}
                 </div>
                 <div className="text-[11px] text-text-muted truncate">
-                  {user?.email || 'agent@portpulse.demo'}
+                  {user?.email || 'agent@portspilot.demo'}
                 </div>
               </div>
             </div>

@@ -142,7 +142,7 @@ export const ShippingAddVesselPage: React.FC = () => {
               Register New Vessel Call
             </h1>
             <p className="text-xs text-text-muted mt-1">
-              File vessel specifications, voyage routing, and port call requirements with PortPulse.
+              File vessel specifications, voyage routing, and port call requirements with PortsPilot.
             </p>
           </div>
         </div>

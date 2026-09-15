@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Activity,
   Ship,
@@ -20,8 +20,10 @@ import {
   ChevronRight,
   RotateCcw,
   X,
+  LogOut,
 } from 'lucide-react';
 import { useOperations } from '../../context/OperationsContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -37,8 +39,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobileDrawer,
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { alerts, isOptimizationApplied, resetToDefault } = useOperations();
+  const { user, logout } = useAuth();
   const unreadAlerts = alerts.filter(a => !a.isResolved).length;
+
+  const getUserInitials = () => {
+    if (!user?.name) return 'MV';
+    const parts = user.name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return user.name.slice(0, 2).toUpperCase();
+  };
+
+  const handleLogout = () => {
+    if (onCloseMobileDrawer) onCloseMobileDrawer();
+    logout();
+    navigate('/', { replace: true });
+  };
 
   const navSections = [
     {
@@ -145,7 +164,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <span className="font-semibold text-sm tracking-tight text-text-main">
-                  PortPulse
+                  PortsPilot
                 </span>
 
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-teal-50 text-teal-800 font-semibold border border-teal-200 shadow-xs">
@@ -288,23 +307,44 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <span>Reset Demo State</span>
             </button>
             <div className="flex items-center gap-3 pt-2 px-1">
-              <div className="w-8 h-8 rounded-full bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-semibold text-text-main shrink-0 shadow-xs">
-                MV
-              </div>
+              {user?.photoURL ? (
+                <img src={user.photoURL} alt={user.name} className="w-8 h-8 rounded-full object-cover shrink-0 border border-border-subtle shadow-xs" />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-surface-subtle border border-border-subtle flex items-center justify-center text-xs font-semibold text-text-main shrink-0 shadow-xs">
+                  {getUserInitials()}
+                </div>
+              )}
               <div className="min-w-0 flex-1">
-                <div className="text-xs font-semibold text-text-main truncate">Capt. M. Vance</div>
+                <div className="text-xs font-semibold text-text-main truncate" title={user?.name || 'Capt. M. Vance'}>{user?.name || 'Capt. M. Vance'}</div>
                 <div className="text-[11px] text-text-muted truncate">Port Supervisor</div>
               </div>
             </div>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 mt-2 rounded-xl text-xs font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors shadow-xs"
+              title="Logout"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Logout</span>
+            </button>
           </>
         ) : (
-          <button
-            onClick={resetToDefault}
-            className="w-full flex items-center justify-center p-2 rounded-xl text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors shadow-xs active:scale-95"
-            title="Reset Demo State"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
+          <div className="space-y-3 flex flex-col items-center">
+            <button
+              onClick={resetToDefault}
+              className="w-full flex items-center justify-center p-2 rounded-xl text-text-caption hover:text-text-main hover:bg-surface-subtle transition-colors shadow-xs active:scale-95"
+              title="Reset Demo State"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center p-2 rounded-xl text-rose-600 hover:text-rose-700 hover:bg-rose-50 transition-colors shadow-xs active:scale-95"
+              title="Logout"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
         )}
       </div>
     </aside>

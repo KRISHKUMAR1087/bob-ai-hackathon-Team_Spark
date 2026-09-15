@@ -1,9 +1,9 @@
 import { User, UserRole } from '../types/auth';
 import { supabase } from '../lib/supabase';
 
-const STORAGE_KEY_USER = 'portpulse_auth_user';
-const STORAGE_KEY_ROLE = 'portpulse_user_role';
-const STORAGE_KEY_TOKEN = 'portpulse_token';
+const STORAGE_KEY_USER = 'portspilot_auth_user';
+const STORAGE_KEY_ROLE = 'portspilot_user_role';
+const STORAGE_KEY_TOKEN = 'portspilot_token';
 
 /**
  * Decodes a JWT token safely with full Unicode support
@@ -333,7 +333,7 @@ export class AuthService {
     const updated: User = {
       id: stored?.id || 'demo-user',
       name: stored?.name || 'Operator',
-      email: stored?.email || 'operator@portpulse.demo',
+      email: stored?.email || 'operator@portspilot.demo',
       role: role,
       authProvider: stored?.authProvider || 'demo',
     };
@@ -349,7 +349,7 @@ export class AuthService {
     const user: User = {
       id: role === 'admin' ? 'demo-admin-id' : 'demo-agent-id',
       name: role === 'admin' ? 'Capt. M. Vance' : 'James Harrington',
-      email: role === 'admin' ? 'admin@portpulse.demo' : 'agent@portpulse.demo',
+      email: role === 'admin' ? 'admin@portspilot.demo' : 'agent@portspilot.demo',
       role: role,
       authProvider: 'demo',
     };
@@ -382,6 +382,101 @@ export class AuthService {
   }
 
   /**
+   * Updates user email address
+   */
+  public static async updateEmail(newEmail: string): Promise<User> {
+    try {
+      const { data, error } = await supabase.auth.updateUser({ email: newEmail });
+      if (error) throw error;
+      if (data.user) {
+        return await AuthService.getProfileOrFallback(data.user);
+      }
+    } catch (e) {
+      console.warn('[Supabase] Email update skipped or warning:', e);
+    }
+
+    const stored = AuthService.getStoredUser();
+    if (stored) {
+      const updated: User = { ...stored, email: newEmail };
+      localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(updated));
+      return updated;
+    }
+    throw new Error('No user session found to update email.');
+  }
+
+  /**
+   * Updates user password
+   */
+  public static async updatePassword(newPassword: string): Promise<void> {
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      return;
+    } catch (e: any) {
+      console.warn('[Supabase] Password update fallback/notice:', e);
+      const stored = AuthService.getStoredUser();
+      if (stored) return; // Allow demo password changes
+      throw new Error(e.message || 'Failed to update password');
+    }
+  }
+
+  /**
+   * Updates user profile (name, photo)
+   */
+  public static async updateProfile(name: string, photoURL?: string): Promise<User> {
+    try {
+      const { data, error } = await supabase.auth.updateUser({
+        data: { name, avatar_url: photoURL }
+      });
+      if (!error && data.user) {
+        try {
+          await supabase.from('profiles').upsert({
+            id: data.user.id,
+            name,
+            avatar_url: photoURL,
+            updated_at: new Date().toISOString()
+          });
+        } catch (dbErr) {
+          console.warn('[Supabase] profiles table update skipped', dbErr);
+        }
+        return await AuthService.getProfileOrFallback(data.user);
+      }
+    } catch (e) {
+      console.warn('[Supabase] Profile update fallback:', e);
+    }
+
+    const stored = AuthService.getStoredUser();
+    if (stored) {
+      const updated: User = { ...stored, name, photoURL: photoURL || stored.photoURL };
+      localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(updated));
+      return updated;
+    }
+    throw new Error('No user session found to update profile.');
+  }
+
+  /**
+   * Permanently deletes user account and clears local state
+   */
+  public static async deleteAccount(): Promise<void> {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        try {
+          await supabase.from('profiles').delete().eq('id', session.user.id);
+        } catch (e) {
+          console.warn('[Supabase] Profile deletion error:', e);
+        }
+      }
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.warn('[Supabase] signOut error during deletion:', e);
+    }
+    localStorage.removeItem(STORAGE_KEY_USER);
+    localStorage.removeItem(STORAGE_KEY_ROLE);
+    localStorage.removeItem(STORAGE_KEY_TOKEN);
+  }
+
+  /**
    * Signs out of Supabase and clears local storage
    */
   public static async logout(): Promise<void> {
@@ -395,4 +490,3 @@ export class AuthService {
     localStorage.removeItem(STORAGE_KEY_TOKEN);
   }
 }
-

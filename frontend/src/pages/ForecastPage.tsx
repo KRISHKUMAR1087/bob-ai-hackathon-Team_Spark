@@ -19,12 +19,42 @@ export const ForecastPage: React.FC = () => {
   } = useOperations();
 
   const [selectedBerthId, setSelectedBerthId] = useState<string>('B04');
-  const selectedBerth = berths.find(b => b.id === selectedBerthId) || berths[3];
+  const selectedBerth = berths.find(b => b.id === selectedBerthId) || berths[0] || {
+    id: selectedBerthId,
+    name: `Berth ${selectedBerthId}`,
+    currentUtilization: 0,
+    predictedUtilization: 0,
+    riskLevel: 'LOW' as const,
+  };
 
   const handleExplainWithGemini = async () => {
     setIsCopilotOpen(true);
     await sendCopilotMessage(`Explain the congestion forecast and bottleneck drivers for Berth ${selectedBerthId}.`);
   };
+
+  if (!forecast) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-text-main tracking-tight">
+              Congestion Forecast Engine
+            </h1>
+            <p className="text-sm text-text-muted mt-1">
+              Predictive bottleneck neural model trained on historical AIS trajectories, gate transactions, and weather tides.
+            </p>
+          </div>
+        </div>
+        <div className="bg-surface rounded-3xl border border-border-subtle p-12 text-center space-y-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <Sparkles className="w-10 h-10 text-brand-teal mx-auto" />
+          <h3 className="text-lg font-bold text-text-main">No congestion forecast data available</h3>
+          <p className="text-sm text-text-muted max-w-md mx-auto">
+            Congestion predictions will display here once operational data or vessel berth requests are submitted.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

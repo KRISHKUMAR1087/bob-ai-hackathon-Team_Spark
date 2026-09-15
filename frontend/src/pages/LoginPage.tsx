@@ -9,9 +9,11 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { GoogleSignInButton } from '../components/auth/GoogleSignInButton';
 import { RoleSelector } from '../components/auth/RoleSelector';
+import { AuthErrorAlert } from '../components/auth/AuthErrorAlert';
 import { ThemeToggleButton } from '../components/common/ThemeToggleButton';
 import { UserRole } from '../types/auth';
 import { motion } from 'framer-motion';
+
 const backgroundVideo = '/generate_a_video_for_a_port_ma.mp4';
 
 const fadeUp: any = {
@@ -32,6 +34,7 @@ export const LoginPage: React.FC = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showRoleSelector, setShowRoleSelector] = useState(false);
+  const [googleError, setGoogleError] = useState<string | null>(null);
 
   const getRedirectPath = (role: UserRole) => {
     const state = location.state as { from?: { pathname: string } } | null;
@@ -50,15 +53,23 @@ export const LoginPage: React.FC = () => {
 
   const handleGoogleSignIn = async (idToken: string) => {
     setIsGoogleLoading(true);
+    setGoogleError(null);
     try {
+      const pendingRole = localStorage.getItem('pending_google_role') as UserRole | null;
       const result = await loginWithGoogleToken(idToken);
-      if (result.needsRoleSelection && result.tempUser) {
+      
+      if (pendingRole && (pendingRole === 'admin' || pendingRole === 'ship-agent')) {
+        localStorage.removeItem('pending_google_role');
+        const confirmed = await confirmRoleSelection(pendingRole);
+        navigate(getRedirectPath(confirmed.role), { replace: true });
+      } else if (result.needsRoleSelection && result.tempUser) {
         setShowRoleSelector(true);
       } else if (result.tempUser) {
         navigate(getRedirectPath(result.tempUser.role), { replace: true });
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('Google sign in error:', e);
+      setGoogleError(e.message || 'Google sign-in failed. Please try again.');
     } finally {
       setIsGoogleLoading(false);
     }
@@ -231,7 +242,17 @@ export const LoginPage: React.FC = () => {
                     <div className="flex-grow border-t border-slate-200" />
                   </div>
 
-                  <GoogleSignInButton onSuccess={(idToken) => handleGoogleSignIn(idToken)} isLoading={isGoogleLoading} />
+                  {googleError && (
+                    <div className="mb-3">
+                      <AuthErrorAlert message={googleError} onDismiss={() => setGoogleError(null)} />
+                    </div>
+                  )}
+
+                  <GoogleSignInButton
+                    onSuccess={(idToken) => handleGoogleSignIn(idToken)}
+                    onError={(err) => setGoogleError(err?.message || 'Failed to initiate Google sign-in. Please try again.')}
+                    isLoading={isGoogleLoading}
+                  />
 
                   <p className="text-center text-[11px] text-slate-400 mt-3 leading-relaxed">
                     By signing in you agree to our{' '}
@@ -428,7 +449,7 @@ export const LoginPage: React.FC = () => {
                 </ul>
                 <button
                   onClick={() => handleDemoLogin('admin')}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-teal text-white font-bold hover:bg-teal-600 transition-colors text-sm shadow"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-teal text-white font-bold hover:bg-teal-600 transition-colors text-sm shadow cursor-pointer"
                 >
                   Enter Port Admin Demo <ArrowRight className="w-4 h-4" />
                 </button>
@@ -466,7 +487,7 @@ export const LoginPage: React.FC = () => {
                 </ul>
                 <button
                   onClick={() => handleDemoLogin('ship-agent')}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-blue text-white font-bold hover:bg-blue-600 transition-colors text-sm shadow"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-blue text-white font-bold hover:bg-blue-600 transition-colors text-sm shadow cursor-pointer"
                 >
                   Enter Ship Agent Demo <ArrowRight className="w-4 h-4" />
                 </button>
@@ -580,13 +601,13 @@ export const LoginPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={() => handleDemoLogin('admin')}
-              className="flex items-center gap-2 px-8 py-3.5 rounded-xl bg-white text-brand-teal font-bold hover:bg-slate-50 transition-colors shadow-lg text-sm"
+              className="flex items-center gap-2 px-8 py-3.5 rounded-xl bg-white text-brand-teal font-bold hover:bg-slate-50 transition-colors shadow-lg text-sm cursor-pointer"
             >
               Try Port Admin Demo <ArrowRight className="w-4 h-4" />
             </button>
             <button
               onClick={() => handleDemoLogin('ship-agent')}
-              className="flex items-center gap-2 px-8 py-3.5 rounded-xl bg-white/15 border border-white/30 text-white font-bold hover:bg-white/25 transition-colors text-sm"
+              className="flex items-center gap-2 px-8 py-3.5 rounded-xl bg-white/15 border border-white/30 text-white font-bold hover:bg-white/25 transition-colors text-sm cursor-pointer"
             >
               Try Ship Agent Demo <Anchor className="w-4 h-4" />
             </button>
@@ -657,4 +678,3 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
-

@@ -28,6 +28,7 @@ export const CongestionChart: React.FC<CongestionChartProps> = ({
   const [horizon, setHorizon] = useState<'6h' | '12h' | '24h' | '48h' | '72h'>('24h');
 
   const getHorizonPoints = () => {
+    if (!forecast?.points) return [];
     switch (horizon) {
       case '6h':
         return forecast.points.slice(0, 2);

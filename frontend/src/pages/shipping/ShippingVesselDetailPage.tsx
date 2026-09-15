@@ -342,7 +342,7 @@ export const ShippingVesselDetailPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-brand-teal" />
             <h2 className="text-xs font-bold text-text-main uppercase tracking-wider">
-              PortPulse AI Turnaround Analysis
+              PortsPilot AI Turnaround Analysis
             </h2>
           </div>
           <span className="text-[11px] text-text-caption">Grounded in Live AIS & Telemetry</span>

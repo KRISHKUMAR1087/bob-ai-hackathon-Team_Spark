@@ -12,8 +12,8 @@ interface MusicContextType {
 
 const MusicContext = createContext<MusicContextType | undefined>(undefined);
 
-const STORAGE_KEY_PLAYING = 'portpulse_music_playing';
-const STORAGE_KEY_VOLUME = 'portpulse_music_volume';
+const STORAGE_KEY_PLAYING = 'portspilot_music_playing';
+const STORAGE_KEY_VOLUME = 'portspilot_music_volume';
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);

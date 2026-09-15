@@ -10,7 +10,7 @@ export const CopilotDrawer: React.FC = () => {
     <Drawer
       isOpen={isCopilotOpen}
       onClose={() => setIsCopilotOpen(false)}
-      title="PortPulse Gemini Copilot"
+      title="PortsPilot Gemini Copilot"
       subtitle="Operational Decision Intelligence & Natural Language Telemetry"
       width="max-w-2xl"
     >

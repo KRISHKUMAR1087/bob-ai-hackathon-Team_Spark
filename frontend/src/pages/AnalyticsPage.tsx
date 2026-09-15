@@ -74,7 +74,7 @@ export const AnalyticsPage: React.FC = () => {
         <div className="flex items-center justify-between border-b border-border-subtle pb-3">
           <span className="text-xs font-semibold uppercase tracking-wider text-text-main flex items-center gap-2">
             <Zap className="w-4 h-4 text-brand-teal" />
-            Impact of PortPulse Optimization
+            Impact of PortsPilot Optimization
           </span>
           <span className="text-xs text-text-caption">
             Audited over {dateRange.toUpperCase()} rolling period
@@ -155,7 +155,7 @@ export const AnalyticsPage: React.FC = () => {
                 <Area
                   type="monotone"
                   dataKey="aiWait"
-                  name="PortPulse AI"
+                  name="PortsPilot AI"
                   stroke="#0EA5A8"
                   fill="#0EA5A8"
                   fillOpacity={0.25}
@@ -191,7 +191,7 @@ export const AnalyticsPage: React.FC = () => {
                   }}
                 />
                 <Bar dataKey="standardTurnaround" name="Standard" fill={isDark ? '#1D4655' : '#CBD5E1'} radius={[3, 3, 0, 0]} />
-                <Bar dataKey="optimizedTurnaround" name="PortPulse AI" fill="#0EA5A8" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="optimizedTurnaround" name="PortsPilot AI" fill="#0EA5A8" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

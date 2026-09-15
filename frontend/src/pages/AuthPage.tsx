@@ -7,6 +7,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { GoogleSignInButton } from '../components/auth/GoogleSignInButton';
 import { RoleSelector } from '../components/auth/RoleSelector';
+import { AuthErrorAlert } from '../components/auth/AuthErrorAlert';
 import { ThemeToggleButton } from '../components/common/ThemeToggleButton';
 import { UserRole } from '../types/auth';
 import { motion } from 'framer-motion';
@@ -61,9 +62,16 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
 
   const handleGoogleSignIn = async (idToken: string) => {
     setIsGoogleLoading(true);
+    setError('');
     try {
+      const pendingRole = localStorage.getItem('pending_google_role') as UserRole | null || selectedRole;
       const result = await loginWithGoogleToken(idToken);
-      if (result.needsRoleSelection && result.tempUser) {
+      
+      if (pendingRole && (pendingRole === 'admin' || pendingRole === 'ship-agent')) {
+        localStorage.removeItem('pending_google_role');
+        const confirmed = await confirmRoleSelection(pendingRole);
+        navigate(getRedirectPath(confirmed.role), { replace: true });
+      } else if (result.needsRoleSelection && result.tempUser) {
         setShowRoleSelector(true);
       } else if (result.tempUser) {
         navigate(getRedirectPath(result.tempUser.role), { replace: true });
@@ -79,7 +87,11 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
   const handleRoleSelected = async (role: UserRole) => {
     const confirmed = await confirmRoleSelection(role);
     setShowRoleSelector(false);
-    navigate(getRedirectPath(confirmed.role), { replace: true });
+    if (confirmed.role === 'admin') {
+      navigate('/onboarding', { replace: true });
+    } else {
+      navigate(getRedirectPath(confirmed.role), { replace: true });
+    }
   };
 
   const validate = () => {
@@ -109,7 +121,11 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
         navigate(getRedirectPath(user.role), { replace: true });
       } else {
         const user = await signup(signupName, signupEmail, signupPassword, selectedRole);
-        navigate(getRedirectPath(user.role), { replace: true });
+        if (user.role === 'admin') {
+          navigate('/onboarding', { replace: true });
+        } else {
+          navigate(getRedirectPath(user.role), { replace: true });
+        }
       }
     } catch (err: any) {
       setError(err.message || 'Authentication failed');
@@ -142,7 +158,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
           <div className="w-9 h-9 rounded-xl bg-brand-teal flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] group-hover:scale-105 transition-transform duration-200">
             <Ship className="w-4 h-4 text-white" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-text-main group-hover:text-brand-teal transition-colors">PortPulse</span>
+          <span className="text-xl font-bold tracking-tight text-text-main group-hover:text-brand-teal transition-colors">PortsPilot</span>
         </Link>
         <div className="flex items-center gap-3">
           <ThemeToggleButton />
@@ -233,7 +249,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {error && <div className="p-3 text-sm text-red-500 bg-red-50 rounded-xl border border-red-200">{error}</div>}
+                {error && <AuthErrorAlert message={error} onDismiss={() => setError('')} />}
 
                 {/* Full Name — signup only */}
                 {!isLogin && (
@@ -352,7 +368,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
                 <div className="flex-grow border-t border-slate-200" />
               </div>
 
-              <GoogleSignInButton onSuccess={(idToken) => handleGoogleSignIn(idToken)} isLoading={isGoogleLoading} />
+              <GoogleSignInButton
+                role={selectedRole}
+                onSuccess={(idToken) => handleGoogleSignIn(idToken)}
+                onError={(err) => setError(err?.message || 'Google sign-in failed. Please try again.')}
+                isLoading={isGoogleLoading}
+              />
 
               <button
                 type="button"

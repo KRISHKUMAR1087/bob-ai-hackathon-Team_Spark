@@ -34,7 +34,7 @@ export const ShippingCopilotPage: React.FC = () => {
     {
       id: 'init-1',
       sender: 'gemini',
-      text: `Hello ${user?.name || 'Agent'}. I am your **Shipping Operational Copilot** at PortPulse.
+      text: `Hello ${user?.name || 'Agent'}. I am your **Shipping Operational Copilot** at PortsPilot.
 
 I monitor AIS telemetry, quayside turnaround schedules, berth request approvals, and customs document compliance for your fleet (*Ocean Star*, *Pacific Voyager*, *MSC Orion*).
 

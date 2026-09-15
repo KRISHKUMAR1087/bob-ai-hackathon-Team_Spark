@@ -29,6 +29,7 @@ const CopilotPage = React.lazy(() => import('./pages/CopilotPage').then(m => ({ 
 const AnalyticsPage = React.lazy(() => import('./pages/AnalyticsPage').then(m => ({ default: m.AnalyticsPage })));
 const AlertsPage = React.lazy(() => import('./pages/AlertsPage').then(m => ({ default: m.AlertsPage })));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
+const PortAdminSetupPage = React.lazy(() => import('./pages/PortAdminSetupPage').then(m => ({ default: m.PortAdminSetupPage })));
 
 // Shipping Agency Pages
 const ShippingDashboardPage = React.lazy(() => import('./pages/shipping/ShippingDashboardPage').then(m => ({ default: m.ShippingDashboardPage })));
@@ -113,6 +114,11 @@ export const App: React.FC = () => {
                 <Route path="/auth/login" element={<AuthPage mode="login" />} />
                 <Route path="/auth/signup" element={<AuthPage mode="signup" />} />
                 <Route path="/auth/callback" element={<AuthCallbackPage />} />
+                
+                {/* Onboarding */}
+                <Route element={<RoleProtectedRoute allowedRoles={['admin']} />}>
+                  <Route path="/onboarding" element={<PortAdminSetupPage />} />
+                </Route>
 
                 {/* Root Portal Router */}
                 <Route path="/" element={<RootRedirect />} />
@@ -147,6 +153,7 @@ export const App: React.FC = () => {
                     {/* System */}
                     <Route path="/alerts" element={<AlertsPage />} />
                     <Route path="/settings" element={<SettingsPage />} />
+                    <Route path="/profile" element={<SettingsPage />} />
 
                     {/* Admin Aliases */}
                     <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
@@ -161,6 +168,7 @@ export const App: React.FC = () => {
                     <Route path="/admin/analytics" element={<AnalyticsPage />} />
                     <Route path="/admin/alerts" element={<AlertsPage />} />
                     <Route path="/admin/settings" element={<SettingsPage />} />
+                    <Route path="/admin/profile" element={<SettingsPage />} />
                   </Route>
                 </Route>
 

@@ -2,7 +2,7 @@ export class ApiClient {
   private baseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL + '/api' : '/api';
 
   private getHeaders() {
-    const token = localStorage.getItem('portpulse_token');
+    const token = localStorage.getItem('portspilot_token');
     return {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {})
@@ -54,9 +54,9 @@ export class ApiClient {
 
     if (!res.ok) {
       if (res.status === 401) {
-        localStorage.removeItem('portpulse_token');
-        localStorage.removeItem('portpulse_auth_user');
-        localStorage.removeItem('portpulse_user_role');
+        localStorage.removeItem('portspilot_token');
+        localStorage.removeItem('portspilot_auth_user');
+        localStorage.removeItem('portspilot_user_role');
       }
       throw new Error(data.error?.message || data.error || 'API Error');
     }

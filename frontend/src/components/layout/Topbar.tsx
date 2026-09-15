@@ -10,6 +10,7 @@ import {
   LogOut,
   Settings as SettingsIcon,
   ShieldCheck,
+  User as UserIcon,
 } from 'lucide-react';
 import { useOperations } from '../../context/OperationsContext';
 import { useAuth } from '../../context/AuthContext';
@@ -70,7 +71,7 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
     if (path.includes('/analytics')) return { section: 'Analytics', title: 'Operations Analytics' };
     if (path.includes('/alerts')) return { section: 'System', title: 'Operational Alerts' };
     if (path.includes('/settings')) return { section: 'System', title: 'Settings' };
-    return { section: 'PortPulse', title: 'Command Center' };
+    return { section: 'PortsPilot', title: 'Command Center' };
   };
 
   const breadcrumb = getBreadcrumb();
@@ -226,7 +227,7 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
                   {user?.name || 'Capt. M. Vance'}
                 </div>
                 <div className="text-xs text-text-muted truncate mt-0.5">
-                  {user?.email || 'admin@portpulse.demo'}
+                  {user?.email || 'admin@portspilot.demo'}
                 </div>
                 <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
@@ -235,9 +236,17 @@ export const Topbar: React.FC<TopbarProps> = ({ isCollapsed, setIsMobileMenuOpen
               </div>
 
               {/* Menu Links */}
-              <div className="py-1.5 px-2">
+              <div className="py-1.5 px-2 space-y-1">
                 <Link
-                  to="/settings"
+                  to="/settings?tab=profile"
+                  onClick={() => setIsProfileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-main hover:bg-surface-subtle transition-colors"
+                >
+                  <UserIcon className="w-4 h-4 text-brand-teal" />
+                  <span>Admin & User Profile</span>
+                </Link>
+                <Link
+                  to="/settings?tab=port"
                   onClick={() => setIsProfileMenuOpen(false)}
                   className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-main hover:bg-surface-subtle transition-colors"
                 >

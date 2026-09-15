@@ -63,9 +63,15 @@ model User {
   createdAt    DateTime        @default(now())
 
   // Relations
-  vessels         Vessel[]
-  berthRequests   BerthRequest[]
-  shippingDocs    ShippingDocument[]
+  vessels             Vessel[]
+  berthRequests       BerthRequest[]
+  shippingDocs        ShippingDocument[]
+  congestionForecasts CongestionForecast[]
+  optimizationResults OptimizationResult[]
+  simulationResults   SimulationResult[]
+  routeOptions        RouteOption[]
+  shiftPlanItems      ShiftPlanItem[]
+  operationalAlerts   OperationalAlert[]
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -242,7 +248,9 @@ model CongestionForecast {
   riskBottleneckBerth      String
   bottleneckConfidence     Float
   createdAt                DateTime @default(now())
+  ownerId                  String?
 
+  owner                    User?    @relation(fields: [ownerId], references: [id])
   drivers                  ForecastDriver[]
   points                   ForecastPoint[]
 }
@@ -297,6 +305,9 @@ model OptimizationResult {
   queueReductionCount      Int
   savingsEstimateUsd       Float
   rationale                String
+  ownerId                  String?
+
+  owner                    User?    @relation(fields: [ownerId], references: [id])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -312,6 +323,9 @@ model SimulationResult {
   after        String
   // recoveryPlan: { id, steps, isApplied, expectedRecoveryHours } as String
   recoveryPlan String
+  ownerId      String?
+
+  owner        User?  @relation(fields: [ownerId], references: [id])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -334,6 +348,9 @@ model RouteOption {
   rationale       String
   // coordinates: { x: number; y: number } as String
   coordinates     String
+  ownerId         String?
+
+  owner           User?   @relation(fields: [ownerId], references: [id])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -353,6 +370,9 @@ model ShiftPlanItem {
   // status: 'Scheduled' | 'Conflict' | 'Optimized' | 'Maintenance'
   status          String
   conflictReason  String?
+  ownerId         String?
+
+  owner           User?   @relation(fields: [ownerId], references: [id])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -370,6 +390,9 @@ model OperationalAlert {
   isResolved    Boolean       @default(false)
   actionRoute   String
   actionLabel   String
+  ownerId       String?
+
+  owner         User?         @relation(fields: [ownerId], references: [id])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

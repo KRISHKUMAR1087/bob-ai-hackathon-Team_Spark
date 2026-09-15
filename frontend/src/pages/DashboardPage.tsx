@@ -142,7 +142,7 @@ export const DashboardPage: React.FC = () => {
                   Contributing Factors (ML Attribution):
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                  {forecast.drivers.map((d, idx) => (
+                  {(forecast?.drivers || []).map((d, idx) => (
                     <div key={idx} className="bg-surface p-2.5 rounded-xl border border-border-subtle space-y-1 shadow-xs">
                       <div className="flex items-center justify-between text-text-muted">
                         <span>Factor 0{idx + 1}</span>
@@ -174,7 +174,10 @@ export const DashboardPage: React.FC = () => {
                 </div>
                 <div>
                   <div className="text-[11px] font-medium text-text-muted">Queue Count</div>
-                  <div className="text-2xl font-bold text-text-main mt-0.5">7 vessels</div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-bold text-text-main">7</span>
+                    <span className="text-sm font-semibold text-text-main">vessels</span>
+                  </div>
                   <div className="text-[10px] text-text-caption">In roadstead</div>
                 </div>
                 <div>
@@ -258,7 +261,10 @@ export const DashboardPage: React.FC = () => {
                 </div>
                 <div>
                   <div className="text-[11px] font-medium text-text-muted">Queue Count</div>
-                  <div className="text-2xl font-bold text-text-main mt-0.5">4 vessels</div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-bold text-text-main">4</span>
+                    <span className="text-sm font-semibold text-text-main">vessels</span>
+                  </div>
                   <div className="text-[10px] text-text-caption">-3 vessels diverted</div>
                 </div>
                 <div>

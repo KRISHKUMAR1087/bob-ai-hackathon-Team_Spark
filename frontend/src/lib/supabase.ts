@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Fallback Supabase configuration for PortPulse AI
+// Fallback Supabase configuration for PortsPilot AI
 // Primary project ID: osgteroqqxmnpqwvcrhc
 const defaultSupabaseUrl = 'https://osgteroqqxmnpqwvcrhc.supabase.co';
 const defaultAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.dummy-anon-key';
@@ -36,7 +36,7 @@ const supabaseUrl = getDynamicSupabaseUrl();
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || defaultAnonKey;
 
 if (!import.meta.env.VITE_SUPABASE_URL && import.meta.env.DEV) {
-  console.info(`[Supabase] Using PortPulse project endpoint: ${supabaseUrl}`);
+  console.info(`[Supabase] Using PortsPilot project endpoint: ${supabaseUrl}`);
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {

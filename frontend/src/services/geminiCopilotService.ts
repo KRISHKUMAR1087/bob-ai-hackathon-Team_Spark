@@ -109,7 +109,7 @@ export class GeminiCopilotService {
 
     try {
       const ai = new GoogleGenAI({ apiKey });
-      const systemInstruction = `You are the PortPulse AI Operational Copilot, an enterprise decision-support assistant for port operations supervisors.
+      const systemInstruction = `You are the PortsPilot AI Operational Copilot, an enterprise decision-support assistant for port operations supervisors.
 
 CORE ARCHITECTURAL GROUNDING RULES:
 1. STRICT GROUNDING: Every operational fact, number, percentage, wait time, berth ID, vessel name, and crane status MUST come exclusively from the supplied structured context.
@@ -280,7 +280,7 @@ You can submit an official Berth Request at /shipping/berth-requests or update y
 
     try {
       const ai = new GoogleGenAI({ apiKey });
-      const systemInstruction = `You are the PortPulse AI Shipping Copilot for Apex Maritime Agency.
+      const systemInstruction = `You are the PortsPilot AI Shipping Copilot for Apex Maritime Agency.
 
 STRICT ROLE ACCESS BOUNDARIES:
 - You serve exclusively the Ship Agent. Your scope is strictly limited to their managed fleet: Ocean Star (VES-01), Pacific Voyager (VES-05), MSC Orion (VES-02).

@@ -31,6 +31,30 @@ export const OptimizerPage: React.FC = () => {
     await sendCopilotMessage('Why was Ocean Star moved from Berth B04 to B02 in the optimization plan?');
   };
 
+  if (!optimization) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-text-main tracking-tight">
+              Operations Optimizer
+            </h1>
+            <p className="text-sm text-text-muted mt-1">
+              Algorithmic berth and crane rebalancing to minimize vessel turnaround delays and demurrage penalties.
+            </p>
+          </div>
+        </div>
+        <div className="bg-surface rounded-3xl border border-border-subtle p-12 text-center space-y-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <Zap className="w-10 h-10 text-brand-teal mx-auto" />
+          <h3 className="text-lg font-bold text-text-main">No optimization results available</h3>
+          <p className="text-sm text-text-muted max-w-md mx-auto">
+            Run the quayside optimizer to generate berth rebalancing and turnaround recommendations.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}

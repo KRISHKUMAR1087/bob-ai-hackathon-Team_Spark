@@ -1,5 +1,5 @@
 -- ==============================================================================
--- PortPulse AI — Supabase Database Architecture & Row Level Security (RLS)
+-- PortsPilot AI — Supabase Database Architecture & Row Level Security (RLS)
 -- ==============================================================================
 
 -- 1. Create Profiles Table (Linked to Supabase Auth)

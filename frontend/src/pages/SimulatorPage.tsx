@@ -168,22 +168,22 @@ export const SimulatorPage: React.FC = () => {
             metrics={[
               {
                 label: 'Anchorage Queue',
-                before: `${simulation.before.queueCount} vessels`,
-                after: `${simulation.after.queueCount} vessels`,
+                before: `${simulation?.before?.queueCount ?? 0} vessels`,
+                after: `${simulation?.after?.queueCount ?? 0} vessels`,
                 delta: '+4 vessels backlog (+57%)',
                 isPositive: false,
               },
               {
                 label: 'Average Wait Time',
-                before: `${simulation.before.avgWaitHours}h`,
-                after: `${simulation.after.avgWaitHours}h`,
+                before: `${simulation?.before?.avgWaitHours ?? 0}h`,
+                after: `${simulation?.after?.avgWaitHours ?? 0}h`,
                 delta: '+6.4 hours delay spike',
                 isPositive: false,
               },
               {
                 label: 'B04 Saturation',
-                before: `${simulation.before.berthUtilizationPercent}%`,
-                after: `${simulation.after.berthUtilizationPercent}%`,
+                before: `${simulation?.before?.berthUtilizationPercent ?? 0}%`,
+                after: `${simulation?.after?.berthUtilizationPercent ?? 0}%`,
                 delta: '+12% (Critical Bottleneck)',
                 isPositive: false,
               },
@@ -233,7 +233,7 @@ export const SimulatorPage: React.FC = () => {
 
             {/* 3 Step Actions */}
             <div className="space-y-3 text-xs">
-              {simulation.recoveryPlan.steps.map(step => (
+              {(simulation?.recoveryPlan?.steps || []).map(step => (
                 <div
                   key={step.order}
                   className="p-3.5 rounded-lg bg-surface-subtle border border-border-subtle flex items-start gap-3.5"

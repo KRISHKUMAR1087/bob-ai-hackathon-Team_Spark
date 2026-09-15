@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useEffect,
+} from "react";
 import {
   Vessel,
   Berth,
@@ -15,7 +21,7 @@ import {
   BerthRequestStatus,
   ShippingDocument,
   DocumentType,
-} from '../types/operations';
+} from "../types/operations";
 import {
   initialVessels,
   initialBerths,
@@ -29,16 +35,16 @@ import {
   initialAlerts,
   initialBerthRequests,
   initialShippingDocuments,
-} from '../services/mockData';
-import { geminiCopilotService } from '../services/geminiCopilotService';
-import { useAuth } from './AuthContext';
-import { DocumentService } from '../services/documentService';
-import { NotificationService } from '../services/notificationService';
-import { OperationsDataService } from '../services/operationsDataService';
+} from "../services/mockData";
+import { geminiCopilotService } from "../services/geminiCopilotService";
+import { useAuth } from "./AuthContext";
+import { DocumentService } from "../services/documentService";
+import { NotificationService } from "../services/notificationService";
+import { OperationsDataService } from "../services/operationsDataService";
 
 export interface ToastState {
   id: string;
-  type: 'success' | 'warning' | 'error' | 'info';
+  type: "success" | "warning" | "error" | "info";
   title: string;
   message: string;
 }
@@ -48,10 +54,11 @@ interface OperationsContextType {
   berths: Berth[];
   cranes: Crane[];
   yardBlocks: YardBlock[];
-  forecast: CongestionForecastData;
-  optimization: OptimizationResult;
-  simulation: SimulationResult;
+  forecast: CongestionForecastData | null;
+  optimization: OptimizationResult | null;
+  simulation: SimulationResult | null;
   routes: RouteOption[];
+  setRoutes: React.Dispatch<React.SetStateAction<RouteOption[]>>;
   shiftPlans: ShiftPlanItem[];
   alerts: OperationalAlert[];
   berthRequests: BerthRequest[];
@@ -69,7 +76,11 @@ interface OperationsContextType {
   isCopilotLoading: boolean;
   toast: ToastState | null;
   clearToast: () => void;
-  showToast: (type: 'success' | 'warning' | 'error' | 'info', title: string, message: string) => void;
+  showToast: (
+    type: "success" | "warning" | "error" | "info",
+    title: string,
+    message: string,
+  ) => void;
 
   // Operational Actions
   applyOptimization: () => void;
@@ -85,9 +96,24 @@ interface OperationsContextType {
   updateVessel: (id: string, updates: Partial<Vessel>) => void;
   deleteVessel: (id: string) => void;
   updateVesselEta: (vesselId: string, newEta: string, reason: string) => void;
-  submitBerthRequest: (request: Omit<BerthRequest, 'id' | 'submittedAt' | 'status'>) => void;
-  updateBerthRequestStatus: (requestId: string, status: BerthRequestStatus, assignedBerth?: string) => void;
-  updateCargoInfo: (vesselId: string, cargoData: { containersLoaded?: number; containersTotal?: number; cargoQuantity?: string; dangerousGoods?: boolean; specialNotes?: string }) => void;
+  submitBerthRequest: (
+    request: Omit<BerthRequest, "id" | "submittedAt" | "status">,
+  ) => void;
+  updateBerthRequestStatus: (
+    requestId: string,
+    status: BerthRequestStatus,
+    assignedBerth?: string,
+  ) => void;
+  updateCargoInfo: (
+    vesselId: string,
+    cargoData: {
+      containersLoaded?: number;
+      containersTotal?: number;
+      cargoQuantity?: string;
+      dangerousGoods?: boolean;
+      specialNotes?: string;
+    },
+  ) => void;
   uploadDocument: (doc: {
     file?: File;
     name: string;
@@ -115,23 +141,32 @@ interface OperationsContextType {
   setSearchQuery: (query: string) => void;
 }
 
-const OperationsContext = createContext<OperationsContextType | undefined>(undefined);
+const OperationsContext = createContext<OperationsContextType | undefined>(
+  undefined,
+);
 
-export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [vessels, setVessels] = useState<Vessel[]>([]);
-  const [berths, setBerths] = useState<Berth[]>(initialBerths);
-  const [cranes, setCranes] = useState<Crane[]>(initialCranes);
-  const [yardBlocks, setYardBlocks] = useState<YardBlock[]>(initialYardBlocks);
-  const [forecast, setForecast] = useState<CongestionForecastData>(initialForecastData);
-  const [optimization, setOptimization] = useState<OptimizationResult>(initialOptimizationResult);
-  const [simulation, setSimulation] = useState<SimulationResult>(initialSimulationResult);
-  const [routes] = useState<RouteOption[]>(initialRouteOptions);
-  const [shiftPlans, setShiftPlans] = useState<ShiftPlanItem[]>(initialShiftPlans);
-  const [alerts, setAlerts] = useState<OperationalAlert[]>(initialAlerts);
+  const [berths, setBerths] = useState<Berth[]>([]);
+  const [cranes, setCranes] = useState<Crane[]>([]);
+  const [yardBlocks, setYardBlocks] = useState<YardBlock[]>([]);
+  const [forecast, setForecast] = useState<CongestionForecastData | null>(null);
+  const [optimization, setOptimization] = useState<OptimizationResult | null>(
+    null,
+  );
+  const [simulation, setSimulation] = useState<SimulationResult | null>(null);
+  const [routes, setRoutes] = useState<RouteOption[]>([]);
+  const [shiftPlans, setShiftPlans] = useState<ShiftPlanItem[]>([]);
+  const [alerts, setAlerts] = useState<OperationalAlert[]>([]);
   const [berthRequests, setBerthRequests] = useState<BerthRequest[]>([]);
-  const [shippingDocuments, setShippingDocuments] = useState<ShippingDocument[]>([]);
+  const [shippingDocuments, setShippingDocuments] = useState<
+    ShippingDocument[]
+  >([]);
   const { user } = useAuth();
-  const isDemoUser = user?.authProvider === 'demo';
+  const isDemoUser = user?.authProvider === "demo";
+
   const syncVesselIfReal = (vessel: Vessel) => {
     if (!isDemoUser) {
       void OperationsDataService.upsertVessel(vessel);
@@ -145,7 +180,9 @@ export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   // Persistent Notification Read State
-  const [readNotificationIds, setReadNotificationIds] = useState<Set<string>>(new Set());
+  const [readNotificationIds, setReadNotificationIds] = useState<Set<string>>(
+    new Set(),
+  );
 
   // Hydrate demo data or user-owned operational data from Supabase.
   useEffect(() => {
@@ -156,6 +193,15 @@ export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setVessels([]);
         setBerthRequests([]);
         setShippingDocuments([]);
+        setBerths([]);
+        setCranes([]);
+        setYardBlocks([]);
+        setForecast(null);
+        setOptimization(null);
+        setSimulation(null);
+        setRoutes([]);
+        setShiftPlans([]);
+        setAlerts([]);
         return;
       }
 
@@ -163,26 +209,76 @@ export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setVessels(initialVessels);
         setBerthRequests(initialBerthRequests);
         setShippingDocuments(initialShippingDocuments);
+        setBerths(initialBerths);
+        setCranes(initialCranes);
+        setYardBlocks(initialYardBlocks);
+        setForecast(initialForecastData);
+        setOptimization(initialOptimizationResult);
+        setSimulation(initialSimulationResult);
+        setRoutes(initialRouteOptions);
+        setShiftPlans(initialShiftPlans);
+        setAlerts(initialAlerts);
         return;
       }
 
       try {
-        const [dbVessels, dbRequests] = await Promise.all([
+        const [
+          dbVessels,
+          dbRequests,
+          dbBerths,
+          dbCranes,
+          dbYard,
+          dbAlerts,
+          dbShiftPlans,
+          dbRoutes,
+          dbForecast,
+          dbOptimization,
+          dbSimulation,
+        ] = await Promise.all([
           OperationsDataService.fetchVessels(user.id, user.role),
           OperationsDataService.fetchBerthRequests(user.id, user.role),
+          OperationsDataService.fetchBerths(),
+          OperationsDataService.fetchCranes(),
+          OperationsDataService.fetchYardBlocks(),
+          OperationsDataService.fetchAlerts(user.id, user.role),
+          OperationsDataService.fetchShiftPlans(user.id, user.role),
+          OperationsDataService.fetchRoutes(user.id, user.role),
+          OperationsDataService.fetchForecast(user.id, user.role),
+          OperationsDataService.fetchOptimization(user.id, user.role),
+          OperationsDataService.fetchSimulation(user.id, user.role),
         ]);
 
-        if (isMounted) {
-          setVessels(dbVessels);
-          setBerthRequests(dbRequests);
-          setShippingDocuments([]);
-        }
+        if (!isMounted) return;
+        setVessels(dbVessels);
+        setBerthRequests(dbRequests);
+        setShippingDocuments([]);
+        setBerths(dbBerths);
+        setCranes(dbCranes);
+        setYardBlocks(dbYard);
+        setAlerts(dbAlerts);
+        setShiftPlans(dbShiftPlans);
+        setRoutes(dbRoutes);
+        setForecast(dbForecast);
+        setOptimization(dbOptimization);
+        setSimulation(dbSimulation);
       } catch (e) {
-        console.warn('[OperationsContext] Failed to load operations from Supabase:', e);
+        console.warn(
+          "[OperationsContext] Failed to load operations from Supabase:",
+          e,
+        );
         if (isMounted) {
           setVessels([]);
           setBerthRequests([]);
           setShippingDocuments([]);
+          setBerths([]);
+          setCranes([]);
+          setYardBlocks([]);
+          setForecast(null);
+          setOptimization(null);
+          setSimulation(null);
+          setRoutes([]);
+          setShiftPlans([]);
+          setAlerts([]);
         }
       }
     };
@@ -200,12 +296,18 @@ export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (isDemoUser) return;
       if (user?.id) {
         try {
-          const dbDocs = await DocumentService.fetchDocuments(user.id, user.role);
+          const dbDocs = await DocumentService.fetchDocuments(
+            user.id,
+            user.role,
+          );
           if (isMounted) {
             setShippingDocuments(dbDocs);
           }
         } catch (e) {
-          console.warn('[OperationsContext] Failed to load documents from Supabase:', e);
+          console.warn(
+            "[OperationsContext] Failed to load documents from Supabase:",
+            e,
+          );
         }
       }
     };
@@ -224,7 +326,10 @@ export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           const reads = await NotificationService.fetchUserReadIds(user.id);
           if (isMounted) setReadNotificationIds(reads);
         } catch (e) {
-          console.warn('[OperationsContext] Failed to load notification reads from Supabase:', e);
+          console.warn(
+            "[OperationsContext] Failed to load notification reads from Supabase:",
+            e,
+          );
         }
       } else {
         if (isMounted) setReadNotificationIds(new Set());
@@ -241,10 +346,10 @@ export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   const toggleNotificationRead = async (id: string): Promise<void> => {
-    const userId = user?.id || 'demo-agent';
+    const userId = user?.id || "demo-agent";
     const wasRead = readNotificationIds.has(id);
 
-    setReadNotificationIds(prev => {
+    setReadNotificationIds((prev) => {
       const next = new Set(prev);
       if (wasRead) {
         next.delete(id);
@@ -261,68 +366,96 @@ export const OperationsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         await NotificationService.markAsRead(userId, id);
       }
     } catch (e) {
-      console.warn('[OperationsContext] toggleNotificationRead sync warning:', e);
+      console.warn(
+        "[OperationsContext] toggleNotificationRead sync warning:",
+        e,
+      );
     }
   };
 
   const markAllNotificationsRead = async (ids?: string[]): Promise<void> => {
-    const userId = user?.id || 'demo-agent';
-    const targetIds = ids && ids.length > 0
-      ? ids
-      : ['ALT-AG-01', 'ALT-AG-02', 'ALT-AG-03', 'ALT-AG-04', ...alerts.map(a => a.id)];
+    const userId = user?.id || "demo-agent";
+    const targetIds =
+      ids && ids.length > 0
+        ? ids
+        : [
+            "ALT-AG-01",
+            "ALT-AG-02",
+            "ALT-AG-03",
+            "ALT-AG-04",
+            ...alerts.map((a) => a.id),
+          ];
 
-    setReadNotificationIds(prev => {
+    setReadNotificationIds((prev) => {
       const next = new Set(prev);
-      targetIds.forEach(id => next.add(id));
+      targetIds.forEach((id) => next.add(id));
       return next;
     });
 
     try {
       await NotificationService.markAllAsRead(userId, targetIds);
-      showToast('info', 'Notifications Marked as Read', 'All advisories marked as read.');
+      showToast(
+        "info",
+        "Notifications Marked as Read",
+        "All advisories marked as read.",
+      );
     } catch (e) {
-      console.warn('[OperationsContext] markAllNotificationsRead sync warning:', e);
+      console.warn(
+        "[OperationsContext] markAllNotificationsRead sync warning:",
+        e,
+      );
     }
   };
 
-  const agentAlertIds = ['ALT-AG-01', 'ALT-AG-02', 'ALT-AG-03', 'ALT-AG-04'];
-  const unreadAgentAlertsCount = agentAlertIds.filter(id => !readNotificationIds.has(id)).length;
+  const agentAlertIds = ["ALT-AG-01", "ALT-AG-02", "ALT-AG-03", "ALT-AG-04"];
+  const unreadAgentAlertsCount = agentAlertIds.filter(
+    (id) => !readNotificationIds.has(id),
+  ).length;
 
-  const [isOptimizationApplied, setIsOptimizationApplied] = useState<boolean>(false);
-  const [isRecoveryPlanApplied, setIsRecoveryPlanApplied] = useState<boolean>(false);
+  const [isOptimizationApplied, setIsOptimizationApplied] =
+    useState<boolean>(false);
+  const [isRecoveryPlanApplied, setIsRecoveryPlanApplied] =
+    useState<boolean>(false);
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
 
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
   const [isCopilotLoading, setIsCopilotLoading] = useState<boolean>(false);
   const [toast, setToast] = useState<ToastState | null>(null);
 
-  const [selectedBerthId, setSelectedBerthId] = useState<string>('B04');
-  const [selectedVesselId, setSelectedVesselId] = useState<string>('VES-01');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedBerthId, setSelectedBerthId] = useState<string>("B04");
+  const [selectedVesselId, setSelectedVesselId] = useState<string>("VES-01");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const [copilotMessages, setCopilotMessages] = useState<CopilotMessage[]>([
     {
-      id: 'init-1',
-      sender: 'gemini',
-      text: `Good day, Supervisor. I am your **PortPulse Copilot**. 
+      id: "init-1",
+      sender: "gemini",
+      text: `Good day, Supervisor. I am your **PortsPilot Copilot**. 
 
 I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predictive bottlenecks across all 6 berths. 
 
 **Current Alert Highlight:** Berth **B04** is projected to reach **94% saturation within 24 hours** due to incoming ULCV bunching and STS C03 downtime. How would you like to proceed?`,
-      timestamp: 'Just now',
+      timestamp: "Just now",
       suggestedActions: [
-        { label: 'Why is B04 at risk?', prompt: 'Why is B04 at risk?' },
-        { label: 'What happens if C03 fails?', prompt: 'What happens if C03 fails for 8 hours?' },
-        { label: 'Optimize Operations', actionRoute: '/decision/optimizer' },
+        { label: "Why is B04 at risk?", prompt: "Why is B04 at risk?" },
+        {
+          label: "What happens if C03 fails?",
+          prompt: "What happens if C03 fails for 8 hours?",
+        },
+        { label: "Optimize Operations", actionRoute: "/decision/optimizer" },
       ],
     },
   ]);
 
-  const showToast = (type: 'success' | 'warning' | 'error' | 'info', title: string, message: string) => {
-    const id = 'toast-' + Date.now();
+  const showToast = (
+    type: "success" | "warning" | "error" | "info",
+    title: string,
+    message: string,
+  ) => {
+    const id = "toast-" + Date.now();
     setToast({ id, type, title, message });
     setTimeout(() => {
-      setToast(current => (current?.id === id ? null : current));
+      setToast((current) => (current?.id === id ? null : current));
     }, 4500);
   };
 
@@ -331,244 +464,284 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
   // Apply Optimization Recommendation
   const applyOptimization = () => {
     setIsOptimizationApplied(true);
-    setOptimization(prev => ({
-      ...prev,
-      isApplied: true,
-    }));
+    setOptimization((prev) => (prev ? { ...prev, isApplied: true } : null));
 
-    // Update Ocean Star assignment to B02
-    setVessels(prev =>
-      prev.map(v => {
-        if (v.id === 'VES-01') {
+    setVessels((prev) =>
+      prev.map((v) => {
+        if (v.id === "VES-01") {
           return {
             ...v,
-            assignedBerth: 'B02',
+            assignedBerth: "B02",
             predictedWaitHours: 6.8,
-            demurrageRisk: 'Low',
-            recommendedAction: 'Optimized: Assigned to B02 with 4 STS cranes (Wait reduced to 6.8h).',
+            demurrageRisk: "Low",
+            recommendedAction:
+              "Optimized: Assigned to B02 with 4 STS cranes (Wait reduced to 6.8h).",
           };
         }
         return v;
-      })
+      }),
     );
 
-    // Update Berths utilization
-    setBerths(prev =>
-      prev.map(b => {
-        if (b.id === 'B04') {
+    setBerths((prev) =>
+      prev.map((b) => {
+        if (b.id === "B04") {
           return {
             ...b,
-            status: 'Occupied',
+            status: "Occupied",
             currentUtilization: 76,
             predictedUtilization: 78,
             queueCount: 4,
-            riskLevel: 'LOW',
+            riskLevel: "LOW",
             nextVesselId: null,
           };
         }
-        if (b.id === 'B02') {
+        if (b.id === "B02") {
           return {
             ...b,
             predictedUtilization: 74,
             queueCount: 3,
-            nextVesselId: 'VES-01',
+            nextVesselId: "VES-01",
           };
         }
         return b;
-      })
+      }),
     );
 
-    // Update Forecast points
-    setForecast(prev => ({
-      ...prev,
-      overallCongestionPercent: 68,
-      points: prev.points.map(p => ({
-        ...p,
-        B04: Math.max(68, p.B04 - 16),
-        B02: Math.min(80, p.B02 + 6),
-      })),
-    }));
+    setForecast((prev) =>
+      prev
+        ? {
+            ...prev,
+            overallCongestionPercent: 68,
+            points: prev.points.map((p) => ({
+              ...p,
+              B04: Math.max(68, p.B04 - 16),
+              B02: Math.min(80, p.B02 + 6),
+            })),
+          }
+        : null,
+    );
 
-    // Update Shift Plans (resolve conflict)
-    setShiftPlans(prev =>
-      prev.map(sp => {
-        if (sp.vesselId === 'VES-01') {
+    setShiftPlans((prev) =>
+      prev.map((sp) => {
+        if (sp.vesselId === "VES-01") {
           return {
             ...sp,
-            berthId: 'B02',
-            status: 'Optimized',
-            assignedCranes: ['C04', 'C06'],
+            berthId: "B02",
+            status: "Optimized",
+            assignedCranes: ["C04", "C06"],
             conflictReason: undefined,
           };
         }
         return sp;
-      })
+      }),
     );
 
-    // Update Ship Agent Berth Request for Ocean Star to 'Changed' (re-assigned to B02)
-    setBerthRequests(prev =>
-      prev.map(r => {
-        if (r.vesselId === 'VES-01') {
+    setBerthRequests((prev) =>
+      prev.map((r) => {
+        if (r.vesselId === "VES-01") {
           return {
             ...r,
-            status: 'Changed',
-            assignedBerth: 'B02',
-            reviewedAt: 'Just now',
-            notes: 'Optimized by Port Operations: Reallocated to Berth B02 with 4 STS cranes (Wait reduced to 6.8h).',
+            status: "Changed",
+            assignedBerth: "B02",
+            reviewedAt: "Just now",
+            notes:
+              "Optimized by Port Operations: Reallocated to Berth B02 with 4 STS cranes (Wait reduced to 6.8h).",
           };
         }
         return r;
-      })
+      }),
     );
 
-    showToast('success', 'Optimization Applied Successfully', 'Ocean Star reassigned to Berth B02. Expected wait decreased from 11.4h to 6.8h.');
+    showToast(
+      "success",
+      "Optimization Applied Successfully",
+      "Ocean Star reassigned to Berth B02. Expected wait decreased from 11.4h to 6.8h.",
+    );
   };
 
   // Run What-If Simulation
-  const runSimulation = async (scenarioType = 'crane_failure', duration = 8) => {
+  const runSimulation = async (
+    scenarioType = "crane_failure",
+    duration = 8,
+  ) => {
     setIsSimulating(true);
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600));
 
-    setSimulation(prev => ({
-      ...prev,
-      scenario: {
-        ...prev.scenario,
-        durationHours: duration,
-        type: scenarioType as 'crane_failure' | 'berth_closure' | 'vessel_surge' | 'vessel_delay' | 'yard_capacity_reduction',
-      },
-      after: {
-        queueCount: 11,
-        avgWaitHours: 17.8,
-        berthUtilizationPercent: 94,
-      },
-    }));
+    setSimulation((prev) =>
+      prev
+        ? {
+            ...prev,
+            scenario: {
+              ...prev.scenario,
+              durationHours: duration,
+              type: scenarioType as
+                | "crane_failure"
+                | "berth_closure"
+                | "vessel_surge"
+                | "vessel_delay"
+                | "yard_capacity_reduction",
+            },
+            after: {
+              queueCount: 11,
+              avgWaitHours: 17.8,
+              berthUtilizationPercent: 94,
+            },
+          }
+        : null,
+    );
 
     setIsSimulating(false);
-    showToast('warning', 'Simulation Complete', `Projected disruption: Queue increases from 7 to 11 vessels, wait escalates to 17.8h.`);
+    showToast(
+      "warning",
+      "Simulation Complete",
+      `Projected disruption: Queue increases from 7 to 11 vessels, wait escalates to 17.8h.`,
+    );
   };
 
   // Apply AI Recovery Plan
   const applyRecoveryPlan = () => {
     setIsRecoveryPlanApplied(true);
-    setSimulation(prev => ({
-      ...prev,
-      recoveryPlan: {
-        ...prev.recoveryPlan,
-        isApplied: true,
-      },
-    }));
+    setSimulation((prev) =>
+      prev
+        ? {
+            ...prev,
+            recoveryPlan: {
+              ...prev.recoveryPlan,
+              isApplied: true,
+            },
+          }
+        : null,
+    );
 
-    // Step 1: Move C05 to B04
-    setCranes(prev =>
-      prev.map(c => {
-        if (c.id === 'C05') {
+    setCranes((prev) =>
+      prev.map((c) => {
+        if (c.id === "C05") {
           return {
             ...c,
-            berthId: 'B04',
-            status: 'ACTIVE',
+            berthId: "B04",
+            status: "ACTIVE",
             movesPerHour: 30,
             utilizationPercent: 85,
           };
         }
         return c;
-      })
+      }),
     );
 
-    // Step 2: Reassign Ocean Star to B02
-    setVessels(prev =>
-      prev.map(v => {
-        if (v.id === 'VES-01') {
+    setVessels((prev) =>
+      prev.map((v) => {
+        if (v.id === "VES-01") {
           return {
             ...v,
-            assignedBerth: 'B02',
+            assignedBerth: "B02",
             predictedWaitHours: 6.8,
-            demurrageRisk: 'Low',
+            demurrageRisk: "Low",
           };
         }
-        if (v.id === 'VES-05') {
+        if (v.id === "VES-05") {
           return {
             ...v,
-            eta: 'Tomorrow, 20:45 UTC (+4h buffer)',
+            eta: "Tomorrow, 20:45 UTC (+4h buffer)",
             predictedWaitHours: 4.2,
           };
         }
         return v;
-      })
+      }),
     );
 
-    // Step 3: Update Berths
-    setBerths(prev =>
-      prev.map(b => {
-        if (b.id === 'B04') {
+    setBerths((prev) =>
+      prev.map((b) => {
+        if (b.id === "B04") {
           return {
             ...b,
             availableCranes: 2,
-            assignedCraneIds: ['C05'],
+            assignedCraneIds: ["C05"],
             currentUtilization: 74,
             predictedUtilization: 76,
             queueCount: 4,
-            riskLevel: 'LOW',
+            riskLevel: "LOW",
           };
         }
-        if (b.id === 'B02') {
+        if (b.id === "B02") {
           return {
             ...b,
             availableCranes: 4,
-            assignedCraneIds: ['C01', 'C02', 'C04', 'C06'],
+            assignedCraneIds: ["C01", "C02", "C04", "C06"],
             predictedUtilization: 78,
           };
         }
         return b;
-      })
+      }),
     );
 
-    showToast('success', 'Recovery Plan Executed', 'C05 transferred to B04. Ocean Star diverted to B02 with 4 STS cranes.');
+    showToast(
+      "success",
+      "Recovery Plan Executed",
+      "C05 transferred to B04. Ocean Star diverted to B02 with 4 STS cranes.",
+    );
   };
 
   // Manual Berth Reassignment
   const reassignVesselBerth = (vesselId: string, targetBerthId: string) => {
-    setVessels(prev =>
-      prev.map(v => {
+    setVessels((prev) =>
+      prev.map((v) => {
         if (v.id === vesselId) {
           return {
             ...v,
             assignedBerth: targetBerthId,
-            predictedWaitHours: Math.max(1.5, Number((v.predictedWaitHours * 0.7).toFixed(1))),
-            demurrageRisk: 'Low',
+            predictedWaitHours: Math.max(
+              1.5,
+              Number((v.predictedWaitHours * 0.7).toFixed(1)),
+            ),
+            demurrageRisk: "Low",
           };
         }
         return v;
-      })
+      }),
     );
 
-    // Also update berth requests if matching
-    setBerthRequests(prev =>
-      prev.map(r => {
+    setBerthRequests((prev) =>
+      prev.map((r) => {
         if (r.vesselId === vesselId) {
           return {
             ...r,
-            status: 'Approved',
+            status: "Approved",
             assignedBerth: targetBerthId,
-            reviewedAt: 'Just now',
+            reviewedAt: "Just now",
           };
         }
         return r;
-      })
+      }),
     );
 
-    showToast('info', 'Berth Reassignment Complete', `Vessel reallocated to ${targetBerthId}.`);
+    showToast(
+      "info",
+      "Berth Reassignment Complete",
+      `Vessel reallocated to ${targetBerthId}.`,
+    );
   };
 
   // Resolve Alert
   const resolveAlert = async (alertId: string) => {
-    setAlerts(prev =>
-      prev.map(a => (a.id === alertId ? { ...a, isResolved: true } : a))
+    const updatedAlert = alerts.find((a) => a.id === alertId);
+    setAlerts((prev) =>
+      prev.map((a) => (a.id === alertId ? { ...a, isResolved: true } : a)),
     );
+    if (!isDemoUser && updatedAlert && user?.id) {
+      void OperationsDataService.upsertAlert(
+        { ...updatedAlert, isResolved: true },
+        user.id,
+      );
+    }
     if (user?.id) {
       await NotificationService.markAsRead(user.id, alertId);
-      setReadNotificationIds(prev => new Set(prev).add(alertId));
+      setReadNotificationIds((prev) => new Set(prev).add(alertId));
     }
-    showToast('info', 'Alert Resolved', 'Incident marked as resolved in system log.');
+    showToast(
+      "info",
+      "Alert Resolved",
+      "Incident marked as resolved in system log.",
+    );
   };
 
   // ==========================================
@@ -576,60 +749,74 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
   // ==========================================
 
   const addVessel = (vesselData: Partial<Vessel>): Vessel => {
-    const newId = `VES-${String(vessels.length + 1).padStart(2, '0')}`;
+    const newId = `VES-${String(vessels.length + 1).padStart(2, "0")}`;
     const newVessel: Vessel = {
       id: newId,
-      name: vesselData.name || 'New Carrier',
-      imo: vesselData.imo || String(Math.floor(1000000 + Math.random() * 9000000)),
-      flag: vesselData.flag || 'Panama',
+      name: vesselData.name || "New Carrier",
+      imo:
+        vesselData.imo || String(Math.floor(1000000 + Math.random() * 9000000)),
+      flag: vesselData.flag || "Panama",
       lengthMeters: Number(vesselData.lengthMeters) || 300,
       draughtMeters: Number(vesselData.draughtMeters) || 14,
       teuCapacity: Number(vesselData.teuCapacity) || 12000,
       cargoVolume: Number(vesselData.cargoVolume) || 8000,
-      origin: vesselData.origin || 'Singapore (SGSIN)',
-      destination: vesselData.destination || 'Rotterdam (NLRTM)',
-      eta: vesselData.eta || 'Tomorrow, 12:00 UTC',
-      etd: vesselData.etd || '+2 Days, 18:00 UTC',
-      status: vesselData.status || 'Arriving',
-      priority: vesselData.priority || 'Standard',
+      origin: vesselData.origin || "Singapore (SGSIN)",
+      destination: vesselData.destination || "Rotterdam (NLRTM)",
+      eta: vesselData.eta || "Tomorrow, 12:00 UTC",
+      etd: vesselData.etd || "+2 Days, 18:00 UTC",
+      status: vesselData.status || "Arriving",
+      priority: vesselData.priority || "Standard",
       currentBerth: null,
-      assignedBerth: vesselData.assignedBerth || 'Unassigned',
+      assignedBerth: vesselData.assignedBerth || "Unassigned",
       predictedWaitHours: 3.5,
-      demurrageRisk: 'Low',
+      demurrageRisk: "Low",
       historicalTurnaroundHours: 20,
-      recommendedAction: 'Awaiting port berth assignment and pilot scheduling.',
-      ownerId: vesselData.ownerId || user?.id || 'demo-agent',
-      shippingCompany: vesselData.shippingCompany || 'Apex Maritime Agency',
-      callSign: vesselData.callSign || 'CALL-' + Math.floor(100 + Math.random() * 900),
-      vesselType: vesselData.vesselType || 'Container Ship',
-      voyageNumber: vesselData.voyageNumber || 'VYG-' + Math.floor(1000 + Math.random() * 9000),
-      previousPort: vesselData.previousPort || 'Busan (KRPUS)',
-      nextPort: vesselData.nextPort || 'Hamburg (DEHAM)',
-      requestedBerth: vesselData.requestedBerth || 'B03',
-      requestedArrivalTime: vesselData.requestedArrivalTime || vesselData.eta || 'Tomorrow, 12:00 UTC',
+      recommendedAction: "Awaiting port berth assignment and pilot scheduling.",
+      ownerId: vesselData.ownerId || user?.id || "demo-agent",
+      shippingCompany: vesselData.shippingCompany || "Apex Maritime Agency",
+      callSign:
+        vesselData.callSign || "CALL-" + Math.floor(100 + Math.random() * 900),
+      vesselType: vesselData.vesselType || "Container Ship",
+      voyageNumber:
+        vesselData.voyageNumber ||
+        "VYG-" + Math.floor(1000 + Math.random() * 9000),
+      previousPort: vesselData.previousPort || "Busan (KRPUS)",
+      nextPort: vesselData.nextPort || "Hamburg (DEHAM)",
+      requestedBerth: vesselData.requestedBerth || "B03",
+      requestedArrivalTime:
+        vesselData.requestedArrivalTime ||
+        vesselData.eta ||
+        "Tomorrow, 12:00 UTC",
       berthDurationHours: Number(vesselData.berthDurationHours) || 20,
       requestedCranes: Number(vesselData.requestedCranes) || 3,
-      cargoType: vesselData.cargoType || 'General Cargo & Containers',
-      cargoQuantity: vesselData.cargoQuantity || '850 TEU Discharged',
+      cargoType: vesselData.cargoType || "General Cargo & Containers",
+      cargoQuantity: vesselData.cargoQuantity || "850 TEU Discharged",
       containersLoaded: Number(vesselData.containersLoaded) || 0,
       containersTotal: Number(vesselData.containersTotal) || 850,
       dangerousGoods: Boolean(vesselData.dangerousGoods),
-      specialNotes: vesselData.specialNotes || '',
+      specialNotes: vesselData.specialNotes || "",
       timelineEvents: [
-        { stage: 'Port Notice Filed', time: 'Just now', status: 'completed' },
-        { stage: 'Pilot Station Entry', time: vesselData.eta || 'Tomorrow 12:00 UTC', status: 'scheduled' },
-        { stage: 'Berthing', time: '+1h after pilot', status: 'scheduled' },
-        { stage: 'Discharge Ops', time: '+2h after berthing', status: 'scheduled' },
+        { stage: "Port Notice Filed", time: "Just now", status: "completed" },
+        {
+          stage: "Pilot Station Entry",
+          time: vesselData.eta || "Tomorrow 12:00 UTC",
+          status: "scheduled",
+        },
+        { stage: "Berthing", time: "+1h after pilot", status: "scheduled" },
+        {
+          stage: "Discharge Ops",
+          time: "+2h after berthing",
+          status: "scheduled",
+        },
       ],
     };
 
-    setVessels(prev => [newVessel, ...prev]);
+    setVessels((prev) => [newVessel, ...prev]);
     syncVesselIfReal(newVessel);
 
-    // Automatically submit a BerthRequest if requestedBerth was specified
     if (vesselData.requestedBerth) {
       const newReq: BerthRequest = {
-        id: `BR-${String(berthRequests.length + 1).padStart(2, '0')}`,
+        id: `BR-${String(berthRequests.length + 1).padStart(2, "0")}`,
         vesselId: newId,
         vesselName: newVessel.name,
         imo: newVessel.imo,
@@ -637,157 +824,219 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
         requestedArrivalTime: newVessel.requestedArrivalTime || newVessel.eta,
         estimatedDurationHours: newVessel.berthDurationHours || 20,
         requestedCranes: newVessel.requestedCranes || 3,
-        cargoType: newVessel.cargoType || 'Containerized Cargo',
-        status: 'Pending',
-        submittedAt: 'Just now',
+        cargoType: newVessel.cargoType || "Containerized Cargo",
+        status: "Pending",
+        submittedAt: "Just now",
         notes: newVessel.specialNotes,
-        ownerId: newVessel.ownerId || 'demo-agent',
+        ownerId: newVessel.ownerId || "demo-agent",
       };
-      setBerthRequests(prev => [newReq, ...prev]);
+      setBerthRequests((prev) => [newReq, ...prev]);
       syncBerthRequestIfReal(newReq);
     }
 
-    showToast('success', 'Vessel Added Successfully', `${newVessel.name} (IMO ${newVessel.imo}) registered in your fleet.`);
+    showToast(
+      "success",
+      "Vessel Added Successfully",
+      `${newVessel.name} (IMO ${newVessel.imo}) registered in your fleet.`,
+    );
     return newVessel;
   };
 
   const updateVessel = (id: string, updates: Partial<Vessel>) => {
     let updatedVessel: Vessel | undefined;
-    setVessels(prev =>
-      prev.map(v => {
+    setVessels((prev) =>
+      prev.map((v) => {
         if (v.id !== id) return v;
         updatedVessel = { ...v, ...updates };
         return updatedVessel;
-      })
+      }),
     );
     if (updatedVessel) syncVesselIfReal(updatedVessel);
-    showToast('info', 'Vessel Updated', `Changes saved for vessel.`);
+    showToast("info", "Vessel Updated", `Changes saved for vessel.`);
   };
 
   const deleteVessel = (id: string) => {
-    setVessels(prev => prev.filter(v => v.id !== id));
+    setVessels((prev) => prev.filter((v) => v.id !== id));
     if (!isDemoUser) {
       void OperationsDataService.deleteVessel(id);
     }
-    showToast('info', 'Vessel Removed', `Vessel archived from your active fleet.`);
+    showToast(
+      "info",
+      "Vessel Removed",
+      `Vessel archived from your active fleet.`,
+    );
   };
 
-  const updateVesselEta = (vesselId: string, newEta: string, reason: string) => {
+  const updateVesselEta = (
+    vesselId: string,
+    newEta: string,
+    reason: string,
+  ) => {
     let updatedVessel: Vessel | undefined;
-    setVessels(prev =>
-      prev.map(v => {
+    setVessels((prev) =>
+      prev.map((v) => {
         if (v.id === vesselId) {
           updatedVessel = {
             ...v,
             eta: newEta,
-            timelineEvents: v.timelineEvents.map(e =>
-              e.stage === 'Anchorage Waiting' || e.stage === 'Pilot Station Entry'
+            timelineEvents: v.timelineEvents.map((e) =>
+              e.stage === "Anchorage Waiting" ||
+              e.stage === "Pilot Station Entry"
                 ? { ...e, time: newEta }
-                : e
+                : e,
             ),
           };
           return updatedVessel;
         }
         return v;
-      })
+      }),
     );
     if (updatedVessel) syncVesselIfReal(updatedVessel);
 
-    const vessel = vessels.find(v => v.id === vesselId);
-    const vesselName = vessel ? vessel.name : 'Vessel';
+    const vessel = vessels.find((v) => v.id === vesselId);
+    const vesselName = vessel ? vessel.name : "Vessel";
 
-    // Dispatch notification to Port Admin
     const newAlert: OperationalAlert = {
       id: `ALT-ETA-${Date.now()}`,
-      timestamp: 'Just now',
-      severity: 'MEDIUM',
+      timestamp: "Just now",
+      severity: "MEDIUM",
       title: `${vesselName} ETA Changed (${reason})`,
       description: `Ship agent updated ETA for ${vesselName} to ${newEta}. Reason: ${reason}. Port congestion forecast may recalculate.`,
-      relatedEntity: { type: 'vessel', id: vesselId, name: vesselName },
+      relatedEntity: { type: "vessel", id: vesselId, name: vesselName },
       isResolved: false,
       actionRoute: `/operations/vessels/${vesselId}`,
-      actionLabel: 'Inspect Vessel',
+      actionLabel: "Inspect Vessel",
     };
-    setAlerts(prev => [newAlert, ...prev]);
+    setAlerts((prev) => [newAlert, ...prev]);
+    if (!isDemoUser && user?.id) {
+      void OperationsDataService.upsertAlert(newAlert, user.id);
+    }
 
-    showToast('success', 'ETA Updated Successfully', `${vesselName} ETA updated to ${newEta}. Port operations notified.`);
+    showToast(
+      "success",
+      "ETA Updated Successfully",
+      `${vesselName} ETA updated to ${newEta}. Port operations notified.`,
+    );
   };
 
-  const submitBerthRequest = (request: Omit<BerthRequest, 'id' | 'submittedAt' | 'status'>) => {
+  const submitBerthRequest = (
+    request: Omit<BerthRequest, "id" | "submittedAt" | "status">,
+  ) => {
     const newRequest: BerthRequest = {
       ...request,
-      id: `BR-${String(berthRequests.length + 1).padStart(2, '0')}`,
-      status: 'Pending',
-      submittedAt: 'Just now',
+      id: `BR-${String(berthRequests.length + 1).padStart(2, "0")}`,
+      status: "Pending",
+      submittedAt: "Just now",
     };
-    setBerthRequests(prev => [newRequest, ...prev]);
+    setBerthRequests((prev) => [newRequest, ...prev]);
     syncBerthRequestIfReal(newRequest);
 
-    // Dispatch alert for Port Admin
     const newAlert: OperationalAlert = {
       id: `ALT-BR-${Date.now()}`,
-      timestamp: 'Just now',
-      severity: 'INFO',
+      timestamp: "Just now",
+      severity: "INFO",
       title: `New Berth Request: ${request.vesselName}`,
       description: `Ship agent requested Berth ${request.requestedBerth} (${request.requestedCranes} cranes) for ${request.vesselName} at ${request.requestedArrivalTime}.`,
-      relatedEntity: { type: 'berth', id: request.requestedBerth, name: `Berth ${request.requestedBerth}` },
+      relatedEntity: {
+        type: "berth",
+        id: request.requestedBerth,
+        name: `Berth ${request.requestedBerth}`,
+      },
       isResolved: false,
-      actionRoute: '/operations/berths',
-      actionLabel: 'Review Request',
+      actionRoute: "/operations/berths",
+      actionLabel: "Review Request",
     };
-    setAlerts(prev => [newAlert, ...prev]);
+    setAlerts((prev) => [newAlert, ...prev]);
+    if (!isDemoUser && user?.id) {
+      void OperationsDataService.upsertAlert(newAlert, user.id);
+    }
 
-    showToast('success', 'Berth Request Submitted', `Request for ${request.requestedBerth} filed. Status: Pending Review.`);
+    showToast(
+      "success",
+      "Berth Request Submitted",
+      `Request for ${request.requestedBerth} filed. Status: Pending Review.`,
+    );
   };
 
-  const updateBerthRequestStatus = (requestId: string, status: BerthRequestStatus, assignedBerth?: string) => {
+  const updateBerthRequestStatus = (
+    requestId: string,
+    status: BerthRequestStatus,
+    assignedBerth?: string,
+  ) => {
     let updatedRequest: BerthRequest | undefined;
-    setBerthRequests(prev =>
-      prev.map(r => {
+    setBerthRequests((prev) =>
+      prev.map((r) => {
         if (r.id === requestId) {
           updatedRequest = {
             ...r,
             status,
             assignedBerth: assignedBerth || r.assignedBerth || r.requestedBerth,
-            reviewedAt: 'Just now',
+            reviewedAt: "Just now",
           };
           return updatedRequest;
         }
         return r;
-      })
+      }),
     );
     if (updatedRequest) syncBerthRequestIfReal(updatedRequest);
 
-    const req = berthRequests.find(r => r.id === requestId);
+    const req = berthRequests.find((r) => r.id === requestId);
     if (req && assignedBerth) {
-      setVessels(prev =>
-        prev.map(v => (v.id === req.vesselId ? { ...v, assignedBerth } : v))
+      setVessels((prev) =>
+        prev.map((v) => (v.id === req.vesselId ? { ...v, assignedBerth } : v)),
       );
     }
 
-    showToast('info', 'Berth Request Updated', `Request status changed to ${status}.`);
+    showToast(
+      "info",
+      "Berth Request Updated",
+      `Request status changed to ${status}.`,
+    );
   };
 
-  const updateCargoInfo = (vesselId: string, cargoData: { containersLoaded?: number; containersTotal?: number; cargoQuantity?: string; dangerousGoods?: boolean; specialNotes?: string }) => {
+  const updateCargoInfo = (
+    vesselId: string,
+    cargoData: {
+      containersLoaded?: number;
+      containersTotal?: number;
+      cargoQuantity?: string;
+      dangerousGoods?: boolean;
+      specialNotes?: string;
+    },
+  ) => {
     let updatedVessel: Vessel | undefined;
-    setVessels(prev =>
-      prev.map(v => {
+    setVessels((prev) =>
+      prev.map((v) => {
         if (v.id === vesselId) {
           updatedVessel = {
             ...v,
-            ...(cargoData.containersLoaded !== undefined ? { containersLoaded: cargoData.containersLoaded } : {}),
-            ...(cargoData.containersTotal !== undefined ? { containersTotal: cargoData.containersTotal } : {}),
-            ...(cargoData.cargoQuantity !== undefined ? { cargoQuantity: cargoData.cargoQuantity } : {}),
-            ...(cargoData.dangerousGoods !== undefined ? { dangerousGoods: cargoData.dangerousGoods } : {}),
-            ...(cargoData.specialNotes !== undefined ? { specialNotes: cargoData.specialNotes } : {}),
+            ...(cargoData.containersLoaded !== undefined
+              ? { containersLoaded: cargoData.containersLoaded }
+              : {}),
+            ...(cargoData.containersTotal !== undefined
+              ? { containersTotal: cargoData.containersTotal }
+              : {}),
+            ...(cargoData.cargoQuantity !== undefined
+              ? { cargoQuantity: cargoData.cargoQuantity }
+              : {}),
+            ...(cargoData.dangerousGoods !== undefined
+              ? { dangerousGoods: cargoData.dangerousGoods }
+              : {}),
+            ...(cargoData.specialNotes !== undefined
+              ? { specialNotes: cargoData.specialNotes }
+              : {}),
           };
           return updatedVessel;
         }
         return v;
-      })
+      }),
     );
     if (updatedVessel) syncVesselIfReal(updatedVessel);
-    showToast('success', 'Cargo Information Updated', 'Manifest details and container handling stats saved.');
+    showToast(
+      "success",
+      "Cargo Information Updated",
+      "Manifest details and container handling stats saved.",
+    );
   };
 
   const uploadDocument = async (doc: {
@@ -799,7 +1048,7 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
     fileSize?: string;
     ownerId?: string;
   }): Promise<ShippingDocument> => {
-    const effectiveOwnerId = doc.ownerId || user?.id || 'demo-agent';
+    const effectiveOwnerId = doc.ownerId || user?.id || "demo-agent";
 
     if (doc.file) {
       try {
@@ -812,98 +1061,127 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
           ownerId: effectiveOwnerId,
         });
 
-        setShippingDocuments(prev => [savedDoc, ...prev]);
-        showToast('success', 'Document Uploaded Successfully', `${savedDoc.name} verified and submitted for clearance.`);
+        setShippingDocuments((prev) => [savedDoc, ...prev]);
+        showToast(
+          "success",
+          "Document Uploaded Successfully",
+          `${savedDoc.name} verified and submitted for clearance.`,
+        );
         return savedDoc;
       } catch (err: any) {
-        showToast('error', 'Document Upload Failed', err.message || 'Failed to upload document file.');
+        showToast(
+          "error",
+          "Document Upload Failed",
+          err.message || "Failed to upload document file.",
+        );
         throw err;
       }
     }
 
-    // Fallback if no raw file attached
     const newDoc: ShippingDocument = {
-      id: `DOC-${String(shippingDocuments.length + 1).padStart(2, '0')}`,
+      id: `DOC-${String(shippingDocuments.length + 1).padStart(2, "0")}`,
       name: doc.name,
       vesselId: doc.vesselId,
       vesselName: doc.vesselName,
       type: doc.type,
-      fileSize: doc.fileSize || '1.8 MB',
-      status: 'Under Review',
-      uploadedDate: new Date().toISOString().split('T')[0],
+      fileSize: doc.fileSize || "1.8 MB",
+      status: "Under Review",
+      uploadedDate: new Date().toISOString().split("T")[0],
       ownerId: effectiveOwnerId,
     };
-    setShippingDocuments(prev => [newDoc, ...prev]);
-    showToast('success', 'Document Uploaded', `${doc.name} submitted for port authority clearance.`);
+    setShippingDocuments((prev) => [newDoc, ...prev]);
+    showToast(
+      "success",
+      "Document Uploaded",
+      `${doc.name} submitted for port authority clearance.`,
+    );
     return newDoc;
   };
 
   const deleteDocument = async (docId: string): Promise<void> => {
-    const docToDelete = shippingDocuments.find(d => d.id === docId);
-    setShippingDocuments(prev => prev.filter(d => d.id !== docId));
+    const docToDelete = shippingDocuments.find((d) => d.id === docId);
+    setShippingDocuments((prev) => prev.filter((d) => d.id !== docId));
     try {
       await DocumentService.deleteDocument(docId, docToDelete?.fileUrl);
-      showToast('info', 'Document Removed', 'Document removed from vessel repository.');
+      showToast(
+        "info",
+        "Document Removed",
+        "Document removed from vessel repository.",
+      );
     } catch (e) {
-      console.warn('[OperationsContext] deleteDocument sync warning', e);
+      console.warn("[OperationsContext] deleteDocument sync warning", e);
     }
   };
 
-  // Copilot for Port Admin
   const sendCopilotMessage = async (query: string) => {
     const userMsg: CopilotMessage = {
-      id: 'msg-' + Date.now(),
-      sender: 'user',
+      id: "msg-" + Date.now(),
+      sender: "user",
       text: query,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' UTC',
+      timestamp:
+        new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }) + " UTC",
     };
 
-    setCopilotMessages(prev => [...prev, userMsg]);
+    setCopilotMessages((prev) => [...prev, userMsg]);
     setIsCopilotLoading(true);
 
     try {
-      const oceanStar = vessels.find(v => v.id === 'VES-01');
-      const b04 = berths.find(b => b.id === 'B04');
-      const c03 = cranes.find(c => c.id === 'C03');
-      const activeAlerts = alerts.filter(a => !a.isResolved);
+      const oceanStar = vessels.find((v) => v.id === "VES-01");
+      const b04 = berths.find((b) => b.id === "B04");
+      const c03 = cranes.find((c) => c.id === "C03");
+      const activeAlerts = alerts.filter((a) => !a.isResolved);
 
       const response = await geminiCopilotService.processUserQuery(query, {
         vessels,
         berths,
         cranes,
         yardBlocks,
-        forecast,
-        optimization,
-        simulation,
+        forecast: forecast || undefined,
+        optimization: optimization || undefined,
+        simulation: simulation || undefined,
         routes,
         shiftPlans,
         alerts,
         berthRequests,
         isOptimizationApplied,
         isRecoveryPlanApplied,
-        conversationHistory: copilotMessages.map(m => ({ sender: m.sender, text: m.text })),
-        oceanStarBerth: oceanStar?.assignedBerth || (isOptimizationApplied ? 'B02' : 'B04'),
-        b04Utilization: b04?.predictedUtilization || (isOptimizationApplied ? 78 : 94),
-        c03Status: c03?.status || (isRecoveryPlanApplied ? 'MAINTENANCE (C05 Replaced)' : 'FAILED'),
+        conversationHistory: copilotMessages.map((m) => ({
+          sender: m.sender,
+          text: m.text,
+        })),
+        oceanStarBerth:
+          oceanStar?.assignedBerth || (isOptimizationApplied ? "B02" : "B04"),
+        b04Utilization:
+          b04?.predictedUtilization || (isOptimizationApplied ? 78 : 94),
+        c03Status:
+          c03?.status ||
+          (isRecoveryPlanApplied ? "MAINTENANCE (C05 Replaced)" : "FAILED"),
         activeAlertsCount: activeAlerts.length,
       });
 
-      setCopilotMessages(prev => [...prev, response]);
+      setCopilotMessages((prev) => [...prev, response]);
     } catch (error) {
-      if (import.meta.env.DEV) console.error('Error executing Gemini Copilot query:', error);
+      if (import.meta.env.DEV)
+        console.error("Error executing Gemini Copilot query:", error);
       const errResponse: CopilotMessage = {
-        id: 'msg-err-' + Date.now(),
-        sender: 'gemini',
-        text: 'An error occurred while connecting to Gemini Copilot. Operational telemetry remains active.',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' UTC',
+        id: "msg-err-" + Date.now(),
+        sender: "gemini",
+        text: "An error occurred while connecting to Gemini Copilot. Operational telemetry remains active.",
+        timestamp:
+          new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }) + " UTC",
       };
-      setCopilotMessages(prev => [...prev, errResponse]);
+      setCopilotMessages((prev) => [...prev, errResponse]);
     } finally {
       setIsCopilotLoading(false);
     }
   };
 
-  // Reset to Baseline Demo State
   const resetToDefault = () => {
     setVessels(initialVessels);
     setBerths(initialBerths);
@@ -918,7 +1196,11 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
     setShippingDocuments(initialShippingDocuments);
     setIsOptimizationApplied(false);
     setIsRecoveryPlanApplied(false);
-    showToast('info', 'State Reset', 'Port operations reset to baseline demo state.');
+    showToast(
+      "info",
+      "State Reset",
+      "Port operations reset to baseline demo state.",
+    );
   };
 
   const contextValue = useMemo(
@@ -931,6 +1213,7 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
       optimization,
       simulation,
       routes,
+      setRoutes,
       shiftPlans,
       alerts,
       berthRequests,
@@ -998,7 +1281,7 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
       selectedBerthId,
       selectedVesselId,
       searchQuery,
-    ]
+    ],
   );
 
   return (
@@ -1011,7 +1294,7 @@ I am monitoring real-time AIS feeds, tidal windows, crane telemetry, and predict
 export const useOperations = () => {
   const context = useContext(OperationsContext);
   if (!context) {
-    throw new Error('useOperations must be used within an OperationsProvider');
+    throw new Error("useOperations must be used within an OperationsProvider");
   }
   return context;
 };
