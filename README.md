@@ -25,7 +25,7 @@ The 2021 Los Angeles & Long Beach port crisis left over 100 container vessels id
 
 ## 💡 Solution
 
-PortsPilot AI transforms reactive port management into proactive, algorithmic decision-making. By continuously ingesting vessel AIS telemetry, berth depths, and crane operational status, the platform forecasts quayside bottlenecks 6 to 72 hours in advance, solves the Berth Allocation Problem and Crane Assignment Problem (BAP/CAP), ranks alternate port diversions by fuel and demurrage trade-offs, and automates 72-hour stevedore shift planning through an interactive IBM Bob Copilot.
+PortsPilot AI transforms reactive port management into proactive, algorithmic decision-making. By continuously ingesting vessel AIS telemetry, berth depths, and crane operational status, the platform forecasts quayside bottlenecks 6 to 72 hours in advance, solves the Berth Allocation Problem and Crane Assignment Problem (BAP/CAP), ranks alternate port diversions by fuel and demurrage trade-offs, and automates 72-hour stevedore shift planning through an interactive VARUNA AI.
 
 ---
 
@@ -35,7 +35,7 @@ PortsPilot AI transforms reactive port management into proactive, algorithmic de
 - **BAP/CAP Operations Optimizer**: Solves constrained berth and crane allocation matrices, slashing vessel wait hours and quantifying exact demurrage cost savings.
 - **Alternate Route & Port Diversion Intelligence**: Dynamically evaluates diversion candidates (e.g., Rotterdam vs. Antwerp Gateway vs. Zeebrugge) based on nautical miles, bunker fuel consumption, and downstream congestion.
 - **72-Hour Stevedore & Crane Shift Planner**: Automatically schedules workforces across three daily shifts (06:00-14:00, 14:00-22:00, 22:00-06:00) with clash detection and one-click resolution.
-- **Interactive Maritime Copilot (IBM Bob / Gemini)**: Natural-language assistant capable of querying live port telemetry, explaining root causes, and executing supervisor-approved recovery directives.
+- **Interactive Maritime Copilot (Gemini-Varuna AI)**: Natural-language assistant capable of querying live port telemetry, explaining root causes, and executing supervisor-approved recovery directives.
 
 ---
 
@@ -43,11 +43,13 @@ PortsPilot AI transforms reactive port management into proactive, algorithmic de
 
 | Category | Technologies |
 |---|---|
-| **Languages** | TypeScript, Python, SQL |
-| **Frameworks** | React 18, Vite 6, FastAPI, Hono, Tailwind CSS, Prisma ORM |
+| **Languages** | TypeScript, Python, SQL, HTML5, CSS 3 |
+| **Frameworks** | React 18, Vite 6, FastAPI, Hono, EXPRESS JS, Tailwind CSS, Prisma ORM |
 | **IBM Technologies** | IBM Bob, watsonx.ai, IBM Cloud Code Engine |
-| **Databases** | PostgreSQL, Supabase |
-| **Other** | Docker, Recharts, Lucide React, Three.js, Pytest |
+| **AI & INTELLIGENCE** | GOOGLE GTEMINI, AI COPILOT ENGINE, HEURISTIC OPTIMISER |
+| **Databases** | PostgreSQL, Supabase, GOOGLE OAuth 2.0 |
+| **Data Visualization & Motion** | Recharts, Three.js, Framer Motion, Lucide React Icons |
+| **Testing & Tooling** | Pytest, TypeScript (`tsc`), Docker, Vite HMR, PostCSS |
 
 ---
 
