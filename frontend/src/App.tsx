@@ -69,6 +69,10 @@ const RootRedirect: React.FC = () => {
     return <LoginPage />;
   }
 
+  if (user.role === 'super-admin') {
+    return <Navigate to="/super-admin" replace />;
+  }
+
   if (user.role === 'ship-agent') {
     return <Navigate to="/shipping/dashboard" replace />;
   }
@@ -84,6 +88,10 @@ const CatchAllRedirect: React.FC = () => {
 
   if (!isAuthenticated || !user) {
     return <Navigate to="/" replace />;
+  }
+
+  if (user.role === 'super-admin') {
+    return <Navigate to="/super-admin" replace />;
   }
 
   if (user.role === 'ship-agent') {
@@ -122,7 +130,9 @@ export const App: React.FC = () => {
                 </Route>
                 
                 {/* Super Admin Portal */}
-                <Route path="/super-admin" element={<SuperAdminPortalPage />} />
+                <Route element={<RoleProtectedRoute allowedRoles={['super-admin']} />}>
+                  <Route path="/super-admin" element={<SuperAdminPortalPage />} />
+                </Route>
 
                 {/* Root Portal Router */}
                 <Route path="/" element={<RootRedirect />} />
