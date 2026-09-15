@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { AuthService } from '../services/authService';
 import {
   Ship, Shield, Anchor, ArrowLeft,
   Eye, EyeOff, Mail, Lock, User as UserIcon
