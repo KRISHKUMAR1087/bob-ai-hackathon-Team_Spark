@@ -29,7 +29,7 @@ submission:
     Global container ports face severe supply chain bottlenecks — such as the 2021 LA/Long Beach crisis with 100+ ships waiting offshore costing $10B+ — because berth and yard allocations are handled reactively in manual spreadsheets. Port operators and harbor masters discover congestion only after queues form, leaving no time for proactive vessel diversion or optimal crane scheduling.
 
   solution_summary: >                  # REQUIRED — 1-3 sentences. What did you build?
-    PortPulse AI is an enterprise maritime operations command center that predicts quayside bottlenecks 6 to 72 hours ahead, solves the Berth Allocation Problem and Crane Assignment Problem (BAP/CAP), provides alternate port diversion intelligence, automates 72-hour stevedore shift planning, and assists operators with an interactive IBM Bob / Gemini AI copilot.
+    PortsPilot AI is an enterprise maritime operations command center that predicts quayside bottlenecks 6 to 72 hours ahead, solves the Berth Allocation Problem and Crane Assignment Problem (BAP/CAP), provides alternate port diversion intelligence, automates 72-hour stevedore shift planning, and assists operators with an interactive IBM Bob / Gemini AI copilot.
 
   key_features:                        # REQUIRED — List 3 to 5 specific features you implemented
     - "Predictive 72-Hour Congestion Hotspot Engine with multi-horizon forecast curves and root-cause driver attribution"
